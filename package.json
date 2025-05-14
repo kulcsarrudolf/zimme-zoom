@@ -1,0 +1,61 @@
+{
+  "name": "zimme-zoom",
+  "version": "0.1.0",
+  "description": "A lightweight React photo viewer with zoom, navigation, blurred background, and SVG overlay support",
+  "main": "dist/index.js",
+  "module": "dist/index.esm.js",
+  "types": "dist/index.d.ts",
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "build": "yarn clean && rollup -c",
+    "dev": "rollup -c -w",
+    "clean": "rimraf dist",
+    "test": "jest",
+    "lint": "eslint src --ext .ts,.tsx",
+    "format": "prettier --write \"src/**/*.{ts,tsx}\"",
+    "prepare": "yarn build"
+  },
+  "peerDependencies": {
+    "react": ">=16.8.0",
+    "react-dom": ">=16.8.0"
+  },
+  "devDependencies": {
+    "@types/react": "^18.2.0",
+    "@types/react-dom": "^18.2.0",
+    "@typescript-eslint/eslint-plugin": "^5.59.0",
+    "@typescript-eslint/parser": "^5.59.0",
+    "eslint": "^8.38.0",
+    "eslint-config-prettier": "^8.8.0",
+    "eslint-plugin-react": "^7.32.2",
+    "eslint-plugin-react-hooks": "^4.6.0",
+    "prettier": "^2.8.7",
+    "rimraf": "^4.4.1",
+    "rollup": "^2.79.1",
+    "rollup-plugin-typescript2": "^0.31.2",
+    "typescript": "^5.0.4"
+  },
+  "keywords": [
+    "react",
+    "photo-viewer",
+    "zoom",
+    "image-viewer",
+    "lightbox",
+    "svg-overlay"
+  ],
+  "author": "",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/kulcsarrudolf/zimme-zoom"
+  },
+  "bugs": {
+    "url": "https://github.com/kulcsarrudolf/zimme-zoom/issues"
+  },
+  "homepage": "https://github.com/kulcsarrudolf/zimme-zoom#readme",
+  "engines": {
+    "node": ">=14.0.0",
+    "yarn": ">=1.22.0"
+  }
+} 
