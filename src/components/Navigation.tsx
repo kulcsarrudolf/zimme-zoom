@@ -7,6 +7,7 @@ import {
   IconRotate,
   IconClose,
 } from "./icons";
+import NavigationActionButton from "./NavigationActionButton";
 
 interface NavigationProps {
   title: string;
@@ -15,6 +16,8 @@ interface NavigationProps {
   onZoomOut?: () => void;
   onRotate?: () => void;
   onReset?: () => void;
+  onNext?: () => void;
+  onPrevious?: () => void;
   showControls?: boolean;
   zoom?: number;
   rotation?: number;
@@ -27,9 +30,9 @@ export const Navigation: React.FC<NavigationProps> = ({
   onZoomOut,
   onRotate,
   onReset,
+  onNext,
+  onPrevious,
   showControls = true,
-  zoom = 1,
-  rotation = 0,
 }) => {
   return (
     <div
@@ -55,73 +58,36 @@ export const Navigation: React.FC<NavigationProps> = ({
       <div style={{ color: "white", fontSize: "0.9rem" }}>{title}</div>
       <div style={{ display: "flex", gap: "1rem" }}>
         {onReset && (
-          <div
-            style={{
-              width: "24px",
-              height: "24px",
-              backgroundImage: IconReset,
-              backgroundSize: "contain",
-              backgroundRepeat: "no-repeat",
-              cursor: "pointer",
-            }}
-            onClick={onReset}
+          <NavigationActionButton icon={IconReset} onClick={onReset} />
+        )}
+        {onPrevious && (
+          <NavigationActionButton icon={IconArrow} onClick={onPrevious} />
+        )}
+        {onNext && (
+          <NavigationActionButton
+            icon={IconArrow}
+            onClick={onNext}
+            transform="rotateY(180deg)"
           />
         )}
         {onZoomOut && (
-          <div
-            style={{
-              width: "24px",
-              height: "24px",
-              backgroundImage: IconZoomOut,
-              backgroundSize: "contain",
-              backgroundRepeat: "no-repeat",
-              cursor: "pointer",
-            }}
-            onClick={onZoomOut}
-          />
+          <NavigationActionButton icon={IconZoomOut} onClick={onZoomOut} />
         )}
-        <div style={{ color: "white", fontSize: "0.9rem" }}>
-          {Math.round(zoom * 100)}%
-        </div>
         {onZoomIn && (
-          <div
-            style={{
-              width: "24px",
-              height: "24px",
-              backgroundImage: IconZoomIn,
-              backgroundSize: "contain",
-              backgroundRepeat: "no-repeat",
-              cursor: "pointer",
-            }}
-            onClick={onZoomIn}
-          />
+          <NavigationActionButton icon={IconZoomIn} onClick={onZoomIn} />
         )}
         {onRotate && (
-          <div
-            style={{
-              width: "24px",
-              height: "24px",
-              backgroundImage: IconRotate,
-              backgroundSize: "contain",
-              backgroundRepeat: "no-repeat",
-              cursor: "pointer",
-              transform: `rotate(${rotation}deg)`,
-            }}
+          <NavigationActionButton icon={IconRotate} onClick={onRotate} />
+        )}
+        {onRotate && (
+          <NavigationActionButton
+            icon={IconRotate}
             onClick={onRotate}
+            transform="rotateY(180deg)"
           />
         )}
         {onClose && (
-          <div
-            style={{
-              width: "24px",
-              height: "24px",
-              backgroundImage: IconClose,
-              backgroundSize: "contain",
-              backgroundRepeat: "no-repeat",
-              cursor: "pointer",
-            }}
-            onClick={onClose}
-          />
+          <NavigationActionButton icon={IconClose} onClick={onClose} />
         )}
       </div>
     </div>

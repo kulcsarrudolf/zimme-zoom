@@ -175,6 +175,12 @@ export const PhotoViewer: React.FC<PhotoViewerProps> = ({
       <Navigation
         title={title || "Photo Viewer"}
         onClose={onClose}
+        onNext={() => {
+          console.log("on next");
+        }}
+        onPrevious={() => {
+          console.log("on previous");
+        }}
         onZoomIn={() => allowZoom && handleZoom(zoom + zoomStep)}
         onZoomOut={() => allowZoom && handleZoom(zoom - zoomStep)}
         onRotate={handleRotate}
