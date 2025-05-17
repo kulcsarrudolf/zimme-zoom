@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 import {
   IconReset,
   IconArrow,
@@ -8,15 +8,29 @@ import {
   IconClose,
 } from "./icons";
 
-export const Navigation = ({ title }: { title: string }) => {
-  const [isHovered, setIsHovered] = useState(false);
-  const [initialZoom, setInitialZoom] = useState(1);
-  const [zoom, setZoom] = useState(1);
+interface NavigationProps {
+  title: string;
+  onClose?: (e: any) => void;
+  onZoomIn?: () => void;
+  onZoomOut?: () => void;
+  onRotate?: () => void;
+  onReset?: () => void;
+  showControls?: boolean;
+  zoom?: number;
+  rotation?: number;
+}
 
-  const handleZoom = (zoom: number) => {
-    setZoom(zoom);
-  };
-
+export const Navigation: React.FC<NavigationProps> = ({
+  title,
+  onClose,
+  onZoomIn,
+  onZoomOut,
+  onRotate,
+  onReset,
+  showControls = true,
+  zoom = 1,
+  rotation = 0,
+}) => {
   return (
     <div
       style={{
@@ -26,7 +40,7 @@ export const Navigation = ({ title }: { title: string }) => {
         transform: "translateX(-50%)",
         width: "60%",
         height: "3rem",
-        backgroundColor: isHovered
+        backgroundColor: showControls
           ? "rgba(0, 0, 0, 0.8)"
           : "rgba(0, 0, 0, 0.5)",
         display: "flex",
@@ -37,96 +51,78 @@ export const Navigation = ({ title }: { title: string }) => {
         cursor: "pointer",
         padding: "0 1.5rem",
       }}
-      onMouseEnter={() => setIsHovered(true)}
-      onMouseLeave={() => setIsHovered(false)}
     >
       <div style={{ color: "white", fontSize: "0.9rem" }}>{title}</div>
-      <div style={{ display: "flex", gap: "1.5rem" }}>
-        <div
-          style={{
-            width: "24px",
-            height: "24px",
-            backgroundImage: IconReset,
-            backgroundSize: "contain",
-            backgroundRepeat: "no-repeat",
-            cursor: "pointer",
-          }}
-          onClick={() => handleZoom(initialZoom)}
-        />
-        <div
-          style={{
-            width: "24px",
-            height: "24px",
-            backgroundImage: IconArrow,
-            backgroundSize: "contain",
-            backgroundRepeat: "no-repeat",
-            cursor: "pointer",
-          }}
-        />
-        <div
-          style={{
-            width: "24px",
-            height: "24px",
-            backgroundImage: IconArrow,
-            backgroundSize: "contain",
-            backgroundRepeat: "no-repeat",
-            cursor: "pointer",
-            transform: "rotate(180deg)",
-          }}
-        />
-        <div
-          style={{
-            width: "24px",
-            height: "24px",
-            backgroundImage: IconZoomIn,
-            backgroundSize: "contain",
-            backgroundRepeat: "no-repeat",
-            cursor: "pointer",
-          }}
-          onClick={() => handleZoom(zoom + 0.1)}
-        />
-        <div
-          style={{
-            width: "24px",
-            height: "24px",
-            backgroundImage: IconZoomOut,
-            backgroundSize: "contain",
-            backgroundRepeat: "no-repeat",
-            cursor: "pointer",
-          }}
-          onClick={() => handleZoom(zoom - 0.1)}
-        />
-        <div
-          style={{
-            width: "24px",
-            height: "24px",
-            backgroundImage: IconRotate,
-            backgroundSize: "contain",
-            backgroundRepeat: "no-repeat",
-            cursor: "pointer",
-          }}
-        />
-        <div
-          style={{
-            width: "24px",
-            height: "24px",
-            backgroundImage: IconRotate,
-            backgroundSize: "contain",
-            backgroundRepeat: "no-repeat",
-            cursor: "pointer",
-            transform: "rotateY(180deg)",
-          }}
-        />
-        <div
-          style={{
-            width: "24px",
-            height: "24px",
-            backgroundImage: IconClose,
-            backgroundSize: "contain",
-            backgroundRepeat: "no-repeat",
-            cursor: "pointer",
-          }}
-        />
+      <div style={{ display: "flex", gap: "1rem" }}>
+        {onReset && (
+          <div
+            style={{
+              width: "24px",
+              height: "24px",
+              backgroundImage: IconReset,
+              backgroundSize: "contain",
+              backgroundRepeat: "no-repeat",
+              cursor: "pointer",
+            }}
+            onClick={onReset}
+          />
+        )}
+        {onZoomOut && (
+          <div
+            style={{
+              width: "24px",
+              height: "24px",
+              backgroundImage: IconZoomOut,
+              backgroundSize: "contain",
+              backgroundRepeat: "no-repeat",
+              cursor: "pointer",
+            }}
+            onClick={onZoomOut}
+          />
+        )}
+        <div style={{ color: "white", fontSize: "0.9rem" }}>
+          {Math.round(zoom * 100)}%
+        </div>
+        {onZoomIn && (
+          <div
+            style={{
+              width: "24px",
+              height: "24px",
+              backgroundImage: IconZoomIn,
+              backgroundSize: "contain",
+              backgroundRepeat: "no-repeat",
+              cursor: "pointer",
+            }}
+            onClick={onZoomIn}
+          />
+        )}
+        {onRotate && (
+          <div
+            style={{
+              width: "24px",
+              height: "24px",
+              backgroundImage: IconRotate,
+              backgroundSize: "contain",
+              backgroundRepeat: "no-repeat",
+              cursor: "pointer",
+              transform: `rotate(${rotation}deg)`,
+            }}
+            onClick={onRotate}
+          />
+        )}
+        {onClose && (
+          <div
+            style={{
+              width: "24px",
+              height: "24px",
+              backgroundImage: IconClose,
+              backgroundSize: "contain",
+              backgroundRepeat: "no-repeat",
+              cursor: "pointer",
+            }}
+            onClick={onClose}
+          />
+        )}
       </div>
     </div>
   );
