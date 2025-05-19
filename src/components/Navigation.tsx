@@ -51,8 +51,8 @@ export const Navigation: React.FC<NavigationProps> = ({
         alignItems: "center",
         borderRadius: "1.5rem",
         transition: "background-color 0.2s ease",
-        cursor: "pointer",
         padding: "0 1.5rem",
+        zIndex: 9999,
       }}
     >
       <div style={{ color: "white", fontSize: "0.9rem" }}>{title}</div>
@@ -87,7 +87,13 @@ export const Navigation: React.FC<NavigationProps> = ({
           />
         )}
         {onClose && (
-          <NavigationActionButton icon={IconClose} onClick={onClose} />
+          <NavigationActionButton
+            icon={IconClose}
+            onClick={(e) => {
+              onClose(e);
+              console.log("clicked");
+            }}
+          />
         )}
       </div>
     </div>

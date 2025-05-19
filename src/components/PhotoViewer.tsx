@@ -23,6 +23,9 @@ export interface PhotoViewerProps {
   keyboardInteraction?: boolean;
   onClose?: (e: any) => void;
   svgOverlay?: React.ReactNode;
+  images?: string[];
+  currentImageIndex?: number;
+  onImageChange?: (index: number) => void;
 }
 
 export const PhotoViewer: React.FC<PhotoViewerProps> = ({
@@ -44,12 +47,29 @@ export const PhotoViewer: React.FC<PhotoViewerProps> = ({
   keyboardInteraction = true,
   onClose,
   svgOverlay,
+  images = [],
+  currentImageIndex = 0,
+  onImageChange,
 }) => {
   const [zoom, setZoom] = useState(initialZoom);
   const [rotation, setRotation] = useState(0);
   const [isHovered, setIsHovered] = useState(false);
   const containerRef = useRef<HTMLDivElement>(null);
   const imageRef = useRef<HTMLImageElement>(null);
+
+  const handleNext = useCallback(() => {
+    if (images.length > 0 && onImageChange) {
+      const nextIndex = (currentImageIndex + 1) % images.length;
+      onImageChange(nextIndex);
+    }
+  }, [images, currentImageIndex, onImageChange]);
+
+  const handlePrevious = useCallback(() => {
+    if (images.length > 0 && onImageChange) {
+      const prevIndex = (currentImageIndex - 1 + images.length) % images.length;
+      onImageChange(prevIndex);
+    }
+  }, [images, currentImageIndex, onImageChange]);
 
   const handleZoom = useCallback(
     (newZoom: number) => {
@@ -110,12 +130,20 @@ export const PhotoViewer: React.FC<PhotoViewerProps> = ({
         case "0":
           handleReset();
           break;
+        case "ArrowRight":
+          handleNext();
+          break;
+        case "ArrowLeft":
+          handlePrevious();
+          break;
       }
     },
     [
       handleZoom,
       handleRotate,
       handleReset,
+      handleNext,
+      handlePrevious,
       keyboardInteraction,
       onClose,
       zoom,
@@ -175,12 +203,8 @@ export const PhotoViewer: React.FC<PhotoViewerProps> = ({
       <Navigation
         title={title || "Photo Viewer"}
         onClose={onClose}
-        onNext={() => {
-          console.log("on next");
-        }}
-        onPrevious={() => {
-          console.log("on previous");
-        }}
+        onNext={images.length > 0 ? handleNext : undefined}
+        onPrevious={images.length > 0 ? handlePrevious : undefined}
         onZoomIn={() => allowZoom && handleZoom(zoom + zoomStep)}
         onZoomOut={() => allowZoom && handleZoom(zoom - zoomStep)}
         onRotate={handleRotate}

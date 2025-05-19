@@ -4,7 +4,7 @@ import { PhotoViewer } from "zimme-zoom";
 function App() {
   const [zoom, setZoom] = useState(1);
   const [isOpen, setIsOpen] = useState(false);
-  const [selectedImage, setSelectedImage] = useState("");
+  const [selectedImageIndex, setSelectedImageIndex] = useState(0);
 
   const images = [
     "https://picsum.photos/800/600?random=1",
@@ -12,8 +12,8 @@ function App() {
     "https://picsum.photos/800/600?random=3",
   ];
 
-  const handleImageClick = (src: string) => {
-    setSelectedImage(src);
+  const handleImageClick = (index: number) => {
+    setSelectedImageIndex(index);
     setIsOpen(true);
   };
 
@@ -43,7 +43,7 @@ function App() {
               boxShadow: "0 2px 4px rgba(0,0,0,0.1)",
               transition: "transform 0.2s ease",
             }}
-            onClick={() => handleImageClick(src)}
+            onClick={() => handleImageClick(index)}
           >
             <img
               src={src}
@@ -60,7 +60,7 @@ function App() {
 
       {isOpen && (
         <PhotoViewer
-          src={selectedImage}
+          src={images[selectedImageIndex]}
           initialZoom={zoom}
           maxZoom={4}
           minZoom={0.5}
@@ -74,6 +74,9 @@ function App() {
           clickOutsideToExit={true}
           keyboardInteraction={true}
           onClose={() => setIsOpen(false)}
+          images={images}
+          currentImageIndex={selectedImageIndex}
+          onImageChange={setSelectedImageIndex}
         />
       )}
     </div>
