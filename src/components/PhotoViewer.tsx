@@ -80,15 +80,20 @@ export const PhotoViewer: React.FC<PhotoViewerProps> = ({
     [maxZoom, minZoom, onZoomChange]
   );
 
-  const handleRotate = useCallback(() => {
-    if (allowRotate) {
-      setRotation((prev) => (prev + 90) % 360);
-    }
-  }, [allowRotate]);
+  const handleRotate = useCallback(
+    (direction: "left" | "right" = "right") => {
+      if (allowRotate) {
+        setRotation((prev) =>
+          direction === "left" ? (prev - 90 + 360) % 360 : (prev + 90) % 360
+        );
+      }
+    },
+    [allowRotate]
+  );
 
   const handleReset = useCallback(() => {
     if (allowReset) {
-      setZoom(initialZoom);
+      setZoom(1);
       setRotation(0);
     }
   }, [allowReset, initialZoom]);

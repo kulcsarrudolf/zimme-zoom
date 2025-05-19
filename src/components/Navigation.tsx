@@ -14,7 +14,7 @@ interface NavigationProps {
   onClose?: (e: any) => void;
   onZoomIn?: () => void;
   onZoomOut?: () => void;
-  onRotate?: () => void;
+  onRotate?: (direction: "left" | "right") => void;
   onReset?: () => void;
   onNext?: () => void;
   onPrevious?: () => void;
@@ -77,12 +77,15 @@ export const Navigation: React.FC<NavigationProps> = ({
           <NavigationActionButton icon={IconZoomIn} onClick={onZoomIn} />
         )}
         {onRotate && (
-          <NavigationActionButton icon={IconRotate} onClick={onRotate} />
+          <NavigationActionButton
+            icon={IconRotate}
+            onClick={() => onRotate("left")}
+          />
         )}
         {onRotate && (
           <NavigationActionButton
             icon={IconRotate}
-            onClick={onRotate}
+            onClick={() => onRotate("right")}
             transform="rotateY(180deg)"
           />
         )}
