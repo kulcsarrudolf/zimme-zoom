@@ -66,24 +66,39 @@ export const PhotoViewer: React.FC<PhotoViewerProps> = ({
   const [isHovered, setIsHovered] = useState(false);
   const containerRef = useRef<HTMLDivElement>(null);
   const imageRef = useRef<HTMLImageElement>(null);
-
-  const currentImageIndex = images.findIndex(
-    (img) => img.id === selectedImage.id
-  );
+  const [currentSelectedImage, setCurrentSelectedImage] =
+    useState<ZZImage | null>(selectedImage);
 
   const handleNext = useCallback(() => {
-    if (images.length > 0 && onImageChange) {
+    const currentImageIndex = images.findIndex(
+      (img) => img.id === currentSelectedImage?.id
+    );
+
+    if (images.length > 0) {
       const nextIndex = (currentImageIndex + 1) % images.length;
-      onImageChange(images[nextIndex]);
+      const nextImage = images[nextIndex];
+
+      setCurrentSelectedImage(nextImage);
+      if (onImageChange) {
+        onImageChange(nextImage);
+      }
     }
-  }, [images, currentImageIndex, onImageChange]);
+  }, [images, currentSelectedImage, onImageChange]);
 
   const handlePrevious = useCallback(() => {
-    if (images.length > 0 && onImageChange) {
+    const currentImageIndex = images.findIndex(
+      (img) => img.id === currentSelectedImage?.id
+    );
+
+    if (images.length > 0) {
       const prevIndex = (currentImageIndex - 1 + images.length) % images.length;
-      onImageChange(images[prevIndex]);
+      const prevImage = images[prevIndex];
+      setCurrentSelectedImage(prevImage);
+      if (onImageChange) {
+        onImageChange(prevImage);
+      }
     }
-  }, [images, currentImageIndex, onImageChange]);
+  }, [images, currentSelectedImage, onImageChange]);
 
   const handleZoom = useCallback(
     (newZoom: number) => {
@@ -240,8 +255,8 @@ export const PhotoViewer: React.FC<PhotoViewerProps> = ({
       >
         <img
           ref={imageRef}
-          src={selectedImage.src}
-          alt={selectedImage.alt || ""}
+          src={currentSelectedImage?.src}
+          alt={currentSelectedImage?.alt || ""}
           onDoubleClick={handleDoubleClick}
           style={{
             maxWidth: "90%",
