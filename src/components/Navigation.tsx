@@ -19,8 +19,6 @@ interface NavigationProps {
   onNext?: () => void;
   onPrevious?: () => void;
   showControls?: boolean;
-  zoom?: number;
-  rotation?: number;
 }
 
 export const Navigation: React.FC<NavigationProps> = ({

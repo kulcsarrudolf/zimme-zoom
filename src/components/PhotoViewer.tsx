@@ -1,73 +1,87 @@
 import React, { useState, useCallback, useRef, useEffect } from "react";
 import Navigation from "./Navigation";
+import { ZZImage } from "..";
 
 const DEFAULT_ZOOM_STEP = 0.3;
 const DEFAULT_LARGE_ZOOM = 4;
 
-export interface PhotoViewerProps {
-  src: string;
-  alt?: string;
-  initialZoom?: number;
-  maxZoom?: number;
-  minZoom?: number;
-  onZoomChange?: (zoom: number) => void;
-  className?: string;
-  style?: React.CSSProperties;
-  title?: string;
-  zoomStep?: number;
-  allowZoom?: boolean;
-  allowRotate?: boolean;
-  allowReset?: boolean;
-  doubleClickZoom?: number;
-  clickOutsideToExit?: boolean;
-  keyboardInteraction?: boolean;
-  onClose?: (e: any) => void;
-  svgOverlay?: React.ReactNode;
-  images?: string[];
-  currentImageIndex?: number;
-  onImageChange?: (index: number) => void;
-}
+type PhotoViewerSettings = {
+  allowZoom: boolean;
+  allowRotate: boolean;
+  allowReset: boolean;
+  doubleClickZoom: number;
+  clickOutsideToExit: boolean;
+  keyboardInteraction: boolean;
+  maxZoom: number;
+  minZoom: number;
+  zoomStep: number;
+};
+
+const defaultSettings: PhotoViewerSettings = {
+  allowZoom: true,
+  allowRotate: true,
+  allowReset: true,
+  doubleClickZoom: DEFAULT_LARGE_ZOOM,
+  clickOutsideToExit: true,
+  keyboardInteraction: true,
+  maxZoom: 4,
+  minZoom: 0.5,
+  zoomStep: DEFAULT_ZOOM_STEP,
+};
+
+export type PhotoViewerProps = {
+  selectedImage: ZZImage | null;
+  images: ZZImage[];
+  onClose: () => void;
+  onImageChange?: (image: ZZImage) => void;
+  settings?: Partial<PhotoViewerSettings>;
+};
 
 export const PhotoViewer: React.FC<PhotoViewerProps> = ({
-  src,
-  alt = "",
-  initialZoom = 1,
-  maxZoom = 3,
-  minZoom = 0.5,
-  onZoomChange,
-  className = "",
-  style = {},
-  title,
-  zoomStep = DEFAULT_ZOOM_STEP,
-  allowZoom = true,
-  allowRotate = true,
-  allowReset = true,
-  doubleClickZoom = DEFAULT_LARGE_ZOOM,
-  clickOutsideToExit = true,
-  keyboardInteraction = true,
+  selectedImage,
+  images,
   onClose,
-  svgOverlay,
-  images = [],
-  currentImageIndex = 0,
   onImageChange,
+  settings = {},
 }) => {
-  const [zoom, setZoom] = useState(initialZoom);
+  if (!selectedImage) {
+    return null;
+  }
+
+  const mergedSettings = { ...defaultSettings, ...settings };
+  const {
+    allowZoom,
+    allowRotate,
+    allowReset,
+    doubleClickZoom,
+    clickOutsideToExit,
+    keyboardInteraction,
+    maxZoom,
+    minZoom,
+    zoomStep,
+  } = mergedSettings;
+
+  const [zoom, setZoom] = useState(1);
   const [rotation, setRotation] = useState(0);
   const [isHovered, setIsHovered] = useState(false);
   const containerRef = useRef<HTMLDivElement>(null);
   const imageRef = useRef<HTMLImageElement>(null);
 
+  const currentImageIndex = images.findIndex(
+    (img) => img.id === selectedImage.id
+  );
+
   const handleNext = useCallback(() => {
     if (images.length > 0 && onImageChange) {
       const nextIndex = (currentImageIndex + 1) % images.length;
-      onImageChange(nextIndex);
+      onImageChange(images[nextIndex]);
     }
   }, [images, currentImageIndex, onImageChange]);
 
   const handlePrevious = useCallback(() => {
     if (images.length > 0 && onImageChange) {
       const prevIndex = (currentImageIndex - 1 + images.length) % images.length;
-      onImageChange(prevIndex);
+      onImageChange(images[prevIndex]);
     }
   }, [images, currentImageIndex, onImageChange]);
 
@@ -75,9 +89,8 @@ export const PhotoViewer: React.FC<PhotoViewerProps> = ({
     (newZoom: number) => {
       const clampedZoom = Math.min(Math.max(newZoom, minZoom), maxZoom);
       setZoom(clampedZoom);
-      onZoomChange?.(clampedZoom);
     },
-    [maxZoom, minZoom, onZoomChange]
+    [maxZoom, minZoom]
   );
 
   const handleRotate = useCallback(
@@ -96,13 +109,13 @@ export const PhotoViewer: React.FC<PhotoViewerProps> = ({
       setZoom(1);
       setRotation(0);
     }
-  }, [allowReset, initialZoom]);
+  }, [allowReset]);
 
   const handleDoubleClick = useCallback(() => {
     if (allowZoom) {
-      handleZoom(zoom === doubleClickZoom ? initialZoom : doubleClickZoom);
+      handleZoom(zoom === doubleClickZoom ? 1 : doubleClickZoom);
     }
-  }, [allowZoom, doubleClickZoom, handleZoom, initialZoom, zoom]);
+  }, [allowZoom, doubleClickZoom, handleZoom, zoom]);
 
   const handleWheel = useCallback(
     (e: WheelEvent) => {
@@ -120,7 +133,7 @@ export const PhotoViewer: React.FC<PhotoViewerProps> = ({
 
       switch (e.key) {
         case "Escape":
-          onClose?.(e);
+          onClose();
           break;
         case "+":
         case "=":
@@ -163,7 +176,7 @@ export const PhotoViewer: React.FC<PhotoViewerProps> = ({
         containerRef.current &&
         !containerRef.current.contains(e.target as Node)
       ) {
-        onClose?.(e);
+        onClose();
       }
     },
     [clickOutsideToExit, onClose]
@@ -187,7 +200,7 @@ export const PhotoViewer: React.FC<PhotoViewerProps> = ({
   return (
     <div
       ref={containerRef}
-      className={`photo-viewer ${className}`}
+      className="photo-viewer"
       style={{
         position: "fixed",
         top: 0,
@@ -200,13 +213,12 @@ export const PhotoViewer: React.FC<PhotoViewerProps> = ({
         alignItems: "center",
         justifyContent: "center",
         zIndex: 1000,
-        ...style,
       }}
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
     >
       <Navigation
-        title={title || "Photo Viewer"}
+        title={selectedImage.title || "Photo Viewer"}
         onClose={onClose}
         onNext={images.length > 0 ? handleNext : undefined}
         onPrevious={images.length > 0 ? handlePrevious : undefined}
@@ -215,8 +227,6 @@ export const PhotoViewer: React.FC<PhotoViewerProps> = ({
         onRotate={handleRotate}
         onReset={handleReset}
         showControls={isHovered}
-        zoom={zoom}
-        rotation={rotation}
       />
       <div
         style={{
@@ -230,8 +240,8 @@ export const PhotoViewer: React.FC<PhotoViewerProps> = ({
       >
         <img
           ref={imageRef}
-          src={src}
-          alt={alt}
+          src={selectedImage.src}
+          alt={selectedImage.alt || ""}
           onDoubleClick={handleDoubleClick}
           style={{
             maxWidth: "90%",
@@ -243,20 +253,6 @@ export const PhotoViewer: React.FC<PhotoViewerProps> = ({
             cursor: allowZoom ? "zoom-in" : "default",
           }}
         />
-        {svgOverlay && (
-          <div
-            style={{
-              position: "absolute",
-              top: 0,
-              left: 0,
-              right: 0,
-              bottom: 0,
-              pointerEvents: "none",
-            }}
-          >
-            {svgOverlay}
-          </div>
-        )}
       </div>
     </div>
   );
