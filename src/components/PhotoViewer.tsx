@@ -189,7 +189,9 @@ export const PhotoViewer: React.FC<PhotoViewerProps> = ({
       if (
         clickOutsideToExit &&
         containerRef.current &&
-        !containerRef.current.contains(e.target as Node)
+        !(e.target as HTMLElement).closest(".photo-viewer img") &&
+        !(e.target as HTMLElement).closest(".photo-viewer-navigation") &&
+        !(e.target as HTMLElement).closest(".nav-action-button")
       ) {
         onClose();
       }
@@ -266,6 +268,7 @@ export const PhotoViewer: React.FC<PhotoViewerProps> = ({
             transformOrigin: "center",
             transition: "transform 0.2s ease-out",
             cursor: allowZoom ? "zoom-in" : "default",
+            zIndex: 1500,
           }}
         />
       </div>

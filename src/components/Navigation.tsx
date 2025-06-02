@@ -34,6 +34,7 @@ export const Navigation: React.FC<NavigationProps> = ({
 }) => {
   return (
     <div
+      className="photo-viewer-navigation"
       style={{
         position: "fixed",
         bottom: 30,
