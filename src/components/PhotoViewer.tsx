@@ -64,6 +64,12 @@ export const PhotoViewer: React.FC<PhotoViewerProps> = ({
   const imageRef = useRef<HTMLImageElement>(null);
   const [currentSelectedImage, setCurrentSelectedImage] = useState<ZZImage | null>(selectedImage);
 
+  useEffect(() => {
+    setCurrentSelectedImage(selectedImage);
+    setZoom(1);
+    setRotationCount(0);
+  }, [selectedImage]);
+
   const handleNext = useCallback(() => {
     const currentImageIndex = images.findIndex(img => img.id === currentSelectedImage?.id);
 
@@ -215,7 +221,7 @@ export const PhotoViewer: React.FC<PhotoViewerProps> = ({
       onMouseLeave={() => setIsHovered(false)}
     >
       <Navigation
-        title={selectedImage.title || 'Photo Viewer'}
+        title={currentSelectedImage?.title || 'Photo Viewer'}
         onClose={onClose}
         onNext={images.length > 0 ? handleNext : undefined}
         onPrevious={images.length > 0 ? handlePrevious : undefined}

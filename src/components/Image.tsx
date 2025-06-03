@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import React, { useState } from 'react';
 import { ZZImage } from '../types/image.type';
 
 type ImageProps = {
