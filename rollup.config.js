@@ -1,30 +1,24 @@
-import typescript from 'rollup-plugin-typescript2';
-import pkg from './package.json';
+const typescript = require('rollup-plugin-typescript2');
 
-export default {
+module.exports = {
   input: 'src/index.ts',
   output: [
     {
-      file: pkg.main,
+      file: 'dist/index.js',
       format: 'cjs',
-      exports: 'named',
       sourcemap: true,
     },
     {
-      file: pkg.module,
-      format: 'es',
-      exports: 'named',
+      file: 'dist/index.esm.js',
+      format: 'esm',
       sourcemap: true,
     },
   ],
-  external: [
-    ...Object.keys(pkg.peerDependencies || {}),
-    ...Object.keys(pkg.dependencies || {}),
-  ],
+  external: ['react', 'react-dom'],
   plugins: [
     typescript({
-      typescript: require('typescript'),
+      tsconfig: './tsconfig.json',
       useTsconfigDeclarationDir: true,
     }),
   ],
-}; 
+};

@@ -1,4 +1,4 @@
-import React from "react";
+import React from 'react';
 
 interface NavigationActionButtonProps {
   icon: string;
@@ -6,32 +6,28 @@ interface NavigationActionButtonProps {
   transform?: string;
 }
 
-export const NavigationActionButton: React.FC<NavigationActionButtonProps> = ({
-  icon,
-  onClick,
-  transform,
-}) => {
+export const NavigationActionButton: React.FC<NavigationActionButtonProps> = ({ icon, onClick, transform }) => {
   return (
     <div
       className="nav-action-button"
       style={{
-        width: "12px",
-        height: "12px",
+        width: '12px',
+        height: '12px',
         backgroundImage: icon,
-        backgroundSize: "contain",
-        backgroundRepeat: "no-repeat",
-        cursor: "pointer",
+        backgroundSize: 'contain',
+        backgroundRepeat: 'no-repeat',
+        cursor: 'pointer',
         transform,
-        transition: "all 0.2s ease-in-out",
-        borderRadius: "4px",
-        padding: "4px",
+        transition: 'all 0.2s ease-in-out',
+        borderRadius: '4px',
+        padding: '4px',
       }}
       onClick={onClick}
     />
   );
 };
 
-const style = document.createElement("style");
+const style = document.createElement('style');
 style.textContent = `
   .nav-action-button:hover {
     transform: scale(1.2);

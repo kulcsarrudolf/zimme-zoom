@@ -1,17 +1,17 @@
-import React, { useState } from "react";
-import { Image } from "./Image";
-import { ZZImage } from "../types/image.type";
-import { PhotoViewer } from "..";
+import React, { useState } from 'react';
+import { Image } from './Image';
+import { ZZImage } from '../types/image.type';
+import { PhotoViewer } from './PhotoViewer';
 
 const GalleryGrid = ({ children }: { children: React.ReactNode }) => {
   return (
     <div
       style={{
-        display: "grid",
-        gridTemplateColumns: "repeat(auto-fill, minmax(300px, 1fr))",
-        gap: "1rem",
-        maxWidth: "1200px",
-        margin: "0 auto",
+        display: 'grid',
+        gridTemplateColumns: 'repeat(auto-fill, minmax(300px, 1fr))',
+        gap: '1rem',
+        maxWidth: '1200px',
+        margin: '0 auto',
       }}
     >
       {children}
@@ -29,7 +29,7 @@ export const Gallery = ({ images }: GalleryProps) => {
   return (
     <>
       <GalleryGrid>
-        {images.map((image) => (
+        {images.map(image => (
           <Image
             key={image.id}
             image={image}
@@ -40,11 +40,7 @@ export const Gallery = ({ images }: GalleryProps) => {
         ))}
       </GalleryGrid>
 
-      <PhotoViewer
-        selectedImage={selectedImage}
-        images={images}
-        onClose={() => setSelectedImage(null)}
-      />
+      <PhotoViewer selectedImage={selectedImage} images={images} onClose={() => setSelectedImage(null)} />
     </>
   );
 };

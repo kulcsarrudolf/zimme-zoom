@@ -1,0 +1,23 @@
+# Build output
+dist
+build
+
+# Dependencies
+node_modules
+
+# Package files
+package-lock.json
+yarn.lock
+pnpm-lock.yaml
+
+# Other
+.git
+.github
+coverage
+*.log
+
+# Demo files
+demo
+
+# Generated files
+*.d.ts 

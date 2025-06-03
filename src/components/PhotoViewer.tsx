@@ -1,6 +1,6 @@
-import React, { useState, useCallback, useRef, useEffect } from "react";
-import Navigation from "./Navigation";
-import { ZZImage } from "..";
+import React, { useState, useCallback, useRef, useEffect } from 'react';
+import Navigation from './Navigation';
+import { ZZImage } from '../types/image.type';
 
 const DEFAULT_ZOOM_STEP = 0.3;
 const DEFAULT_LARGE_ZOOM = 4;
@@ -44,10 +44,6 @@ export const PhotoViewer: React.FC<PhotoViewerProps> = ({
   onImageChange,
   settings = {},
 }) => {
-  if (!selectedImage) {
-    return null;
-  }
-
   const mergedSettings = { ...defaultSettings, ...settings };
   const {
     allowZoom,
@@ -66,13 +62,10 @@ export const PhotoViewer: React.FC<PhotoViewerProps> = ({
   const [isHovered, setIsHovered] = useState(false);
   const containerRef = useRef<HTMLDivElement>(null);
   const imageRef = useRef<HTMLImageElement>(null);
-  const [currentSelectedImage, setCurrentSelectedImage] =
-    useState<ZZImage | null>(selectedImage);
+  const [currentSelectedImage, setCurrentSelectedImage] = useState<ZZImage | null>(selectedImage);
 
   const handleNext = useCallback(() => {
-    const currentImageIndex = images.findIndex(
-      (img) => img.id === currentSelectedImage?.id
-    );
+    const currentImageIndex = images.findIndex(img => img.id === currentSelectedImage?.id);
 
     if (images.length > 0) {
       const nextIndex = (currentImageIndex + 1) % images.length;
@@ -85,9 +78,7 @@ export const PhotoViewer: React.FC<PhotoViewerProps> = ({
   }, [images, currentSelectedImage, onImageChange]);
 
   const handlePrevious = useCallback(() => {
-    const currentImageIndex = images.findIndex(
-      (img) => img.id === currentSelectedImage?.id
-    );
+    const currentImageIndex = images.findIndex(img => img.id === currentSelectedImage?.id);
     if (images.length > 0) {
       const prevIndex = (currentImageIndex - 1 + images.length) % images.length;
       const prevImage = images[prevIndex];
@@ -107,9 +98,9 @@ export const PhotoViewer: React.FC<PhotoViewerProps> = ({
   );
 
   const handleRotate = useCallback(
-    (direction: "left" | "right" = "right") => {
+    (direction: 'left' | 'right' = 'right') => {
       if (allowRotate) {
-        setRotationCount((prev) => prev + (direction === "left" ? -1 : 1));
+        setRotationCount(prev => prev + (direction === 'left' ? -1 : 1));
       }
     },
     [allowRotate]
@@ -142,41 +133,31 @@ export const PhotoViewer: React.FC<PhotoViewerProps> = ({
     (e: KeyboardEvent) => {
       if (!keyboardInteraction) return;
       switch (e.key) {
-        case "Escape":
+        case 'Escape':
           onClose();
           break;
-        case "+":
-        case "=":
+        case '+':
+        case '=':
           handleZoom(zoom + zoomStep);
           break;
-        case "-":
+        case '-':
           handleZoom(zoom - zoomStep);
           break;
-        case "r":
+        case 'r':
           handleRotate();
           break;
-        case "0":
+        case '0':
           handleReset();
           break;
-        case "ArrowRight":
+        case 'ArrowRight':
           handleNext();
           break;
-        case "ArrowLeft":
+        case 'ArrowLeft':
           handlePrevious();
           break;
       }
     },
-    [
-      handleZoom,
-      handleRotate,
-      handleReset,
-      handleNext,
-      handlePrevious,
-      keyboardInteraction,
-      onClose,
-      zoom,
-      zoomStep,
-    ]
+    [handleZoom, handleRotate, handleReset, handleNext, handlePrevious, keyboardInteraction, onClose, zoom, zoomStep]
   );
 
   const handleClickOutside = useCallback(
@@ -184,9 +165,9 @@ export const PhotoViewer: React.FC<PhotoViewerProps> = ({
       if (
         clickOutsideToExit &&
         containerRef.current &&
-        !(e.target as HTMLElement).closest(".photo-viewer img") &&
-        !(e.target as HTMLElement).closest(".photo-viewer-navigation") &&
-        !(e.target as HTMLElement).closest(".nav-action-button")
+        !(e.target as HTMLElement).closest('.photo-viewer img') &&
+        !(e.target as HTMLElement).closest('.photo-viewer-navigation') &&
+        !(e.target as HTMLElement).closest('.nav-action-button')
       ) {
         onClose();
       }
@@ -198,39 +179,43 @@ export const PhotoViewer: React.FC<PhotoViewerProps> = ({
     const container = containerRef.current;
     if (!container) return;
 
-    container.addEventListener("wheel", handleWheel, { passive: false });
-    window.addEventListener("keydown", handleKeyDown);
-    window.addEventListener("mousedown", handleClickOutside);
+    container.addEventListener('wheel', handleWheel, { passive: false });
+    window.addEventListener('keydown', handleKeyDown);
+    window.addEventListener('mousedown', handleClickOutside);
 
     return () => {
-      container.removeEventListener("wheel", handleWheel);
-      window.removeEventListener("keydown", handleKeyDown);
-      window.removeEventListener("mousedown", handleClickOutside);
+      container.removeEventListener('wheel', handleWheel);
+      window.removeEventListener('keydown', handleKeyDown);
+      window.removeEventListener('mousedown', handleClickOutside);
     };
   }, [handleWheel, handleKeyDown, handleClickOutside]);
+
+  if (!selectedImage) {
+    return null;
+  }
 
   return (
     <div
       ref={containerRef}
       className="photo-viewer"
       style={{
-        position: "fixed",
+        position: 'fixed',
         top: 0,
         left: 0,
         right: 0,
         bottom: 0,
-        backgroundColor: "rgba(0, 0, 0, 0.9)",
-        display: "flex",
-        flexDirection: "column",
-        alignItems: "center",
-        justifyContent: "center",
+        backgroundColor: 'rgba(0, 0, 0, 0.9)',
+        display: 'flex',
+        flexDirection: 'column',
+        alignItems: 'center',
+        justifyContent: 'center',
         zIndex: 1000,
       }}
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
     >
       <Navigation
-        title={selectedImage.title || "Photo Viewer"}
+        title={selectedImage.title || 'Photo Viewer'}
         onClose={onClose}
         onNext={images.length > 0 ? handleNext : undefined}
         onPrevious={images.length > 0 ? handlePrevious : undefined}
@@ -243,29 +228,27 @@ export const PhotoViewer: React.FC<PhotoViewerProps> = ({
 
       <div
         style={{
-          position: "relative",
-          width: "100%",
-          height: "100%",
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "center",
+          position: 'relative',
+          width: '100%',
+          height: '100%',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
         }}
       >
         <img
           ref={imageRef}
           src={currentSelectedImage?.src}
-          alt={currentSelectedImage?.alt || ""}
+          alt={currentSelectedImage?.alt || ''}
           onDoubleClick={handleDoubleClick}
           style={{
-            maxWidth: "80%",
-            maxHeight: "80%",
-            minHeight: "80%",
-            objectFit: "contain",
+            maxWidth: '80%',
+            maxHeight: '80%',
+            minHeight: '80%',
+            objectFit: 'contain',
             transform: `scale(${zoom}) rotateZ(${rotationCount * 90}deg)`,
-            transformOrigin: "center",
-            transition: "transform 0.4s ease-in-out",
-            cursor: allowZoom ? "zoom-in" : "default",
-            zIndex: 1500,
+            transformOrigin: 'center',
+            transition: 'transform 0.2s ease',
           }}
         />
       </div>

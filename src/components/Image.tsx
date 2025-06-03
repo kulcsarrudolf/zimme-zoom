@@ -1,5 +1,5 @@
-import React, { useState } from "react";
-import { ZZImage } from "../types/image.type";
+import { useState } from 'react';
+import { ZZImage } from '../types/image.type';
 
 type ImageProps = {
   image: ZZImage;
@@ -13,26 +13,26 @@ export const Image = ({ image, onClick }: ImageProps) => {
     <div
       key={image.id}
       style={{
-        aspectRatio: "4/4",
-        overflow: "hidden",
-        borderRadius: "8px",
-        cursor: "pointer",
-        boxShadow: "0 2px 4px rgba(0,0,0,0.1)",
-        transition: "transform 0.2s ease",
-        position: "relative",
+        aspectRatio: '4/4',
+        overflow: 'hidden',
+        borderRadius: '8px',
+        cursor: 'pointer',
+        boxShadow: '0 2px 4px rgba(0,0,0,0.1)',
+        transition: 'transform 0.2s ease',
+        position: 'relative',
       }}
       onClick={onClick}
     >
       {isLoading && (
         <div
           style={{
-            position: "absolute",
+            position: 'absolute',
             top: 0,
             left: 0,
-            width: "100%",
-            height: "100%",
-            backgroundColor: "#f0f0f0",
-            animation: "pulse 1.5s infinite",
+            width: '100%',
+            height: '100%',
+            backgroundColor: '#f0f0f0',
+            animation: 'pulse 1.5s infinite',
           }}
         />
       )}
@@ -40,11 +40,11 @@ export const Image = ({ image, onClick }: ImageProps) => {
         src={image.src}
         alt={image.alt}
         style={{
-          width: "100%",
-          height: "100%",
-          objectFit: "cover",
+          width: '100%',
+          height: '100%',
+          objectFit: 'cover',
           opacity: isLoading ? 0 : 1,
-          transition: "opacity 0.3s ease",
+          transition: 'opacity 0.3s ease',
         }}
         onLoad={() => setIsLoading(false)}
       />
