@@ -73,10 +73,13 @@ export const PhotoViewer: React.FC<PhotoViewerProps> = ({
     const currentImageIndex = images.findIndex(
       (img) => img.id === currentSelectedImage?.id
     );
+
     if (images.length > 0) {
       const nextIndex = (currentImageIndex + 1) % images.length;
       const nextImage = images[nextIndex];
       setCurrentSelectedImage(nextImage);
+      setZoom(1);
+      setRotationCount(0);
       onImageChange?.(nextImage);
     }
   }, [images, currentSelectedImage, onImageChange]);
@@ -89,6 +92,8 @@ export const PhotoViewer: React.FC<PhotoViewerProps> = ({
       const prevIndex = (currentImageIndex - 1 + images.length) % images.length;
       const prevImage = images[prevIndex];
       setCurrentSelectedImage(prevImage);
+      setZoom(1);
+      setRotationCount(0);
       onImageChange?.(prevImage);
     }
   }, [images, currentSelectedImage, onImageChange]);
@@ -232,7 +237,7 @@ export const PhotoViewer: React.FC<PhotoViewerProps> = ({
         onZoomIn={() => allowZoom && handleZoom(zoom + zoomStep)}
         onZoomOut={() => allowZoom && handleZoom(zoom - zoomStep)}
         onRotate={handleRotate}
-        onReset={handleReset}
+        onReset={zoom !== 1 || rotationCount !== 0 ? handleReset : undefined}
         showControls={isHovered}
       />
 
@@ -252,8 +257,9 @@ export const PhotoViewer: React.FC<PhotoViewerProps> = ({
           alt={currentSelectedImage?.alt || ""}
           onDoubleClick={handleDoubleClick}
           style={{
-            maxWidth: "90%",
-            maxHeight: "90%",
+            maxWidth: "80%",
+            maxHeight: "80%",
+            minHeight: "80%",
             objectFit: "contain",
             transform: `scale(${zoom}) rotateZ(${rotationCount * 90}deg)`,
             transformOrigin: "center",
