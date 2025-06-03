@@ -62,7 +62,7 @@ export const PhotoViewer: React.FC<PhotoViewerProps> = ({
   } = mergedSettings;
 
   const [zoom, setZoom] = useState(1);
-  const [rotation, setRotation] = useState(0);
+  const [rotationCount, setRotationCount] = useState(0);
   const [isHovered, setIsHovered] = useState(false);
   const containerRef = useRef<HTMLDivElement>(null);
   const imageRef = useRef<HTMLImageElement>(null);
@@ -73,15 +73,11 @@ export const PhotoViewer: React.FC<PhotoViewerProps> = ({
     const currentImageIndex = images.findIndex(
       (img) => img.id === currentSelectedImage?.id
     );
-
     if (images.length > 0) {
       const nextIndex = (currentImageIndex + 1) % images.length;
       const nextImage = images[nextIndex];
-
       setCurrentSelectedImage(nextImage);
-      if (onImageChange) {
-        onImageChange(nextImage);
-      }
+      onImageChange?.(nextImage);
     }
   }, [images, currentSelectedImage, onImageChange]);
 
@@ -89,14 +85,11 @@ export const PhotoViewer: React.FC<PhotoViewerProps> = ({
     const currentImageIndex = images.findIndex(
       (img) => img.id === currentSelectedImage?.id
     );
-
     if (images.length > 0) {
       const prevIndex = (currentImageIndex - 1 + images.length) % images.length;
       const prevImage = images[prevIndex];
       setCurrentSelectedImage(prevImage);
-      if (onImageChange) {
-        onImageChange(prevImage);
-      }
+      onImageChange?.(prevImage);
     }
   }, [images, currentSelectedImage, onImageChange]);
 
@@ -111,9 +104,7 @@ export const PhotoViewer: React.FC<PhotoViewerProps> = ({
   const handleRotate = useCallback(
     (direction: "left" | "right" = "right") => {
       if (allowRotate) {
-        setRotation((prev) =>
-          direction === "left" ? (prev - 90 + 360) % 360 : (prev + 90) % 360
-        );
+        setRotationCount((prev) => prev + (direction === "left" ? -1 : 1));
       }
     },
     [allowRotate]
@@ -122,7 +113,7 @@ export const PhotoViewer: React.FC<PhotoViewerProps> = ({
   const handleReset = useCallback(() => {
     if (allowReset) {
       setZoom(1);
-      setRotation(0);
+      setRotationCount(0);
     }
   }, [allowReset]);
 
@@ -145,7 +136,6 @@ export const PhotoViewer: React.FC<PhotoViewerProps> = ({
   const handleKeyDown = useCallback(
     (e: KeyboardEvent) => {
       if (!keyboardInteraction) return;
-
       switch (e.key) {
         case "Escape":
           onClose();
@@ -245,6 +235,7 @@ export const PhotoViewer: React.FC<PhotoViewerProps> = ({
         onReset={handleReset}
         showControls={isHovered}
       />
+
       <div
         style={{
           position: "relative",
@@ -264,9 +255,9 @@ export const PhotoViewer: React.FC<PhotoViewerProps> = ({
             maxWidth: "90%",
             maxHeight: "90%",
             objectFit: "contain",
-            transform: `scale(${zoom}) rotate(${rotation}deg)`,
+            transform: `scale(${zoom}) rotateZ(${rotationCount * 90}deg)`,
             transformOrigin: "center",
-            transition: "transform 0.2s ease-out",
+            transition: "transform 0.4s ease-in-out",
             cursor: allowZoom ? "zoom-in" : "default",
             zIndex: 1500,
           }}

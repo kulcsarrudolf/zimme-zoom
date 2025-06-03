@@ -3,12 +3,6 @@ import { Gallery, type ZZImage } from "zimme-zoom";
 function App() {
   const images: ZZImage[] = [
     {
-      id: "4d9c3e6d-c0c5-4fa8-be78-123c42b4ca33",
-      src: "https://picsum.photos/3840/2160?random=8",
-      alt: "Image 9",
-      title: "Image 9",
-    },
-    {
       id: "4d9c3e6d-c0c5-4fa8-be78-123c42b4ca26",
       src: "https://picsum.photos/3840/2160?random=10",
       alt: "Image 10",
