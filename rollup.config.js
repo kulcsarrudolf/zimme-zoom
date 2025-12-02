@@ -19,6 +19,7 @@ module.exports = {
     typescript({
       tsconfig: './tsconfig.json',
       useTsconfigDeclarationDir: true,
+      exclude: ['**/*.stories.tsx', '**/*.stories.ts', '**/*.stories.mdx', '.storybook/**/*'],
     }),
   ],
 };

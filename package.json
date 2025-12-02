@@ -15,13 +15,23 @@
     "test": "jest",
     "lint": "eslint src --ext .ts,.tsx",
     "format": "prettier --write \"src/**/*.{ts,tsx}\"",
-    "prepare": "yarn build"
+    "prepare": "yarn build",
+    "storybook": "storybook dev -p 6006",
+    "build-storybook": "storybook build"
   },
   "peerDependencies": {
     "react": ">=16.8.0",
     "react-dom": ">=16.8.0"
   },
   "devDependencies": {
+    "@storybook/addon-essentials": "^8.6.14",
+    "@storybook/addon-interactions": "^8.6.14",
+    "@storybook/addon-links": "^8.6.14",
+    "@storybook/blocks": "^8.6.14",
+    "@storybook/react": "^8.6.14",
+    "@storybook/react-vite": "^8.6.14",
+    "@storybook/test": "^8.6.14",
+    "@storybook/testing-library": "^0.2.2",
     "@types/react": "^18.2.0",
     "@types/react-dom": "^18.2.0",
     "@typescript-eslint/eslint-plugin": "^7.0.0",
@@ -31,10 +41,14 @@
     "eslint-plugin-react": "^7.33.2",
     "eslint-plugin-react-hooks": "^4.6.0",
     "prettier": "^3.2.5",
+    "react": "^19.2.0",
+    "react-dom": "^19.2.0",
     "rimraf": "^5.0.5",
     "rollup": "^4.9.6",
     "rollup-plugin-typescript2": "^0.36.0",
-    "typescript": "^5.8.3"
+    "storybook": "^8.6.14",
+    "typescript": "^5.8.3",
+    "vite": "^7.2.6"
   },
   "keywords": [
     "react",
