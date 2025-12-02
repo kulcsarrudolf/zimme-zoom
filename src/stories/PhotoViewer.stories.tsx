@@ -73,7 +73,7 @@ const PhotoViewerWrapper = (args: any) => {
 
   return (
     <div>
-      <div style={{ padding: '20px', textAlign: 'center' }}>
+      <div style={{ padding: '20px', textAlign: 'center', height: '500px' }}>
         <h2>Click a button to open the PhotoViewer:</h2>
         <div style={{ display: 'flex', gap: '10px', justifyContent: 'center', marginTop: '20px' }}>
           {sampleImages.map((image, index) => (
@@ -102,7 +102,7 @@ export const Default: Story = {
   render: PhotoViewerWrapper,
   args: {
     images: sampleImages,
-    selectedImage: null,
+    selectedImage: sampleImages[0],
   },
 };
 
@@ -110,7 +110,7 @@ export const WithCustomSettings: Story = {
   render: PhotoViewerWrapper,
   args: {
     images: sampleImages,
-    selectedImage: null,
+    selectedImage: sampleImages[0],
     settings: {
       allowZoom: true,
       allowRotate: true,
@@ -129,7 +129,7 @@ export const ZoomDisabled: Story = {
   render: PhotoViewerWrapper,
   args: {
     images: sampleImages,
-    selectedImage: null,
+    selectedImage: sampleImages[0],
     settings: {
       allowZoom: false,
       allowRotate: true,
@@ -142,7 +142,7 @@ export const RotationDisabled: Story = {
   render: PhotoViewerWrapper,
   args: {
     images: sampleImages,
-    selectedImage: null,
+    selectedImage: sampleImages[0],
     settings: {
       allowZoom: true,
       allowRotate: false,
@@ -155,7 +155,7 @@ export const ZoomAndRotationDisabled: Story = {
   render: PhotoViewerWrapper,
   args: {
     images: sampleImages,
-    selectedImage: null,
+    selectedImage: sampleImages[0],
     settings: {
       allowZoom: false,
       allowRotate: false,
@@ -168,7 +168,7 @@ export const KeyboardDisabled: Story = {
   render: PhotoViewerWrapper,
   args: {
     images: sampleImages,
-    selectedImage: null,
+    selectedImage: sampleImages[0],
     settings: {
       keyboardInteraction: false,
       clickOutsideToExit: false,
@@ -180,15 +180,6 @@ export const SingleImageViewer: Story = {
   render: PhotoViewerWrapper,
   args: {
     images: [sampleImages[0]],
-    selectedImage: null,
-  },
-};
-
-// Story showing the viewer opened by default (useful for testing)
-export const OpenedByDefault: Story = {
-  args: {
-    images: sampleImages,
     selectedImage: sampleImages[0],
-    onClose: () => console.log('Close called'),
   },
 };

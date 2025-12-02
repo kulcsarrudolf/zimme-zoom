@@ -33,9 +33,6 @@ const IntroductionComponent = () => {
         <li>
           📦 <strong>Lightweight</strong> - Minimal bundle size
         </li>
-        <li>
-          ♿ <strong>Accessible</strong> - Built with accessibility in mind
-        </li>
       </ul>
 
       <h2>Components</h2>
