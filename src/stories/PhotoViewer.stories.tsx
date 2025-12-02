@@ -151,6 +151,19 @@ export const RotationDisabled: Story = {
   },
 };
 
+export const ZoomAndRotationDisabled: Story = {
+  render: PhotoViewerWrapper,
+  args: {
+    images: sampleImages,
+    selectedImage: null,
+    settings: {
+      allowZoom: false,
+      allowRotate: false,
+      allowReset: false,
+    },
+  },
+};
+
 export const KeyboardDisabled: Story = {
   render: PhotoViewerWrapper,
   args: {

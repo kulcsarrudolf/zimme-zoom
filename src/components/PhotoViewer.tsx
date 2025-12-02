@@ -223,11 +223,11 @@ export const PhotoViewer: React.FC<PhotoViewerProps> = ({
       <Navigation
         title={currentSelectedImage?.title || 'Photo Viewer'}
         onClose={onClose}
-        onNext={images.length > 0 ? handleNext : undefined}
-        onPrevious={images.length > 0 ? handlePrevious : undefined}
-        onZoomIn={() => allowZoom && handleZoom(zoom + zoomStep)}
-        onZoomOut={() => allowZoom && handleZoom(zoom - zoomStep)}
-        onRotate={handleRotate}
+        onNext={images.length > 1 ? handleNext : undefined}
+        onPrevious={images.length > 1 ? handlePrevious : undefined}
+        onZoomIn={allowZoom ? () => handleZoom(zoom + zoomStep) : undefined}
+        onZoomOut={allowZoom ? () => handleZoom(zoom - zoomStep) : undefined}
+        onRotate={allowRotate ? handleRotate : undefined}
         onReset={zoom !== 1 || rotationCount !== 0 ? handleReset : undefined}
         showControls={isHovered}
       />
