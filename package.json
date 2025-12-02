@@ -9,15 +9,15 @@
     "dist"
   ],
   "scripts": {
-    "build": "storybook build",
-    "build:lib": "yarn clean && rollup -c",
+    "build": "yarn clean && rollup -c",
+    "build:storybook": "storybook build",
     "build:vercel": "storybook build",
     "dev": "rollup -c -w",
     "clean": "rimraf dist",
     "test": "jest",
     "lint": "eslint src --ext .ts,.tsx",
     "format": "prettier --write \"src/**/*.{ts,tsx}\"",
-    "prepare": "yarn build:lib",
+    "prepare": "yarn build",
     "storybook": "storybook dev -p 6006",
     "build-storybook": "storybook build"
   },
@@ -60,7 +60,7 @@
     "lightbox",
     "svg-overlay"
   ],
-  "author": "",
+  "author": "Kulcsar Rudolf <kulcsarrudolf@gmail.com>",
   "license": "MIT",
   "repository": {
     "type": "git",
