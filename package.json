@@ -9,14 +9,15 @@
     "dist"
   ],
   "scripts": {
-    "build": "yarn clean && rollup -c",
+    "build": "storybook build",
+    "build:lib": "yarn clean && rollup -c",
     "build:vercel": "storybook build",
     "dev": "rollup -c -w",
     "clean": "rimraf dist",
     "test": "jest",
     "lint": "eslint src --ext .ts,.tsx",
     "format": "prettier --write \"src/**/*.{ts,tsx}\"",
-    "prepare": "yarn build",
+    "prepare": "yarn build:lib",
     "storybook": "storybook dev -p 6006",
     "build-storybook": "storybook build"
   },
