@@ -10,6 +10,7 @@
   ],
   "scripts": {
     "build": "yarn clean && rollup -c",
+    "build:vercel": "storybook build",
     "dev": "rollup -c -w",
     "clean": "rimraf dist",
     "test": "jest",
