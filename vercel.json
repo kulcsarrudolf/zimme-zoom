@@ -1,5 +1,12 @@
 {
   "version": 2,
-  "buildCommand": "yarn build:vercel",
-  "outputDirectory": "storybook-static"
+  "builds": [
+    {
+      "src": "package.json",
+      "use": "@vercel/static-build",
+      "config": {
+        "distDir": "storybook-static"
+      }
+    }
+  ]
 }
