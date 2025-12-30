@@ -19,9 +19,6 @@ const IntroductionComponent = () => {
           🔄 <strong>Rotation</strong> - Rotate images with buttons or keyboard shortcuts
         </li>
         <li>
-          📱 <strong>Touch gestures</strong> - Full touch support for mobile devices
-        </li>
-        <li>
           ⌨️ <strong>Keyboard navigation</strong> - Navigate with arrow keys, ESC to close
         </li>
         <li>
