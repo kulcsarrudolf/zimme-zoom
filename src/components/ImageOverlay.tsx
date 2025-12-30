@@ -99,13 +99,31 @@ export const ImageOverlay: React.FC<ImageOverlayProps> = ({ overlay, position = 
     return sizeStyles;
   };
 
+  const positionStyles = getPositionStyles(position);
+  const sizeStyles = getSizeStyles();
+  
+  // If no size is specified, assume the overlay should cover the full image
+  const hasSizeConstraints = size.maxWidth !== undefined || size.maxHeight !== undefined || 
+                             size.width !== undefined || size.height !== undefined;
+  const shouldCoverFullImage = !hasSizeConstraints;
+  
   return (
     <div
       style={{
         position: 'absolute',
         pointerEvents: 'none',
-        ...getPositionStyles(position),
-        ...getSizeStyles(),
+        top: shouldCoverFullImage ? 0 : positionStyles.top,
+        left: shouldCoverFullImage ? 0 : positionStyles.left,
+        right: shouldCoverFullImage ? 0 : positionStyles.right,
+        bottom: shouldCoverFullImage ? 0 : positionStyles.bottom,
+        width: shouldCoverFullImage ? '100%' : sizeStyles.width,
+        height: shouldCoverFullImage ? '100%' : sizeStyles.height,
+        maxWidth: shouldCoverFullImage ? undefined : sizeStyles.maxWidth,
+        maxHeight: shouldCoverFullImage ? undefined : sizeStyles.maxHeight,
+        transform: shouldCoverFullImage ? undefined : positionStyles.transform,
+        display: shouldCoverFullImage ? 'block' : positionStyles.display,
+        alignItems: positionStyles.alignItems,
+        justifyContent: positionStyles.justifyContent,
       }}
     >
       {overlay}

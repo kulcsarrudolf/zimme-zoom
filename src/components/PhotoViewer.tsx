@@ -82,6 +82,7 @@ export const PhotoViewer: React.FC<PhotoViewerProps> = ({
       setCurrentSelectedImage(nextImage);
       setZoom(1);
       setRotationCount(0);
+      setShowOverlay(false);
       onImageChange?.(nextImage);
     }
   }, [images, currentSelectedImage, onImageChange]);
@@ -94,6 +95,7 @@ export const PhotoViewer: React.FC<PhotoViewerProps> = ({
       setCurrentSelectedImage(prevImage);
       setZoom(1);
       setRotationCount(0);
+      setShowOverlay(false);
       onImageChange?.(prevImage);
     }
   }, [images, currentSelectedImage, onImageChange]);
@@ -253,6 +255,7 @@ export const PhotoViewer: React.FC<PhotoViewerProps> = ({
             transform: `scale(${zoom}) rotateZ(${rotationCount * 90}deg)`,
             transformOrigin: 'center',
             transition: 'transform 0.2s ease',
+            display: 'inline-block',
           }}
         >
           <img
