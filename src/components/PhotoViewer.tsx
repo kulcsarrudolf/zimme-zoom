@@ -1,5 +1,6 @@
 import React, { useState, useCallback, useRef, useEffect } from 'react';
 import Navigation from './Navigation';
+import ImageOverlay from './ImageOverlay';
 import { ZZImage } from '../types/image.type';
 
 const DEFAULT_ZOOM_STEP = 0.3;
@@ -60,6 +61,7 @@ export const PhotoViewer: React.FC<PhotoViewerProps> = ({
   const [zoom, setZoom] = useState(1);
   const [rotationCount, setRotationCount] = useState(0);
   const [isHovered, setIsHovered] = useState(false);
+  const [showOverlay, setShowOverlay] = useState(false);
   const containerRef = useRef<HTMLDivElement>(null);
   const imageRef = useRef<HTMLImageElement>(null);
   const [currentSelectedImage, setCurrentSelectedImage] = useState<ZZImage | null>(selectedImage);
@@ -68,6 +70,7 @@ export const PhotoViewer: React.FC<PhotoViewerProps> = ({
     setCurrentSelectedImage(selectedImage);
     setZoom(1);
     setRotationCount(0);
+    setShowOverlay(false);
   }, [selectedImage]);
 
   const handleNext = useCallback(() => {
@@ -229,6 +232,8 @@ export const PhotoViewer: React.FC<PhotoViewerProps> = ({
         onZoomOut={allowZoom ? () => handleZoom(zoom - zoomStep) : undefined}
         onRotate={allowRotate ? handleRotate : undefined}
         onReset={zoom !== 1 || rotationCount !== 0 ? handleReset : undefined}
+        onToggleOverlay={currentSelectedImage?.svgOverlay ? () => setShowOverlay(!showOverlay) : undefined}
+        showOverlay={showOverlay}
         showControls={isHovered}
       />
 
@@ -242,21 +247,34 @@ export const PhotoViewer: React.FC<PhotoViewerProps> = ({
           justifyContent: 'center',
         }}
       >
-        <img
-          ref={imageRef}
-          src={currentSelectedImage?.src}
-          alt={currentSelectedImage?.alt || ''}
-          onDoubleClick={handleDoubleClick}
+        <div
           style={{
-            maxWidth: '80%',
-            maxHeight: '80%',
-            minHeight: '80%',
-            objectFit: 'contain',
+            position: 'relative',
             transform: `scale(${zoom}) rotateZ(${rotationCount * 90}deg)`,
             transformOrigin: 'center',
             transition: 'transform 0.2s ease',
           }}
-        />
+        >
+          <img
+            ref={imageRef}
+            src={currentSelectedImage?.src}
+            alt={currentSelectedImage?.alt || ''}
+            onDoubleClick={handleDoubleClick}
+            style={{
+              maxWidth: '80vw',
+              maxHeight: '80vh',
+              objectFit: 'contain',
+              display: 'block',
+            }}
+          />
+          {showOverlay && currentSelectedImage?.svgOverlay && (
+            <ImageOverlay
+              overlay={currentSelectedImage.svgOverlay}
+              position={currentSelectedImage.overlayPosition}
+              size={currentSelectedImage.overlaySize}
+            />
+          )}
+        </div>
       </div>
     </div>
   );

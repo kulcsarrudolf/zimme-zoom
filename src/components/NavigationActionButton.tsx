@@ -4,9 +4,10 @@ interface NavigationActionButtonProps {
   icon: string;
   onClick?: (e?: React.MouseEvent) => void;
   transform?: string;
+  style?: React.CSSProperties;
 }
 
-export const NavigationActionButton: React.FC<NavigationActionButtonProps> = ({ icon, onClick, transform }) => {
+export const NavigationActionButton: React.FC<NavigationActionButtonProps> = ({ icon, onClick, transform, style: customStyle }) => {
   return (
     <div
       className="nav-action-button"
@@ -21,6 +22,7 @@ export const NavigationActionButton: React.FC<NavigationActionButtonProps> = ({ 
         transition: 'all 0.2s ease-in-out',
         borderRadius: '4px',
         padding: '4px',
+        ...customStyle,
       }}
       onClick={onClick}
     />

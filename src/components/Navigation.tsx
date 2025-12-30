@@ -1,5 +1,5 @@
 import React from 'react';
-import { IconReset, IconArrow, IconZoomIn, IconZoomOut, IconRotate, IconClose } from './icons';
+import { IconReset, IconArrow, IconZoomIn, IconZoomOut, IconRotate, IconClose, IconOverlay } from './icons';
 import NavigationActionButton from './NavigationActionButton';
 
 interface NavigationProps {
@@ -11,6 +11,8 @@ interface NavigationProps {
   onReset?: () => void;
   onNext?: () => void;
   onPrevious?: () => void;
+  onToggleOverlay?: () => void;
+  showOverlay?: boolean;
   showControls?: boolean;
 }
 
@@ -23,6 +25,8 @@ export const Navigation: React.FC<NavigationProps> = ({
   onReset,
   onNext,
   onPrevious,
+  onToggleOverlay,
+  showOverlay = false,
   showControls = true,
 }) => {
   return (
@@ -55,6 +59,13 @@ export const Navigation: React.FC<NavigationProps> = ({
         {onRotate && <NavigationActionButton icon={IconRotate} onClick={() => onRotate('left')} />}
         {onRotate && (
           <NavigationActionButton icon={IconRotate} onClick={() => onRotate('right')} transform="rotateY(180deg)" />
+        )}
+        {onToggleOverlay && (
+          <NavigationActionButton
+            icon={IconOverlay}
+            onClick={onToggleOverlay}
+            style={showOverlay ? { backgroundColor: 'rgba(255, 255, 255, 0.2)' } : undefined}
+          />
         )}
         {onClose && <NavigationActionButton icon={IconClose} onClick={onClose} />}
       </div>
