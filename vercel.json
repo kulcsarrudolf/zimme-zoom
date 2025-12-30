@@ -1,5 +1,6 @@
 {
   "version": 2,
+  "installCommand": "yarn install",
   "buildCommand": "yarn build:vercel",
   "outputDirectory": "storybook-static"
 }
