@@ -1,6 +1,6 @@
 {
   "name": "zimme-zoom",
-  "version": "0.1.1",
+  "version": "0.1.3",
   "description": "A lightweight React photo viewer with zoom, navigation, blurred background, and SVG overlay support",
   "main": "dist/index.js",
   "module": "dist/index.esm.js",
@@ -64,7 +64,7 @@
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "https://github.com/kulcsarrudolf/zimme-zoom"
+    "url": "git+https://github.com/kulcsarrudolf/zimme-zoom.git"
   },
   "bugs": {
     "url": "https://github.com/kulcsarrudolf/zimme-zoom/issues"
