@@ -12,7 +12,7 @@ export type ZZImage = {
   src: string;
   alt?: string;
   title?: string;
-  svgOverlay?: React.ReactNode;
+  svgOverlay?: React.ReactNode | string; // Can be a React component or a URL string
   overlayPosition?: OverlayPosition;
   overlaySize?: OverlaySize;
 };

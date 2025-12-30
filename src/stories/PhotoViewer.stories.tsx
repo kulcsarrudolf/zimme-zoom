@@ -3,6 +3,11 @@ import { PhotoViewer } from '../components/PhotoViewer';
 import { ZZImage } from '../types/image.type';
 import React, { useState } from 'react';
 
+// Helper function to generate a random seed
+const generateRandomSeed = (): string => {
+  return Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15);
+};
+
 // Star SVG component - maintains aspect ratio
 const StarSvg: React.FC<{ className?: string; style?: React.CSSProperties }> = ({ className, style }) => (
   <svg
@@ -411,5 +416,60 @@ export const WithStarOverlayPositions: Story = {
   args: {
     images: starOverlayImages,
     selectedImage: starOverlayImages[0],
+  },
+};
+
+// Examples using SVG overlays from URLs (e.g., Dicebear API)
+const urlOverlayImages: ZZImage[] = [
+  {
+    id: 'url-overlay-1',
+    src: 'https://picsum.photos/800/600?random=30',
+    alt: 'Photo with URL-based SVG overlay',
+    title: 'Dicebear Bot Overlay (Random Seed)',
+    svgOverlay: `https://api.dicebear.com/7.x/bottts/svg?seed=${generateRandomSeed()}`,
+    overlayPosition: 'top-right',
+    overlaySize: {
+      maxWidth: 150,
+      maxHeight: 150,
+    },
+  },
+  {
+    id: 'url-overlay-2',
+    src: 'https://picsum.photos/800/600?random=31',
+    alt: 'Photo with URL-based SVG overlay centered',
+    title: 'Dicebear Bot Overlay (Centered)',
+    svgOverlay: `https://api.dicebear.com/7.x/bottts/svg?seed=${generateRandomSeed()}`,
+    overlayPosition: 'center',
+    overlaySize: {
+      maxWidth: 200,
+      maxHeight: 200,
+    },
+  },
+  {
+    id: 'url-overlay-3',
+    src: 'https://picsum.photos/800/600?random=32',
+    alt: 'Photo with full image URL overlay',
+    title: 'Dicebear Bot Overlay (Full Image)',
+    svgOverlay: `https://api.dicebear.com/7.x/bottts/svg?seed=${generateRandomSeed()}`,
+  },
+  {
+    id: 'url-overlay-4',
+    src: 'https://picsum.photos/800/600?random=33',
+    alt: 'Photo with bottom-left URL overlay',
+    title: 'Dicebear Bot Overlay (Bottom Left)',
+    svgOverlay: `https://api.dicebear.com/7.x/bottts/svg?seed=${generateRandomSeed()}`,
+    overlayPosition: 'bottom-left',
+    overlaySize: {
+      maxWidth: 120,
+      maxHeight: 120,
+    },
+  },
+];
+
+export const WithURLSVGOverlays: Story = {
+  render: PhotoViewerWrapper,
+  args: {
+    images: urlOverlayImages,
+    selectedImage: urlOverlayImages[0],
   },
 };

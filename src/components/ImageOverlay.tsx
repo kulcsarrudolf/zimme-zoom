@@ -2,7 +2,7 @@ import React from 'react';
 import { OverlayPosition, OverlaySize } from '../types/image.type';
 
 interface ImageOverlayProps {
-  overlay: React.ReactNode;
+  overlay: React.ReactNode | string; // Can be a React component or a URL string
   position?: OverlayPosition;
   size?: OverlaySize;
 }
@@ -101,12 +101,18 @@ export const ImageOverlay: React.FC<ImageOverlayProps> = ({ overlay, position = 
 
   const positionStyles = getPositionStyles(position);
   const sizeStyles = getSizeStyles();
-  
+
   // If no size is specified, assume the overlay should cover the full image
-  const hasSizeConstraints = size.maxWidth !== undefined || size.maxHeight !== undefined || 
-                             size.width !== undefined || size.height !== undefined;
+  const hasSizeConstraints =
+    size.maxWidth !== undefined ||
+    size.maxHeight !== undefined ||
+    size.width !== undefined ||
+    size.height !== undefined;
   const shouldCoverFullImage = !hasSizeConstraints;
-  
+
+  // Check if overlay is a URL string
+  const isUrlOverlay = typeof overlay === 'string';
+
   return (
     <div
       style={{
@@ -126,10 +132,21 @@ export const ImageOverlay: React.FC<ImageOverlayProps> = ({ overlay, position = 
         justifyContent: positionStyles.justifyContent,
       }}
     >
-      {overlay}
+      {isUrlOverlay ? (
+        <img
+          src={overlay}
+          alt="Overlay"
+          style={{
+            width: '100%',
+            height: '100%',
+            objectFit: 'contain',
+          }}
+        />
+      ) : (
+        overlay
+      )}
     </div>
   );
 };
 
 export default ImageOverlay;
-
