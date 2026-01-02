@@ -2,6 +2,13 @@
 
 A lightweight React photo viewer with zoom, navigation, blurred background, and SVG overlay support.
 
+## Prerequisites
+
+- Node.js >= 14.0.0
+- React >= 16.8.0
+- React DOM >= 16.8.0
+- Yarn >= 1.22.0 (or npm)
+
 ## Installation
 
 ```bash
