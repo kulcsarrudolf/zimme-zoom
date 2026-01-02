@@ -62,8 +62,13 @@ export const PhotoViewer: React.FC<PhotoViewerProps> = ({
   const [rotationCount, setRotationCount] = useState(0);
   const [isHovered, setIsHovered] = useState(false);
   const [showOverlay, setShowOverlay] = useState(false);
+  const [panX, setPanX] = useState(0);
+  const [panY, setPanY] = useState(0);
+  const [isDragging, setIsDragging] = useState(false);
+  const [dragStart, setDragStart] = useState({ x: 0, y: 0 });
   const containerRef = useRef<HTMLDivElement>(null);
   const imageRef = useRef<HTMLImageElement>(null);
+  const imageContainerRef = useRef<HTMLDivElement>(null);
   const [currentSelectedImage, setCurrentSelectedImage] = useState<ZZImage | null>(selectedImage);
 
   useEffect(() => {
@@ -71,6 +76,8 @@ export const PhotoViewer: React.FC<PhotoViewerProps> = ({
     setZoom(1);
     setRotationCount(0);
     setShowOverlay(false);
+    setPanX(0);
+    setPanY(0);
   }, [selectedImage]);
 
   const handleNext = useCallback(() => {
@@ -83,6 +90,8 @@ export const PhotoViewer: React.FC<PhotoViewerProps> = ({
       setZoom(1);
       setRotationCount(0);
       setShowOverlay(false);
+      setPanX(0);
+      setPanY(0);
       onImageChange?.(nextImage);
     }
   }, [images, currentSelectedImage, onImageChange]);
@@ -96,6 +105,8 @@ export const PhotoViewer: React.FC<PhotoViewerProps> = ({
       setZoom(1);
       setRotationCount(0);
       setShowOverlay(false);
+      setPanX(0);
+      setPanY(0);
       onImageChange?.(prevImage);
     }
   }, [images, currentSelectedImage, onImageChange]);
@@ -104,6 +115,11 @@ export const PhotoViewer: React.FC<PhotoViewerProps> = ({
     (newZoom: number) => {
       const clampedZoom = Math.min(Math.max(newZoom, minZoom), maxZoom);
       setZoom(clampedZoom);
+      // Reset pan when zooming back to 1
+      if (clampedZoom === 1) {
+        setPanX(0);
+        setPanY(0);
+      }
     },
     [maxZoom, minZoom]
   );
@@ -121,6 +137,8 @@ export const PhotoViewer: React.FC<PhotoViewerProps> = ({
     if (allowReset) {
       setZoom(1);
       setRotationCount(0);
+      setPanX(0);
+      setPanY(0);
     }
   }, [allowReset]);
 
@@ -186,6 +204,50 @@ export const PhotoViewer: React.FC<PhotoViewerProps> = ({
     [clickOutsideToExit, onClose]
   );
 
+  const handleMouseDown = useCallback(
+    (e: React.MouseEvent) => {
+      // Only allow panning when zoomed in, and only on left mouse button
+      if (zoom > 1 && e.button === 0) {
+        e.preventDefault();
+        setIsDragging(true);
+        setDragStart({ x: e.clientX - panX, y: e.clientY - panY });
+      }
+    },
+    [zoom, panX, panY]
+  );
+
+  const handleMouseMove = useCallback(
+    (e: React.MouseEvent | MouseEvent) => {
+      if (isDragging && zoom > 1) {
+        e.preventDefault();
+        const newPanX = e.clientX - dragStart.x;
+        const newPanY = e.clientY - dragStart.y;
+        setPanX(newPanX);
+        setPanY(newPanY);
+      }
+    },
+    [isDragging, zoom, dragStart]
+  );
+
+  const handleMouseUp = useCallback(() => {
+    setIsDragging(false);
+  }, []);
+
+  useEffect(() => {
+    if (isDragging) {
+      const handleGlobalMouseMove = (e: MouseEvent) => handleMouseMove(e);
+      const handleGlobalMouseUp = () => handleMouseUp();
+
+      window.addEventListener('mousemove', handleGlobalMouseMove);
+      window.addEventListener('mouseup', handleGlobalMouseUp);
+
+      return () => {
+        window.removeEventListener('mousemove', handleGlobalMouseMove);
+        window.removeEventListener('mouseup', handleGlobalMouseUp);
+      };
+    }
+  }, [isDragging, handleMouseMove, handleMouseUp]);
+
   useEffect(() => {
     const container = containerRef.current;
     if (!container) return;
@@ -240,6 +302,7 @@ export const PhotoViewer: React.FC<PhotoViewerProps> = ({
       />
 
       <div
+        ref={imageContainerRef}
         style={{
           position: 'relative',
           width: '100%',
@@ -247,14 +310,20 @@ export const PhotoViewer: React.FC<PhotoViewerProps> = ({
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'center',
+          overflow: 'hidden',
+          cursor: zoom > 1 ? (isDragging ? 'grabbing' : 'grab') : 'default',
         }}
+        onMouseDown={handleMouseDown}
+        onMouseMove={handleMouseMove}
+        onMouseUp={handleMouseUp}
+        onMouseLeave={handleMouseUp}
       >
         <div
           style={{
             position: 'relative',
-            transform: `scale(${zoom}) rotateZ(${rotationCount * 90}deg)`,
+            transform: `translate(${panX}px, ${panY}px) rotateZ(${rotationCount * 90}deg) scale(${zoom})`,
             transformOrigin: 'center',
-            transition: 'transform 0.2s ease',
+            transition: isDragging ? 'none' : 'transform 0.2s ease',
             display: 'inline-block',
           }}
         >
@@ -263,11 +332,13 @@ export const PhotoViewer: React.FC<PhotoViewerProps> = ({
             src={currentSelectedImage?.src}
             alt={currentSelectedImage?.alt || ''}
             onDoubleClick={handleDoubleClick}
+            draggable={false}
             style={{
               maxWidth: '80vw',
               maxHeight: '80vh',
               objectFit: 'contain',
               display: 'block',
+              userSelect: 'none',
             }}
           />
           {showOverlay && currentSelectedImage?.svgOverlay && (
