@@ -490,7 +490,7 @@ export const PhotoViewer: React.FC<PhotoViewerProps> = ({
         onZoomIn={allowZoom ? () => handleZoom(zoom + zoomStep) : undefined}
         onZoomOut={allowZoom ? () => handleZoom(zoom - zoomStep) : undefined}
         onRotate={allowRotate ? handleRotate : undefined}
-        onReset={zoom !== 1 || rotationCount !== 0 ? handleReset : undefined}
+        onReset={zoom !== 1 || rotationCount % 4 !== 0 ? handleReset : undefined}
         onDownload={allowDownload ? handleDownload : undefined}
         onToggleOverlay={
           showOverlayButton && currentSelectedImage?.svgOverlay ? () => setShowOverlay(!showOverlay) : undefined
