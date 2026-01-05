@@ -19,7 +19,7 @@ A lightweight React photo viewer with zoom, navigation, blurred background, and 
 yarn add zimme-zoom
 ```
 
-## Usage
+## PhotoViewer Usage
 
 ### Basic Example
 
