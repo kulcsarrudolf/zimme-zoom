@@ -501,3 +501,64 @@ export const DownloadOnly: Story = {
     },
   },
 };
+
+// New stories for overlay configuration
+export const OverlayShownByDefault: Story = {
+  render: PhotoViewerWrapper,
+  args: {
+    images: overlayImagesWithLabels,
+    selectedImage: overlayImagesWithLabels[0],
+    settings: {
+      showOverlayByDefault: true,
+      showOverlayButton: false,
+    },
+  },
+};
+
+export const OverlayButtonShown: Story = {
+  render: PhotoViewerWrapper,
+  args: {
+    images: overlayImagesWithLabels,
+    selectedImage: overlayImagesWithLabels[0],
+    settings: {
+      showOverlayByDefault: false,
+      showOverlayButton: true,
+    },
+  },
+};
+
+export const OverlayShownByDefaultWithButton: Story = {
+  render: PhotoViewerWrapper,
+  args: {
+    images: overlayImagesWithLabels,
+    selectedImage: overlayImagesWithLabels[0],
+    settings: {
+      showOverlayByDefault: true,
+      showOverlayButton: true,
+    },
+  },
+};
+
+export const OverlayDefaultBehavior: Story = {
+  render: PhotoViewerWrapper,
+  args: {
+    images: overlayImagesWithLabels,
+    selectedImage: overlayImagesWithLabels[0],
+    settings: {
+      showOverlayByDefault: false,
+      showOverlayButton: false,
+    },
+  },
+};
+
+export const StarOverlayShownByDefault: Story = {
+  render: PhotoViewerWrapper,
+  args: {
+    images: starOverlayImages,
+    selectedImage: starOverlayImages[0],
+    settings: {
+      showOverlayByDefault: true,
+      showOverlayButton: true,
+    },
+  },
+};

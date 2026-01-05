@@ -18,6 +18,8 @@ type PhotoViewerSettings = {
   maxZoom: number;
   minZoom: number;
   zoomStep: number;
+  showOverlayByDefault?: boolean;
+  showOverlayButton?: boolean;
 };
 
 const defaultSettings: PhotoViewerSettings = {
@@ -60,6 +62,8 @@ export const PhotoViewer: React.FC<PhotoViewerProps> = ({
     maxZoom,
     minZoom,
     zoomStep,
+    showOverlayByDefault = false,
+    showOverlayButton = false,
   } = mergedSettings;
 
   const [zoom, setZoom] = useState(1);
@@ -86,7 +90,8 @@ export const PhotoViewer: React.FC<PhotoViewerProps> = ({
     setCurrentSelectedImage(selectedImage);
     setZoom(1);
     setRotationCount(0);
-    setShowOverlay(false);
+    // Set overlay state based on showOverlayByDefault setting if image has svgOverlay
+    setShowOverlay(showOverlayByDefault && !!selectedImage?.svgOverlay);
     setPanX(0);
     setPanY(0);
     // Reset touch state
@@ -94,7 +99,7 @@ export const PhotoViewer: React.FC<PhotoViewerProps> = ({
     lastTouchDistanceRef.current = null;
     touchPanStartRef.current = null;
     isPinchingRef.current = false;
-  }, [selectedImage]);
+  }, [selectedImage, showOverlayByDefault]);
 
   const handleNext = useCallback(() => {
     const currentImageIndex = images.findIndex(img => img.id === currentSelectedImage?.id);
@@ -105,12 +110,12 @@ export const PhotoViewer: React.FC<PhotoViewerProps> = ({
       setCurrentSelectedImage(nextImage);
       setZoom(1);
       setRotationCount(0);
-      setShowOverlay(false);
+      setShowOverlay(showOverlayByDefault && !!nextImage.svgOverlay);
       setPanX(0);
       setPanY(0);
       onImageChange?.(nextImage);
     }
-  }, [images, currentSelectedImage, onImageChange]);
+  }, [images, currentSelectedImage, onImageChange, showOverlayByDefault]);
 
   const handlePrevious = useCallback(() => {
     const currentImageIndex = images.findIndex(img => img.id === currentSelectedImage?.id);
@@ -120,12 +125,12 @@ export const PhotoViewer: React.FC<PhotoViewerProps> = ({
       setCurrentSelectedImage(prevImage);
       setZoom(1);
       setRotationCount(0);
-      setShowOverlay(false);
+      setShowOverlay(showOverlayByDefault && !!prevImage.svgOverlay);
       setPanX(0);
       setPanY(0);
       onImageChange?.(prevImage);
     }
-  }, [images, currentSelectedImage, onImageChange]);
+  }, [images, currentSelectedImage, onImageChange, showOverlayByDefault]);
 
   const handleZoom = useCallback(
     (newZoom: number) => {
@@ -487,7 +492,9 @@ export const PhotoViewer: React.FC<PhotoViewerProps> = ({
         onRotate={allowRotate ? handleRotate : undefined}
         onReset={zoom !== 1 || rotationCount !== 0 ? handleReset : undefined}
         onDownload={allowDownload ? handleDownload : undefined}
-        onToggleOverlay={currentSelectedImage?.svgOverlay ? () => setShowOverlay(!showOverlay) : undefined}
+        onToggleOverlay={
+          showOverlayButton && currentSelectedImage?.svgOverlay ? () => setShowOverlay(!showOverlay) : undefined
+        }
         showOverlay={showOverlay}
         showControls={isHovered}
       />
