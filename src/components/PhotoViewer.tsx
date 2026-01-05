@@ -75,6 +75,13 @@ export const PhotoViewer: React.FC<PhotoViewerProps> = ({
   const imageContainerRef = useRef<HTMLDivElement>(null);
   const [currentSelectedImage, setCurrentSelectedImage] = useState<ZZImage | null>(selectedImage);
 
+  // Touch gesture state
+  const touchStartRef = useRef<{ x: number; y: number; time: number } | null>(null);
+  const lastTouchDistanceRef = useRef<number | null>(null);
+  const initialZoomRef = useRef<number>(1);
+  const touchPanStartRef = useRef<{ x: number; y: number } | null>(null);
+  const isPinchingRef = useRef<boolean>(false);
+
   useEffect(() => {
     setCurrentSelectedImage(selectedImage);
     setZoom(1);
@@ -82,6 +89,11 @@ export const PhotoViewer: React.FC<PhotoViewerProps> = ({
     setShowOverlay(false);
     setPanX(0);
     setPanY(0);
+    // Reset touch state
+    touchStartRef.current = null;
+    lastTouchDistanceRef.current = null;
+    touchPanStartRef.current = null;
+    isPinchingRef.current = false;
   }, [selectedImage]);
 
   const handleNext = useCallback(() => {
@@ -276,6 +288,141 @@ export const PhotoViewer: React.FC<PhotoViewerProps> = ({
     setIsDragging(false);
   }, []);
 
+  // Calculate distance between two touches
+  const getTouchDistance = (touch1: React.Touch | Touch, touch2: React.Touch | Touch): number => {
+    const dx = touch1.clientX - touch2.clientX;
+    const dy = touch1.clientY - touch2.clientY;
+    return Math.sqrt(dx * dx + dy * dy);
+  };
+
+  const handleTouchStart = useCallback(
+    (e: React.TouchEvent) => {
+      if (!allowZoom && !images.length) return;
+
+      const touches = e.touches;
+
+      if (touches.length === 1) {
+        // Single touch - prepare for swipe or pan
+        const touch = touches[0];
+        touchStartRef.current = {
+          x: touch.clientX,
+          y: touch.clientY,
+          time: Date.now(),
+        };
+
+        if (zoom > 1) {
+          // Prepare for pan
+          touchPanStartRef.current = { x: touch.clientX - panX, y: touch.clientY - panY };
+        }
+      } else if (touches.length === 2 && allowZoom) {
+        // Two touches - prepare for pinch zoom
+        e.preventDefault();
+        isPinchingRef.current = true;
+        lastTouchDistanceRef.current = getTouchDistance(touches[0], touches[1]);
+        initialZoomRef.current = zoom;
+      }
+    },
+    [allowZoom, zoom, panX, panY, images.length]
+  );
+
+  const handleTouchMove = useCallback(
+    (e: React.TouchEvent) => {
+      const touches = e.touches;
+      const imageContainer = imageContainerRef.current;
+      if (!imageContainer) return;
+
+      if (touches.length === 2 && allowZoom && isPinchingRef.current) {
+        // Pinch zoom
+        e.preventDefault();
+        const distance = getTouchDistance(touches[0], touches[1]);
+
+        if (lastTouchDistanceRef.current !== null) {
+          const scale = distance / lastTouchDistanceRef.current;
+          const newZoom = Math.min(Math.max(zoom * scale, minZoom), maxZoom);
+
+          // Calculate center point between the two touches
+          const centerX = (touches[0].clientX + touches[1].clientX) / 2;
+          const centerY = (touches[0].clientY + touches[1].clientY) / 2;
+
+          const containerRect = imageContainer.getBoundingClientRect();
+          const containerCenterX = containerRect.left + containerRect.width / 2;
+          const containerCenterY = containerRect.top + containerRect.height / 2;
+
+          const mouseX = centerX - containerCenterX;
+          const mouseY = centerY - containerCenterY;
+
+          const imageX = (mouseX - panX) / zoom;
+          const imageY = (mouseY - panY) / zoom;
+
+          const newPanX = mouseX - imageX * newZoom;
+          const newPanY = mouseY - imageY * newZoom;
+
+          setZoom(newZoom);
+          if (newZoom === 1) {
+            setPanX(0);
+            setPanY(0);
+          } else {
+            setPanX(newPanX);
+            setPanY(newPanY);
+          }
+
+          // Update distance for next move
+          lastTouchDistanceRef.current = distance;
+        }
+      } else if (touches.length === 1 && zoom > 1 && touchPanStartRef.current) {
+        // Single touch pan when zoomed
+        e.preventDefault();
+        const touch = touches[0];
+        const newPanX = touch.clientX - touchPanStartRef.current.x;
+        const newPanY = touch.clientY - touchPanStartRef.current.y;
+        setPanX(newPanX);
+        setPanY(newPanY);
+      }
+    },
+    [allowZoom, zoom, minZoom, maxZoom, panX, panY]
+  );
+
+  const handleTouchEnd = useCallback(
+    (e: React.TouchEvent) => {
+      const touches = e.touches;
+
+      if (touches.length === 0 || touches.length === 1) {
+        // All fingers lifted or only one remaining
+        if (isPinchingRef.current) {
+          isPinchingRef.current = false;
+          lastTouchDistanceRef.current = null;
+          return;
+        }
+
+        if (touchStartRef.current && zoom === 1 && images.length > 1) {
+          // Check for swipe gesture
+          const touch = e.changedTouches[0];
+          const deltaX = touch.clientX - touchStartRef.current.x;
+          const deltaY = touch.clientY - touchStartRef.current.y;
+          const deltaTime = Date.now() - touchStartRef.current.time;
+
+          // Swipe threshold: at least 50px horizontal movement, less than 300ms, and more horizontal than vertical
+          const minSwipeDistance = 50;
+          const maxSwipeTime = 300;
+
+          if (Math.abs(deltaX) > minSwipeDistance && Math.abs(deltaX) > Math.abs(deltaY) && deltaTime < maxSwipeTime) {
+            if (deltaX > 0) {
+              // Swipe right - go to previous
+              handlePrevious();
+            } else {
+              // Swipe left - go to next
+              handleNext();
+            }
+          }
+        }
+
+        touchStartRef.current = null;
+        touchPanStartRef.current = null;
+      }
+    },
+    [zoom, images.length, handleNext, handlePrevious]
+  );
+
   useEffect(() => {
     if (isDragging) {
       const handleGlobalMouseMove = (e: MouseEvent) => handleMouseMove(e);
@@ -356,11 +503,15 @@ export const PhotoViewer: React.FC<PhotoViewerProps> = ({
           justifyContent: 'center',
           overflow: 'hidden',
           cursor: zoom > 1 ? (isDragging ? 'grabbing' : 'grab') : 'default',
+          touchAction: 'none',
         }}
         onMouseDown={handleMouseDown}
         onMouseMove={handleMouseMove}
         onMouseUp={handleMouseUp}
         onMouseLeave={handleMouseUp}
+        onTouchStart={handleTouchStart}
+        onTouchMove={handleTouchMove}
+        onTouchEnd={handleTouchEnd}
       >
         <div
           style={{
