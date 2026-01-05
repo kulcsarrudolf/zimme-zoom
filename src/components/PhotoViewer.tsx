@@ -10,6 +10,7 @@ type PhotoViewerSettings = {
   allowZoom: boolean;
   allowRotate: boolean;
   allowReset: boolean;
+  allowDownload: boolean;
   doubleClickZoom: number;
   clickOutsideToExit: boolean;
   keyboardInteraction: boolean;
@@ -22,6 +23,7 @@ const defaultSettings: PhotoViewerSettings = {
   allowZoom: true,
   allowRotate: true,
   allowReset: true,
+  allowDownload: false,
   doubleClickZoom: DEFAULT_LARGE_ZOOM,
   clickOutsideToExit: true,
   keyboardInteraction: true,
@@ -50,6 +52,7 @@ export const PhotoViewer: React.FC<PhotoViewerProps> = ({
     allowZoom,
     allowRotate,
     allowReset,
+    allowDownload,
     doubleClickZoom,
     clickOutsideToExit,
     keyboardInteraction,
@@ -142,6 +145,80 @@ export const PhotoViewer: React.FC<PhotoViewerProps> = ({
     }
   }, [allowReset]);
 
+  const handleDownload = useCallback(async () => {
+    if (!allowDownload || !currentSelectedImage) return;
+
+    const filename = currentSelectedImage.title || currentSelectedImage.alt || 'image';
+
+    // Method 1: Try using canvas (works for same-origin images, even without CORS headers)
+    // This works because the image is already loaded in the browser
+    if (imageRef.current && imageRef.current.complete) {
+      try {
+        const canvas = document.createElement('canvas');
+        const ctx = canvas.getContext('2d');
+        if (!ctx) throw new Error('Canvas context not available');
+
+        canvas.width = imageRef.current.naturalWidth || imageRef.current.width;
+        canvas.height = imageRef.current.naturalHeight || imageRef.current.height;
+
+        // Draw the image to canvas
+        ctx.drawImage(imageRef.current, 0, 0);
+
+        // Convert to blob using Promise
+        const blob = await new Promise<Blob | null>(resolve => {
+          canvas.toBlob(resolve, 'image/png');
+        });
+
+        if (blob) {
+          const url = window.URL.createObjectURL(blob);
+          const link = document.createElement('a');
+          link.href = url;
+          link.download = filename;
+          document.body.appendChild(link);
+          link.click();
+          document.body.removeChild(link);
+          window.URL.revokeObjectURL(url);
+          return;
+        }
+      } catch (error) {
+        // Canvas method failed (likely CORS issue with cross-origin image), try fetch
+        console.warn('Canvas download failed, trying fetch:', error);
+      }
+    }
+
+    // Method 2: Try fetch with CORS (works if server has proper CORS headers)
+    try {
+      const response = await fetch(currentSelectedImage.src);
+      if (!response.ok) throw new Error('Fetch failed');
+
+      const blob = await response.blob();
+      const url = window.URL.createObjectURL(blob);
+      const link = document.createElement('a');
+      link.href = url;
+      link.download = filename;
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      window.URL.revokeObjectURL(url);
+      return;
+    } catch (error) {
+      // Fetch failed (likely CORS issue), try fallback
+      console.warn('Fetch download failed, using fallback:', error);
+    }
+
+    // Method 3: Fallback - open in new tab (download attribute won't work for cross-origin)
+    // This is the last resort when CORS prevents download
+    // Note: This will open the image in a new tab instead of downloading
+    const link = document.createElement('a');
+    link.href = currentSelectedImage.src;
+    link.download = filename;
+    link.target = '_blank';
+    link.rel = 'noopener noreferrer';
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  }, [allowDownload, currentSelectedImage]);
+
   const handleDoubleClick = useCallback(() => {
     if (allowZoom) {
       handleZoom(zoom === doubleClickZoom ? 1 : doubleClickZoom);
@@ -152,10 +229,42 @@ export const PhotoViewer: React.FC<PhotoViewerProps> = ({
     (e: WheelEvent) => {
       if (!allowZoom) return;
       e.preventDefault();
+
+      const container = containerRef.current;
+      const imageContainer = imageContainerRef.current;
+      if (!container || !imageContainer) return;
+
       const delta = e.deltaY > 0 ? -zoomStep : zoomStep;
-      handleZoom(zoom + delta);
+      const newZoom = Math.min(Math.max(zoom + delta, minZoom), maxZoom);
+
+      // Calculate mouse position relative to container center
+      const containerRect = imageContainer.getBoundingClientRect();
+      const containerCenterX = containerRect.left + containerRect.width / 2;
+      const containerCenterY = containerRect.top + containerRect.height / 2;
+
+      const mouseX = e.clientX - containerCenterX;
+      const mouseY = e.clientY - containerCenterY;
+
+      // Calculate the point on the image (before zoom change)
+      // Account for current pan and zoom
+      const imageX = (mouseX - panX) / zoom;
+      const imageY = (mouseY - panY) / zoom;
+
+      // Calculate new pan to keep the same point under the mouse after zoom
+      const newPanX = mouseX - imageX * newZoom;
+      const newPanY = mouseY - imageY * newZoom;
+
+      setZoom(newZoom);
+      // Reset pan when zooming back to 1
+      if (newZoom === 1) {
+        setPanX(0);
+        setPanY(0);
+      } else {
+        setPanX(newPanX);
+        setPanY(newPanY);
+      }
     },
-    [allowZoom, handleZoom, zoom, zoomStep]
+    [allowZoom, zoom, zoomStep, minZoom, maxZoom, panX, panY]
   );
 
   const handleKeyDown = useCallback(
@@ -296,6 +405,7 @@ export const PhotoViewer: React.FC<PhotoViewerProps> = ({
         onZoomOut={allowZoom ? () => handleZoom(zoom - zoomStep) : undefined}
         onRotate={allowRotate ? handleRotate : undefined}
         onReset={zoom !== 1 || rotationCount !== 0 ? handleReset : undefined}
+        onDownload={allowDownload ? handleDownload : undefined}
         onToggleOverlay={currentSelectedImage?.svgOverlay ? () => setShowOverlay(!showOverlay) : undefined}
         showOverlay={showOverlay}
         showControls={isHovered}

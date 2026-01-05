@@ -473,3 +473,31 @@ export const WithURLSVGOverlays: Story = {
     selectedImage: urlOverlayImages[0],
   },
 };
+
+export const WithDownloadEnabled: Story = {
+  render: PhotoViewerWrapper,
+  args: {
+    images: sampleImages,
+    selectedImage: sampleImages[0],
+    settings: {
+      allowDownload: true,
+      allowZoom: true,
+      allowRotate: true,
+      allowReset: true,
+    },
+  },
+};
+
+export const DownloadOnly: Story = {
+  render: PhotoViewerWrapper,
+  args: {
+    images: sampleImages,
+    selectedImage: sampleImages[0],
+    settings: {
+      allowDownload: true,
+      allowZoom: false,
+      allowRotate: false,
+      allowReset: false,
+    },
+  },
+};

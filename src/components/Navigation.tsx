@@ -11,6 +11,7 @@ interface NavigationProps {
   onReset?: () => void;
   onNext?: () => void;
   onPrevious?: () => void;
+  onDownload?: () => void;
   onToggleOverlay?: () => void;
   showOverlay?: boolean;
   showControls?: boolean;
@@ -25,6 +26,7 @@ export const Navigation: React.FC<NavigationProps> = ({
   onReset,
   onNext,
   onPrevious,
+  onDownload,
   onToggleOverlay,
   showOverlay = false,
   showControls = true,
@@ -67,6 +69,7 @@ export const Navigation: React.FC<NavigationProps> = ({
             style={showOverlay ? { backgroundColor: 'rgba(255, 255, 255, 0.2)' } : undefined}
           />
         )}
+        {onDownload && <NavigationActionButton icon={IconArrow} onClick={onDownload} transform="rotate(-90deg)" />}
         {onClose && <NavigationActionButton icon={IconClose} onClick={onClose} />}
       </div>
     </div>
