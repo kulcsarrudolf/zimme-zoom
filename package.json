@@ -1,6 +1,6 @@
 {
   "name": "zimme-zoom",
-  "version": "0.1.5",
+  "version": "0.1.6",
   "description": "A lightweight React photo viewer with zoom, navigation, blurred background, and SVG overlay support",
   "main": "dist/index.js",
   "module": "dist/index.esm.js",
