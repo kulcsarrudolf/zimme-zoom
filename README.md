@@ -1,6 +1,6 @@
 # zimme-zoom
 
-A lightweight React photo viewer with zoom, navigation, blurred background, and SVG overlay support.
+A collection of image-related React components packaged as an npm package. The main component is **PhotoViewer**, a lightweight React photo viewer with zoom, navigation, blurred background, and SVG overlay support.
 
 ## Preview
 
@@ -17,6 +17,21 @@ A lightweight React photo viewer with zoom, navigation, blurred background, and 
 
 ```bash
 yarn add zimme-zoom
+```
+
+## Components
+
+zimme-zoom provides the following React components:
+
+- **PhotoViewer** - The main component: A lightweight photo viewer with zoom, navigation, blurred background, and SVG overlay support
+- **Gallery** - A grid-based image gallery component that displays images and integrates with PhotoViewer
+- **Image** - A reusable image component for displaying images with click handlers, built-in loading states (pulsing placeholder), and smooth fade-in transitions
+
+All components are exported from the main package:
+
+```tsx
+import { PhotoViewer, Gallery, Image } from 'zimme-zoom';
+import type { ZZImage, PhotoViewerProps } from 'zimme-zoom';
 ```
 
 ## PhotoViewer Usage
@@ -133,6 +148,36 @@ All settings are configured through the `settings` prop:
 ```
 
 📖 **More examples and interactive demos:** [Storybook](https://zimme-zoom.vercel.app)
+
+## Image Component Usage
+
+The `Image` component is a reusable image component that provides built-in loading states and smooth transitions.
+
+### Basic Example
+
+```tsx
+import { Image } from 'zimme-zoom';
+import type { ZZImage } from 'zimme-zoom';
+
+const image: ZZImage = {
+  id: '1',
+  src: 'https://example.com/image1.jpg',
+  alt: 'Image 1',
+};
+
+function App() {
+  return <Image image={image} onClick={() => console.log('Image clicked')} />;
+}
+```
+
+#### Image Props
+
+| Prop      | Type         | Required | Description                                    |
+| --------- | ------------ | -------- | ---------------------------------------------- |
+| `image`   | `ZZImage`    | Yes      | Image object containing `id`, `src`, and `alt` |
+| `onClick` | `() => void` | No       | Callback function called when image is clicked |
+
+The component is designed to work seamlessly within the `Gallery` component, but can also be used standalone in your own layouts.
 
 ## License
 
