@@ -1,5 +1,14 @@
 import React from 'react';
-import { IconReset, IconArrow, IconZoomIn, IconZoomOut, IconRotate, IconClose, IconOverlay } from './icons';
+import {
+  IconReset,
+  IconArrow,
+  IconZoomIn,
+  IconZoomOut,
+  IconRotate,
+  IconClose,
+  IconOverlay,
+  IconDownload,
+} from './icons';
 import NavigationActionButton from './NavigationActionButton';
 
 interface NavigationProps {
@@ -69,7 +78,13 @@ export const Navigation: React.FC<NavigationProps> = ({
             style={showOverlay ? { backgroundColor: 'rgba(255, 255, 255, 0.2)' } : undefined}
           />
         )}
-        {onDownload && <NavigationActionButton icon={IconArrow} onClick={onDownload} transform="rotate(-90deg)" />}
+        {onDownload && (
+          <NavigationActionButton
+            icon={IconDownload}
+            onClick={onDownload}
+            style={{ width: '20px', height: '20px', marginTop: '-3px' }}
+          />
+        )}
         {onClose && <NavigationActionButton icon={IconClose} onClick={onClose} />}
       </div>
     </div>
