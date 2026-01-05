@@ -2,6 +2,10 @@
 
 A lightweight React photo viewer with zoom, navigation, blurred background, and SVG overlay support.
 
+## Preview
+
+![zimme-zoom preview](./assets/zimme-zoom-preview.gif)
+
 ## Prerequisites
 
 - Node.js >= 14.0.0
