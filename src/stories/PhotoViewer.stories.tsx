@@ -214,47 +214,6 @@ export const SingleImageViewer: Story = {
   },
 };
 
-// Example with SVG overlay - demonstrates the overlay toggle feature
-const overlayImage: ZZImage = {
-  id: 'overlay-demo',
-  src: 'https://picsum.photos/800/600?random=5',
-  alt: 'Photo with overlay',
-  title: 'Image with SVG Overlay',
-  svgOverlay: (
-    <svg
-      width="100%"
-      height="100%"
-      viewBox="0 0 100 100"
-      preserveAspectRatio="none"
-      style={{ position: 'absolute', top: 0, left: 0 }}
-    >
-      {/* Grid overlay */}
-      <defs>
-        <pattern id="grid" width="10" height="10" patternUnits="userSpaceOnUse">
-          <path d="M 10 0 L 0 0 0 10" fill="none" stroke="rgba(255, 255, 255, 0.3)" strokeWidth="0.5" />
-        </pattern>
-      </defs>
-      <rect width="100" height="100" fill="url(#grid)" />
-
-      {/* Corner markers */}
-      <circle cx="10" cy="10" r="2" fill="rgba(255, 0, 0, 0.8)" />
-      <circle cx="90" cy="10" r="2" fill="rgba(255, 0, 0, 0.8)" />
-      <circle cx="10" cy="90" r="2" fill="rgba(255, 0, 0, 0.8)" />
-      <circle cx="90" cy="90" r="2" fill="rgba(255, 0, 0, 0.8)" />
-
-      {/* Center crosshair */}
-      <line x1="50" y1="45" x2="50" y2="55" stroke="rgba(255, 255, 0, 0.8)" strokeWidth="1" />
-      <line x1="45" y1="50" x2="55" y2="50" stroke="rgba(255, 255, 0, 0.8)" strokeWidth="1" />
-
-      {/* Info text box */}
-      <rect x="5" y="75" width="90" height="20" fill="rgba(0, 0, 0, 0.7)" rx="2" />
-      <text x="50" y="88" textAnchor="middle" fill="white" fontSize="6" fontFamily="Arial, sans-serif">
-        SVG Overlay - Toggle with button
-      </text>
-    </svg>
-  ),
-};
-
 const overlayImagesWithLabels: ZZImage[] = [
   {
     id: 'overlay-1',
@@ -323,22 +282,6 @@ const overlayImagesWithLabels: ZZImage[] = [
   },
 ];
 
-export const WithSVGOverlay: Story = {
-  render: PhotoViewerWrapper,
-  args: {
-    images: [overlayImage],
-    selectedImage: overlayImage,
-  },
-};
-
-export const WithMultipleOverlayImages: Story = {
-  render: PhotoViewerWrapper,
-  args: {
-    images: overlayImagesWithLabels,
-    selectedImage: overlayImagesWithLabels[0],
-  },
-};
-
 // Examples using star.svg with different positions and sizes
 const starOverlayImages: ZZImage[] = [
   {
@@ -403,22 +346,6 @@ const starOverlayImages: ZZImage[] = [
   },
 ];
 
-export const WithStarOverlay: Story = {
-  render: PhotoViewerWrapper,
-  args: {
-    images: [starOverlayImages[0]],
-    selectedImage: starOverlayImages[0],
-  },
-};
-
-export const WithStarOverlayPositions: Story = {
-  render: PhotoViewerWrapper,
-  args: {
-    images: starOverlayImages,
-    selectedImage: starOverlayImages[0],
-  },
-};
-
 // Examples using SVG overlays from URLs (e.g., Dicebear API)
 const urlOverlayImages: ZZImage[] = [
   {
@@ -467,10 +394,15 @@ const urlOverlayImages: ZZImage[] = [
 ];
 
 export const WithURLSVGOverlays: Story = {
+  name: 'With URLSVG Overlays',
   render: PhotoViewerWrapper,
   args: {
     images: urlOverlayImages,
     selectedImage: urlOverlayImages[0],
+    settings: {
+      showOverlayButton: true,
+      showOverlayByDefault: true,
+    },
   },
 };
 
