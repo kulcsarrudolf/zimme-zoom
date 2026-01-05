@@ -2,9 +2,13 @@
 
 A collection of image-related React components packaged as an npm package. The main component is **PhotoViewer**, a lightweight React photo viewer with zoom, navigation, blurred background, and SVG overlay support.
 
-## Preview
+## Demo
+
+📖 **Examples and interactive demos on [Storybook](https://zimme-zoom.vercel.app)**.
 
 ![zimme-zoom preview](./assets/zimme-zoom-preview.gif)
+
+[Click here to view the video demo on YouTube](https://www.youtube.com/watch?v=wzfzD8HtJjk)
 
 ## Prerequisites
 
@@ -146,8 +150,6 @@ All settings are configured through the `settings` prop:
   }}
 />
 ```
-
-📖 **More examples and interactive demos:** [Storybook](https://zimme-zoom.vercel.app)
 
 ## Image Component Usage
 
