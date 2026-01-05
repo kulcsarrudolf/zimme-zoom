@@ -10,6 +10,11 @@ const preview: Preview = {
       },
     },
     layout: 'centered',
+    options: {
+      storySort: {
+        order: ['Introduction', 'Gallery', 'PhotoViewer'],
+      },
+    },
   },
   globalTypes: {
     theme: {

@@ -38,6 +38,7 @@ const meta: Meta<typeof PhotoViewer> = {
   component: PhotoViewer,
   parameters: {
     layout: 'fullscreen',
+    order: 3,
   },
   tags: ['autodocs'],
   argTypes: {

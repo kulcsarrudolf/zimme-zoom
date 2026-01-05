@@ -8,7 +8,7 @@ const GalleryGrid = ({ children }: { children: React.ReactNode }) => {
     <div
       style={{
         display: 'grid',
-        gridTemplateColumns: 'repeat(auto-fill, minmax(300px, 1fr))',
+        gridTemplateColumns: 'repeat(auto-fill, minmax(200px, 1fr))',
         gap: '1rem',
         maxWidth: '1200px',
         margin: '0 auto',
@@ -28,6 +28,24 @@ export const Gallery = ({ images }: GalleryProps) => {
 
   return (
     <>
+      <div
+        style={{
+          textAlign: 'center',
+          marginBottom: '2rem',
+          marginTop: '2rem',
+        }}
+      >
+        <h1
+          style={{
+            fontSize: '2.5rem',
+            fontWeight: 'bold',
+            margin: 0,
+            color: '#333',
+          }}
+        >
+          zimme-zoom
+        </h1>
+      </div>
       <GalleryGrid>
         {images.map(image => (
           <Image

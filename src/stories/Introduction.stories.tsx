@@ -99,6 +99,7 @@ const meta: Meta<typeof IntroductionComponent> = {
   component: IntroductionComponent,
   parameters: {
     layout: 'fullscreen',
+    order: 1,
   },
 };
 
