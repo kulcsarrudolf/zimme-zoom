@@ -9,7 +9,6 @@ const meta: Meta<typeof Gallery> = {
     layout: 'padded',
     order: 2,
   },
-  tags: ['autodocs'],
   argTypes: {
     images: {
       control: 'object',
@@ -72,12 +71,6 @@ const sampleImages: ZZImage[] = [
     title: 'Abstract patterns',
   },
 ];
-
-export const Default: Story = {
-  args: {
-    images: sampleImages,
-  },
-};
 
 export const WithFewImages: Story = {
   args: {

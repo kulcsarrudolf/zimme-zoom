@@ -40,7 +40,6 @@ const meta: Meta<typeof PhotoViewer> = {
     layout: 'fullscreen',
     order: 3,
   },
-  tags: ['autodocs'],
   argTypes: {
     onClose: { action: 'close' },
     onImageChange: { action: 'image changed' },
@@ -127,14 +126,6 @@ const PhotoViewerWrapper = (args: React.ComponentProps<typeof PhotoViewer>) => {
       <PhotoViewer {...args} selectedImage={selectedImage} onClose={() => setSelectedImage(null)} />
     </div>
   );
-};
-
-export const Default: Story = {
-  render: PhotoViewerWrapper,
-  args: {
-    images: sampleImages,
-    selectedImage: sampleImages[0],
-  },
 };
 
 export const WithCustomSettings: Story = {

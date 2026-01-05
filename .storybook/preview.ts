@@ -10,6 +10,10 @@ const preview: Preview = {
       },
     },
     layout: 'centered',
+    docs: {
+      page: null,
+      codePanel: true,
+    },
     options: {
       storySort: {
         order: ['Introduction', 'Gallery', 'PhotoViewer'],
