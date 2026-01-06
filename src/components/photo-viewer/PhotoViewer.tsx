@@ -69,7 +69,7 @@ export const PhotoViewer: React.FC<PhotoViewerProps> = ({
   const [zoom, setZoom] = useState(1);
   const [rotationCount, setRotationCount] = useState(0);
   const [isHovered, setIsHovered] = useState(false);
-  const [showOverlay, setShowOverlay] = useState(false);
+  const [showOverlay, setShowOverlay] = useState(() => showOverlayByDefault && !!selectedImage?.svgOverlay);
   const [panX, setPanX] = useState(0);
   const [panY, setPanY] = useState(0);
   const [isDragging, setIsDragging] = useState(false);
@@ -583,7 +583,7 @@ export const PhotoViewer: React.FC<PhotoViewerProps> = ({
               zIndex: 2,
             }}
           />
-          {showOverlay && currentSelectedImage?.svgOverlay && !isLoading && (
+          {showOverlay && currentSelectedImage?.svgOverlay && (
             <ImageOverlay
               overlay={currentSelectedImage.svgOverlay}
               position={currentSelectedImage.overlayPosition}

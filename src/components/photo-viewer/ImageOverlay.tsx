@@ -130,6 +130,7 @@ export const ImageOverlay: React.FC<ImageOverlayProps> = ({ overlay, position = 
         display: shouldCoverFullImage ? 'block' : positionStyles.display,
         alignItems: positionStyles.alignItems,
         justifyContent: positionStyles.justifyContent,
+        zIndex: 3,
       }}
     >
       {isUrlOverlay ? (
