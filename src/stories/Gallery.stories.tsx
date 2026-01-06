@@ -1,5 +1,5 @@
 import type { Meta, StoryObj } from '@storybook/react';
-import { Gallery } from '../components/Gallery';
+import { Gallery } from '../components/gallery/Gallery';
 import { ZZImage } from '../types/image.type';
 
 const meta: Meta<typeof Gallery> = {
