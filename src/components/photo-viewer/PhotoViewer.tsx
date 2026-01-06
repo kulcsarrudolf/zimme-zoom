@@ -74,6 +74,7 @@ export const PhotoViewer: React.FC<PhotoViewerProps> = ({
   const [panY, setPanY] = useState(0);
   const [isDragging, setIsDragging] = useState(false);
   const [dragStart, setDragStart] = useState({ x: 0, y: 0 });
+  const [isLoading, setIsLoading] = useState(true);
   const containerRef = useRef<HTMLDivElement>(null);
   const imageRef = useRef<HTMLImageElement>(null);
   const imageContainerRef = useRef<HTMLDivElement>(null);
@@ -94,6 +95,7 @@ export const PhotoViewer: React.FC<PhotoViewerProps> = ({
     setShowOverlay(showOverlayByDefault && !!selectedImage?.svgOverlay);
     setPanX(0);
     setPanY(0);
+    setIsLoading(true);
     // Reset touch state
     touchStartRef.current = null;
     lastTouchDistanceRef.current = null;
@@ -113,6 +115,7 @@ export const PhotoViewer: React.FC<PhotoViewerProps> = ({
       setShowOverlay(showOverlayByDefault && !!nextImage.svgOverlay);
       setPanX(0);
       setPanY(0);
+      setIsLoading(true);
       onImageChange?.(nextImage);
     }
   }, [images, currentSelectedImage, onImageChange, showOverlayByDefault]);
@@ -128,6 +131,7 @@ export const PhotoViewer: React.FC<PhotoViewerProps> = ({
       setShowOverlay(showOverlayByDefault && !!prevImage.svgOverlay);
       setPanX(0);
       setPanY(0);
+      setIsLoading(true);
       onImageChange?.(prevImage);
     }
   }, [images, currentSelectedImage, onImageChange, showOverlayByDefault]);
@@ -458,6 +462,23 @@ export const PhotoViewer: React.FC<PhotoViewerProps> = ({
     };
   }, [handleWheel, handleKeyDown, handleClickOutside]);
 
+  // Preload adjacent images
+  useEffect(() => {
+    if (!currentSelectedImage || images.length <= 1) return;
+
+    const currentIndex = images.findIndex(img => img.id === currentSelectedImage.id);
+    const nextImage = images[(currentIndex + 1) % images.length];
+    const prevImage = images[(currentIndex - 1 + images.length) % images.length];
+
+    // Preload adjacent images
+    [nextImage, prevImage].forEach(img => {
+      const link = document.createElement('link');
+      link.rel = 'prefetch';
+      link.href = img.src;
+      document.head.appendChild(link);
+    });
+  }, [currentSelectedImage, images]);
+
   if (!selectedImage) {
     return null;
   }
@@ -529,11 +550,26 @@ export const PhotoViewer: React.FC<PhotoViewerProps> = ({
             display: 'inline-block',
           }}
         >
+          {isLoading && (
+            <div
+              style={{
+                position: 'absolute',
+                top: 0,
+                left: 0,
+                width: '100%',
+                height: '100%',
+                backgroundColor: '#f0f0f0',
+                animation: 'pulse 1.5s infinite',
+                zIndex: 1,
+              }}
+            />
+          )}
           <img
             ref={imageRef}
             src={currentSelectedImage?.src}
             alt={currentSelectedImage?.alt || ''}
             onDoubleClick={handleDoubleClick}
+            onLoad={() => setIsLoading(false)}
             draggable={false}
             style={{
               maxWidth: '80vw',
@@ -541,9 +577,13 @@ export const PhotoViewer: React.FC<PhotoViewerProps> = ({
               objectFit: 'contain',
               display: 'block',
               userSelect: 'none',
+              opacity: isLoading ? 0 : 1,
+              transition: 'opacity 0.3s ease',
+              position: 'relative',
+              zIndex: 2,
             }}
           />
-          {showOverlay && currentSelectedImage?.svgOverlay && (
+          {showOverlay && currentSelectedImage?.svgOverlay && !isLoading && (
             <ImageOverlay
               overlay={currentSelectedImage.svgOverlay}
               position={currentSelectedImage.overlayPosition}
@@ -552,6 +592,15 @@ export const PhotoViewer: React.FC<PhotoViewerProps> = ({
           )}
         </div>
       </div>
+      <style>
+        {`
+          @keyframes pulse {
+            0% { opacity: 0.6; }
+            50% { opacity: 0.8; }
+            100% { opacity: 0.6; }
+          }
+        `}
+      </style>
     </div>
   );
 };
