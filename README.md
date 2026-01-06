@@ -2,6 +2,21 @@
 
 A collection of image-related React components packaged as an npm package. The main component is **PhotoViewer**, a lightweight React photo viewer with zoom, navigation, blurred background, and SVG overlay support.
 
+## Components
+
+zimme-zoom provides the following React components:
+
+- **PhotoViewer** - The main component: A lightweight photo viewer with zoom, navigation, blurred background, and SVG overlay support
+- **Gallery** - A grid-based image gallery component that displays images and integrates with PhotoViewer
+- **Image** - A reusable image component for displaying images with click handlers, built-in loading states (pulsing placeholder), and smooth fade-in transitions
+
+All components are exported from the main package:
+
+```tsx
+import { PhotoViewer, Gallery, Image } from 'zimme-zoom';
+import type { ZZImage, PhotoViewerProps } from 'zimme-zoom';
+```
+
 ## Demo
 
 📖 **Examples and interactive demos on [Storybook](https://zimme-zoom.vercel.app)**.
@@ -21,21 +36,6 @@ A collection of image-related React components packaged as an npm package. The m
 
 ```bash
 yarn add zimme-zoom
-```
-
-## Components
-
-zimme-zoom provides the following React components:
-
-- **PhotoViewer** - The main component: A lightweight photo viewer with zoom, navigation, blurred background, and SVG overlay support
-- **Gallery** - A grid-based image gallery component that displays images and integrates with PhotoViewer
-- **Image** - A reusable image component for displaying images with click handlers, built-in loading states (pulsing placeholder), and smooth fade-in transitions
-
-All components are exported from the main package:
-
-```tsx
-import { PhotoViewer, Gallery, Image } from 'zimme-zoom';
-import type { ZZImage, PhotoViewerProps } from 'zimme-zoom';
 ```
 
 ## PhotoViewer Usage
