@@ -1,5 +1,5 @@
 import type { Meta, StoryObj } from '@storybook/react';
-import { PhotoViewer } from '../components/PhotoViewer';
+import { PhotoViewer } from '../components/photo-viewer/PhotoViewer';
 import { ZZImage } from '../types/image.type';
 import React, { useState } from 'react';
 

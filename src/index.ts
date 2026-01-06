@@ -1,5 +1,6 @@
-export { PhotoViewer } from './components/PhotoViewer';
-export type { PhotoViewerProps } from './components/PhotoViewer';
-export { Gallery } from './components/Gallery';
-export { Image } from './components/Image';
-export type { ZZImage, OverlayPosition, OverlaySize } from './types/image.type';
+export { PhotoViewer } from './components/photo-viewer/PhotoViewer';
+export type { PhotoViewerProps } from './components/photo-viewer/PhotoViewer';
+export { Gallery } from './components/gallery/Gallery';
+export { Image } from './components/image/Image';
+export type { ZZImage } from './types/image.type';
+export type { OverlayPosition, OverlaySize } from './types/image.type';

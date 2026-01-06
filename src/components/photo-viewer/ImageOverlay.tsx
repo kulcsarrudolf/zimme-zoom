@@ -1,5 +1,5 @@
 import React from 'react';
-import { OverlayPosition, OverlaySize } from '../types/image.type';
+import { OverlayPosition, OverlaySize } from '../../types/image.type';
 
 interface ImageOverlayProps {
   overlay: React.ReactNode | string; // Can be a React component or a URL string

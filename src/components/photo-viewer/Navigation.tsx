@@ -1,14 +1,14 @@
 import React from 'react';
 import {
-  IconReset,
-  IconArrow,
-  IconZoomIn,
-  IconZoomOut,
-  IconRotate,
-  IconClose,
-  IconOverlay,
-  IconDownload,
-} from './icons';
+  ResetIcon,
+  ArrowIcon,
+  ZoomInIcon,
+  ZoomOutIcon,
+  RotateIcon,
+  CloseIcon,
+  OverlayIcon,
+  DownloadIcon,
+} from '../../icons';
 import NavigationActionButton from './NavigationActionButton';
 
 interface NavigationProps {
@@ -86,30 +86,30 @@ export const Navigation: React.FC<NavigationProps> = ({
           {title}
         </div>
         <div className="photo-viewer-navigation-controls" style={{ display: 'flex', gap: '1rem' }}>
-          {onReset && <NavigationActionButton icon={IconReset} onClick={onReset} />}
-          {onPrevious && <NavigationActionButton icon={IconArrow} onClick={onPrevious} />}
-          {onNext && <NavigationActionButton icon={IconArrow} onClick={onNext} transform="rotateY(180deg)" />}
-          {onZoomOut && <NavigationActionButton icon={IconZoomOut} onClick={onZoomOut} />}
-          {onZoomIn && <NavigationActionButton icon={IconZoomIn} onClick={onZoomIn} />}
-          {onRotate && <NavigationActionButton icon={IconRotate} onClick={() => onRotate('left')} />}
+          {onReset && <NavigationActionButton icon={ResetIcon} onClick={onReset} />}
+          {onPrevious && <NavigationActionButton icon={ArrowIcon} onClick={onPrevious} />}
+          {onNext && <NavigationActionButton icon={ArrowIcon} onClick={onNext} transform="rotateY(180deg)" />}
+          {onZoomOut && <NavigationActionButton icon={ZoomOutIcon} onClick={onZoomOut} />}
+          {onZoomIn && <NavigationActionButton icon={ZoomInIcon} onClick={onZoomIn} />}
+          {onRotate && <NavigationActionButton icon={RotateIcon} onClick={() => onRotate('left')} />}
           {onRotate && (
-            <NavigationActionButton icon={IconRotate} onClick={() => onRotate('right')} transform="rotateY(180deg)" />
+            <NavigationActionButton icon={RotateIcon} onClick={() => onRotate('right')} transform="rotateY(180deg)" />
           )}
           {onToggleOverlay && (
             <NavigationActionButton
-              icon={IconOverlay}
+              icon={OverlayIcon}
               onClick={onToggleOverlay}
               style={showOverlay ? { backgroundColor: 'rgba(255, 255, 255, 0.2)' } : undefined}
             />
           )}
           {onDownload && (
             <NavigationActionButton
-              icon={IconDownload}
+              icon={DownloadIcon}
               onClick={onDownload}
               style={{ width: '20px', height: '20px', marginTop: '-3px' }}
             />
           )}
-          {onClose && <NavigationActionButton icon={IconClose} onClick={onClose} />}
+          {onClose && <NavigationActionButton icon={CloseIcon} onClick={onClose} />}
         </div>
       </div>
     </>

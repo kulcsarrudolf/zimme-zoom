@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { ZZImage } from '../types/image.type';
+import { ZZImage } from '../../types/image.type';
 
 type ImageProps = {
   image: ZZImage;

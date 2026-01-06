@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
-import { Image } from './Image';
-import { ZZImage } from '../types/image.type';
-import { PhotoViewer } from './PhotoViewer';
+import { Image } from '../image/Image';
+import { ZZImage } from '../../types/image.type';
+import { PhotoViewer } from '../photo-viewer/PhotoViewer';
 
 const GalleryGrid = ({ children }: { children: React.ReactNode }) => {
   return (

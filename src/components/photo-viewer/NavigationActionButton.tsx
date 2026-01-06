@@ -7,7 +7,12 @@ interface NavigationActionButtonProps {
   style?: React.CSSProperties;
 }
 
-export const NavigationActionButton: React.FC<NavigationActionButtonProps> = ({ icon, onClick, transform, style: customStyle }) => {
+export const NavigationActionButton: React.FC<NavigationActionButtonProps> = ({
+  icon,
+  onClick,
+  transform,
+  style: customStyle,
+}) => {
   return (
     <div
       className="nav-action-button"

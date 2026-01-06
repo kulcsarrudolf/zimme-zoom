@@ -1,8 +1,8 @@
 import React, { useState, useCallback, useRef, useEffect } from 'react';
 import Navigation from './Navigation';
 import ImageOverlay from './ImageOverlay';
-import { ZZImage } from '../types/image.type';
-import { downloadImage } from '../utils/downloadImage';
+import { ZZImage } from '../../types/image.type';
+import { downloadImage } from '../../utils/downloadImage';
 
 const DEFAULT_ZOOM_STEP = 0.3;
 const DEFAULT_LARGE_ZOOM = 4;
