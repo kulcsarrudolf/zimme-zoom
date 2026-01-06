@@ -113,26 +113,39 @@ export const ImageOverlay: React.FC<ImageOverlayProps> = ({ overlay, position = 
   // Check if overlay is a URL string
   const isUrlOverlay = typeof overlay === 'string';
 
+  // Ensure container has proper dimensions when size constraints are provided
+  const containerStyle: React.CSSProperties = {
+    position: 'absolute',
+    pointerEvents: 'none',
+    zIndex: 3,
+    top: shouldCoverFullImage ? 0 : positionStyles.top,
+    left: shouldCoverFullImage ? 0 : positionStyles.left,
+    right: shouldCoverFullImage ? 0 : positionStyles.right,
+    bottom: shouldCoverFullImage ? 0 : positionStyles.bottom,
+    transform: shouldCoverFullImage ? undefined : positionStyles.transform,
+    display: shouldCoverFullImage ? 'block' : positionStyles.display || 'flex',
+    alignItems: positionStyles.alignItems || 'center',
+    justifyContent: positionStyles.justifyContent || 'center',
+  };
+
+  // Add size constraints
+  if (!shouldCoverFullImage) {
+    if (sizeStyles.width) containerStyle.width = sizeStyles.width;
+    if (sizeStyles.height) containerStyle.height = sizeStyles.height;
+    if (sizeStyles.maxWidth) containerStyle.maxWidth = sizeStyles.maxWidth;
+    if (sizeStyles.maxHeight) containerStyle.maxHeight = sizeStyles.maxHeight;
+    // If only maxWidth or maxHeight is set, ensure the container can size to content
+    if (!sizeStyles.width && !sizeStyles.height) {
+      containerStyle.width = 'auto';
+      containerStyle.height = 'auto';
+    }
+  } else {
+    containerStyle.width = '100%';
+    containerStyle.height = '100%';
+  }
+
   return (
-    <div
-      style={{
-        position: 'absolute',
-        pointerEvents: 'none',
-        top: shouldCoverFullImage ? 0 : positionStyles.top,
-        left: shouldCoverFullImage ? 0 : positionStyles.left,
-        right: shouldCoverFullImage ? 0 : positionStyles.right,
-        bottom: shouldCoverFullImage ? 0 : positionStyles.bottom,
-        width: shouldCoverFullImage ? '100%' : sizeStyles.width,
-        height: shouldCoverFullImage ? '100%' : sizeStyles.height,
-        maxWidth: shouldCoverFullImage ? undefined : sizeStyles.maxWidth,
-        maxHeight: shouldCoverFullImage ? undefined : sizeStyles.maxHeight,
-        transform: shouldCoverFullImage ? undefined : positionStyles.transform,
-        display: shouldCoverFullImage ? 'block' : positionStyles.display,
-        alignItems: positionStyles.alignItems,
-        justifyContent: positionStyles.justifyContent,
-        zIndex: 3,
-      }}
-    >
+    <div style={containerStyle}>
       {isUrlOverlay ? (
         <img
           src={overlay}

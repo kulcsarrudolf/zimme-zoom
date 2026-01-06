@@ -463,18 +463,6 @@ export const OverlayShownByDefaultWithButton: Story = {
   },
 };
 
-export const OverlayDefaultBehavior: Story = {
-  render: PhotoViewerWrapper,
-  args: {
-    images: overlayImagesWithLabels,
-    selectedImage: overlayImagesWithLabels[0],
-    settings: {
-      showOverlayByDefault: false,
-      showOverlayButton: false,
-    },
-  },
-};
-
 export const StarOverlayShownByDefault: Story = {
   render: PhotoViewerWrapper,
   args: {
