@@ -1,7 +1,7 @@
 {
   "name": "zimme-zoom",
-  "version": "0.1.6",
-  "description": "A lightweight React photo viewer with zoom, navigation, blurred background, and SVG overlay support",
+  "version": "0.2.0",
+  "description": "A collection of image-related React components packaged as an npm package. The main component is PhotoViewer, a lightweight React photo viewer with zoom, navigation, blurred background, and SVG overlay support",
   "main": "dist/index.js",
   "module": "dist/index.esm.js",
   "types": "dist/index.d.ts",
@@ -58,7 +58,10 @@
     "zoom",
     "image-viewer",
     "lightbox",
-    "svg-overlay"
+    "svg-overlay",
+    "gallery",
+    "image",
+    "image-gallery"
   ],
   "author": "Kulcsar Rudolf <kulcsarrudolf@gmail.com>",
   "license": "MIT",

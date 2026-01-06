@@ -1,2 +1,36 @@
-export const CloseIcon = `url("data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBzdGFuZGFsb25lPSJubyI/Pgo8c3ZnIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyIgaGVpZ2h0PSIxMDAwIiB3aWR0aD0iMTAwMCIgeG1sbnM6eGxpbms9Imh0dHA6Ly93d3cudzMub3JnLzE5OTkveGxpbmsiPgo8bWV0YWRhdGE+SWNvRm9udCBJY29uczwvbWV0YWRhdGE+Cjx0aXRsZT5jbG9zZS1saW5lPC90aXRsZT4KPGdseXBoIGdseXBoLW5hbWU9ImNsb3NlLWxpbmUiIHVuaWNvZGU9IiYjeGVlZTE7IiBob3Jpei1hZHYteD0iMTAwMCIgLz4KPHBhdGggIGZpbGw9IiNmZmZmZmYiIGQ9Ik03NjIuNSAyMDBsMzcuNSAzNy41LTI2Mi41IDI2Mi41IDI2Mi41IDI2Mi41LTM3LjUgMzcuNS0yNjIuNS0yNjIuNS0yNjIuNSAyNjIuNS0zNy41LTM3LjUgMjYyLjUtMjYyLjUtMjYyLjUtMjYyLjUgMzcuNS0zNy41IDI2Mi41IDI2Mi41eiIvPgo8L3N2Zz4=")`;
+import React from 'react';
+
+interface CloseIconProps {
+  width?: number | string;
+  height?: number | string;
+  fill?: string;
+  className?: string;
+  style?: React.CSSProperties;
+}
+
+export const CloseIcon: React.FC<CloseIconProps> = ({
+  width = 1000,
+  height = 1000,
+  fill = '#ffffff',
+  className,
+  style,
+}) => {
+  return (
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      height={height}
+      width={width}
+      xmlnsXlink="http://www.w3.org/1999/xlink"
+      className={className}
+      style={style}
+      viewBox="0 0 1000 1000"
+    >
+      <path
+        fill={fill}
+        d="M762.5 200l37.5 37.5-262.5 262.5 262.5 262.5-37.5 37.5-262.5-262.5-262.5 262.5-37.5-37.5 262.5-262.5-262.5-262.5 37.5-37.5 262.5 262.5z"
+      />
+    </svg>
+  );
+};
+
 export default CloseIcon;

@@ -85,7 +85,7 @@ export const Navigation: React.FC<NavigationProps> = ({
         <div className="photo-viewer-navigation-title" style={{ color: 'white', fontSize: '0.9rem' }}>
           {title}
         </div>
-        <div className="photo-viewer-navigation-controls" style={{ display: 'flex', gap: '1rem' }}>
+        <div className="photo-viewer-navigation-controls" style={{ display: 'flex', gap: '0.5rem', alignItems: 'center' }}>
           {onReset && <NavigationActionButton icon={ResetIcon} onClick={onReset} />}
           {onPrevious && <NavigationActionButton icon={ArrowIcon} onClick={onPrevious} />}
           {onNext && <NavigationActionButton icon={ArrowIcon} onClick={onNext} transform="rotateY(180deg)" />}
@@ -106,7 +106,7 @@ export const Navigation: React.FC<NavigationProps> = ({
             <NavigationActionButton
               icon={DownloadIcon}
               onClick={onDownload}
-              style={{ width: '20px', height: '20px', marginTop: '-3px' }}
+              style={{ width: '12px', height: '12px' }}
             />
           )}
           {onClose && <NavigationActionButton icon={CloseIcon} onClick={onClose} />}
