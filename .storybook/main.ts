@@ -6,7 +6,7 @@ const config: StorybookConfig = {
     '../src/stories/Gallery.stories.@(js|jsx|ts|tsx|mdx)',
     '../src/stories/PhotoViewer.stories.@(js|jsx|ts|tsx|mdx)',
   ],
-  addons: ['@storybook/addon-links', '@storybook/addon-essentials', '@storybook/addon-interactions'],
+  addons: ['@storybook/addon-links', '@storybook/addon-docs'],
   framework: {
     name: '@storybook/react-vite',
     options: {},

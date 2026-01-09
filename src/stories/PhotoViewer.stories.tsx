@@ -1,4 +1,4 @@
-import type { Meta, StoryObj } from '@storybook/react';
+import type { Meta, StoryObj } from '@storybook/react-vite';
 import { PhotoViewer } from '../components/photo-viewer/PhotoViewer';
 import { ZZImage } from '../types/image.type';
 import React, { useState } from 'react';
