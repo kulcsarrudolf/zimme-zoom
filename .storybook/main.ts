@@ -4,6 +4,7 @@ const config: StorybookConfig = {
   stories: [
     '../src/stories/Introduction.stories.@(js|jsx|ts|tsx|mdx)',
     '../src/stories/Gallery.stories.@(js|jsx|ts|tsx|mdx)',
+    '../src/stories/ImageCarousel.stories.@(js|jsx|ts|tsx|mdx)',
     '../src/stories/PhotoViewer.stories.@(js|jsx|ts|tsx|mdx)',
   ],
   addons: ['@storybook/addon-links', '@storybook/addon-docs'],

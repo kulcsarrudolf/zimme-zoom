@@ -8,6 +8,7 @@ zimme-zoom provides the following React components:
 
 - **PhotoViewer** - The main component: A lightweight photo viewer with zoom, navigation, blurred background, and SVG overlay support
 - **Gallery** - A grid-based image gallery component that displays images and integrates with PhotoViewer
+- **ImageCarousel** - A swipeable image carousel with lazy loading and touch/mouse gesture support
 - **Image** - A reusable image component for displaying images with click handlers, built-in loading states (pulsing placeholder), and smooth fade-in transitions
 
 All components are exported from the main package:
