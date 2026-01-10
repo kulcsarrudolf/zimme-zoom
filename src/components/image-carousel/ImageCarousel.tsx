@@ -25,7 +25,6 @@ export const ImageCarousel: React.FC<ImageCarouselProps> = ({
   const [currentIndex, setCurrentIndex] = useState(initialIndex);
   const [isDragging, setIsDragging] = useState(false);
   const [dragOffset, setDragOffset] = useState(0);
-  const [isAnimating, setIsAnimating] = useState(false);
   const containerRef = useRef<HTMLDivElement>(null);
   const dragStartRef = useRef<{ x: number; y: number; time: number } | null>(null);
   const hasMovedRef = useRef(false);
@@ -43,12 +42,9 @@ export const ImageCarousel: React.FC<ImageCarouselProps> = ({
   }, [currentIndex, preloadCount, images.length]);
 
   const goToIndex = useCallback(
-    (index: number, animate = true) => {
+    (index: number) => {
       const clampedIndex = Math.max(0, Math.min(images.length - 1, index));
       if (clampedIndex !== currentIndex) {
-        if (animate) {
-          setIsAnimating(true);
-        }
         setCurrentIndex(clampedIndex);
         onImageChange?.(images[clampedIndex], clampedIndex);
       }
@@ -209,10 +205,6 @@ export const ImageCarousel: React.FC<ImageCarouselProps> = ({
     [onImageClick]
   );
 
-  const handleTransitionEnd = useCallback(() => {
-    setIsAnimating(false);
-  }, []);
-
   // Handle single image case
   if (images.length === 0) {
     return null;
@@ -283,7 +275,7 @@ export const ImageCarousel: React.FC<ImageCarouselProps> = ({
           transition: isDragging ? 'none' : 'transform 0.3s ease-out',
           willChange: 'transform',
         }}
-        onTransitionEnd={handleTransitionEnd}
+
       >
         {images.map((image, index) => (
           <div
