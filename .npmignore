@@ -1,0 +1,45 @@
+# Source files
+src/
+
+# Config files
+.eslintrc.json
+.eslintignore
+.prettierrc
+.prettierignore
+tsconfig.json
+jest.config.js
+rollup.config.js
+vercel.json
+.yarnrc.yml
+
+# CI/CD
+.github/
+
+# Development
+.storybook/
+storybook-static/
+assets/
+
+# Test files
+*.test.ts
+*.test.tsx
+*.spec.ts
+*.spec.tsx
+__tests__/
+
+# Logs and artifacts
+*.log
+debug-storybook.log
+*.tgz
+
+# IDE and tools
+.claude/
+.vscode/
+.idea/
+
+# Documentation (optional - remove if you want these in package)
+CONTRIBUTING.md
+
+# Lock files
+yarn.lock
+package-lock.json
