@@ -11,7 +11,7 @@ Thank you for your interest in contributing to zimme-zoom! This document provide
 
 ## Development
 
-### Running Storybook
+### Running Storybookk
 
 To see your changes in action, run Storybook:
 
