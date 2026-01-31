@@ -1,5 +1,11 @@
 # zimme-zoom
 
+[![npm version](https://img.shields.io/npm/v/zimme-zoom.svg)](https://www.npmjs.com/package/zimme-zoom)
+[![license](https://img.shields.io/npm/l/zimme-zoom.svg)](https://github.com/kulcsarrudolf/zimme-zoom/blob/main/LICENSE)
+[![npm downloads](https://img.shields.io/npm/dm/zimme-zoom.svg)](https://www.npmjs.com/package/zimme-zoom)
+[![bundle size](https://img.shields.io/bundlephobia/minzip/zimme-zoom.svg)](https://bundlephobia.com/package/zimme-zoom)
+[![GitHub stars](https://img.shields.io/github/stars/kulcsarrudolf/zimme-zoom.svg)](https://github.com/kulcsarrudolf/zimme-zoom)
+
 A collection of image-related React components packaged as an npm package. The main component is **PhotoViewer**, a lightweight React photo viewer with zoom, navigation, blurred background, and SVG overlay support.
 
 ## Components
