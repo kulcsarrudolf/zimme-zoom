@@ -5,4 +5,5 @@ export { ImageCarousel } from './components/image-carousel/ImageCarousel';
 export type { ImageCarouselProps } from './components/image-carousel/ImageCarousel';
 export { Image } from './components/image/Image';
 export type { ZZImage } from './types/image.type';
-export type { OverlayPosition, OverlaySize } from './types/image.type';
+export type { OverlayPosition, OverlaySize, ImageSize } from './types/image.type';
+export { ImageRatio } from './types/image.type';

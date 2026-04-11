@@ -7,6 +7,22 @@ export type OverlaySize = {
   height?: string | number;
 };
 
+export enum ImageRatio {
+  Square    = '1 / 1',
+  Portrait  = '4 / 5',
+  Tall      = '9 / 16',
+  Landscape = '16 / 9',
+  Classic   = '4 / 3',
+  Cinematic = '21 / 9',
+  Golden    = '1.618 / 1',
+}
+
+export type ImageSize = {
+  ratio?: ImageRatio;
+  width?: string | number;
+  height?: string | number;
+};
+
 export type ZZImage = {
   id: string;
   src: string;

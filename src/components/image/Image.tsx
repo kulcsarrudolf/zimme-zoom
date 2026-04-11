@@ -1,26 +1,33 @@
 import React, { useState } from 'react';
-import { ZZImage } from '../../types/image.type';
+import { ImageSize, ZZImage } from '../../types/image.type';
 
 type ImageProps = {
   image: ZZImage;
+  size?: ImageSize;
   onClick?: () => void;
 };
 
-export const Image = ({ image, onClick }: ImageProps) => {
+export const Image = ({ image, size, onClick }: ImageProps) => {
   const [isLoading, setIsLoading] = useState(true);
+
+  const containerStyle: React.CSSProperties = {
+    overflow: 'hidden',
+    borderRadius: '8px',
+    cursor: 'pointer',
+    boxShadow: '0 2px 4px rgba(0,0,0,0.1)',
+    transition: 'transform 0.2s ease',
+    position: 'relative',
+    ...(size?.ratio
+      ? { aspectRatio: size.ratio }
+      : size?.width || size?.height
+        ? { width: size.width, height: size.height }
+        : { aspectRatio: '1 / 1' }),
+  };
 
   return (
     <div
       key={image.id}
-      style={{
-        aspectRatio: '4/4',
-        overflow: 'hidden',
-        borderRadius: '8px',
-        cursor: 'pointer',
-        boxShadow: '0 2px 4px rgba(0,0,0,0.1)',
-        transition: 'transform 0.2s ease',
-        position: 'relative',
-      }}
+      style={containerStyle}
       onClick={onClick}
     >
       {isLoading && (
