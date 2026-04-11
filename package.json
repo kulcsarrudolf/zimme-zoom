@@ -21,7 +21,10 @@
     "prepare": "yarn build",
     "prepublishOnly": "npm run build:npm && npm test",
     "storybook": "storybook dev -p 6006",
-    "build-storybook": "storybook build"
+    "build-storybook": "storybook build",
+    "deploy": "bash scripts/release.sh",
+    "deploy:minor": "bash scripts/release.sh minor",
+    "deploy:major": "bash scripts/release.sh major"
   },
   "peerDependencies": {
     "react": ">=16.8.0",
