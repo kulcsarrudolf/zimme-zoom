@@ -48,7 +48,13 @@ jobs:
       - name: Create Git tag
         run: |
           VERSION=$(node -p "require('./package.json').version")
-          git tag "v$VERSION"
-          git push origin "v$VERSION"
+          TAG="v$VERSION"
+          git fetch --tags origin
+          if git rev-parse "$TAG" >/dev/null 2>&1; then
+            echo "Tag $TAG already exists, skipping."
+            exit 0
+          fi
+          git tag "$TAG"
+          git push origin "$TAG"
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
