@@ -17,10 +17,17 @@ export const Image = ({ image, size, onClick }: ImageProps) => {
     boxShadow: '0 2px 4px rgba(0,0,0,0.1)',
     transition: 'transform 0.2s ease',
     position: 'relative',
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    width: size?.width,
+    height: size?.height,
+    maxWidth: size?.maxWidth,
+    maxHeight: size?.maxHeight,
     ...(size?.ratio
       ? { aspectRatio: size.ratio }
-      : size?.width || size?.height
-        ? { width: size.width, height: size.height }
+      : size?.width || size?.height || size?.maxWidth || size?.maxHeight
+        ? {}
         : { aspectRatio: '1 / 1' }),
   };
 
@@ -49,7 +56,8 @@ export const Image = ({ image, size, onClick }: ImageProps) => {
         style={{
           width: '100%',
           height: '100%',
-          objectFit: 'cover',
+          display: 'block',
+          objectFit: 'contain',
           opacity: isLoading ? 0 : 1,
           transition: 'opacity 0.3s ease',
         }}

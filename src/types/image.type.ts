@@ -21,6 +21,8 @@ export type ImageSize = {
   ratio?: ImageRatio;
   width?: string | number;
   height?: string | number;
+  maxWidth?: string | number;
+  maxHeight?: string | number;
 };
 
 export type ZZImage = {
