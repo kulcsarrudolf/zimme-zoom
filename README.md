@@ -286,7 +286,8 @@ import type { ZZImage } from 'zimme-zoom';
 
 const image: ZZImage = {
   id: '1',
-  src: 'https://example.com/image1.jpg',
+  src: 'https://example.com/full/image1.jpg',
+  thumbnailSrc: 'https://example.com/thumbs/image1.jpg',
   alt: 'Image 1',
 };
 
@@ -295,11 +296,13 @@ function App() {
 }
 ```
 
+`ZZImage` also supports optional **`thumbnailSrc`** for lighter inline loading; **`src`** is still used by **PhotoViewer** and downloads.
+
 #### Image Props
 
 | Prop      | Type         | Required | Description                                    |
 | --------- | ------------ | -------- | ---------------------------------------------- |
-| `image`   | `ZZImage`    | Yes      | Image object containing `id`, `src`, and `alt` |
+| `image`   | `ZZImage`    | Yes      | Image object: `id`, **`src`** (full), optional **`thumbnailSrc`** (preview), `alt`, … |
 | `onClick` | `() => void` | No       | Callback function called when image is clicked |
 
 The component is designed to work seamlessly within the `Gallery` component, but can also be used standalone in your own layouts.

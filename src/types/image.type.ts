@@ -27,7 +27,10 @@ export type ImageSize = {
 
 export type ZZImage = {
   id: string;
+  /** Full-resolution URL (PhotoViewer, download, and inline display when `thumbnailSrc` is omitted). */
   src: string;
+  /** Optional smaller URL for inline previews (`Image`, `ImageCarousel`); full `src` is used in PhotoViewer. */
+  thumbnailSrc?: string;
   alt?: string;
   title?: string;
   svgOverlay?: React.ReactNode | string; // Can be a React component or a URL string

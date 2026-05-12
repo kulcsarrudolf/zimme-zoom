@@ -5,6 +5,7 @@ export function mediaGridItemToZZImage(item: MediaGridItem): ZZImage {
   return {
     id: item.id,
     src: item.src,
+    ...(item.thumbnailSrc ? { thumbnailSrc: item.thumbnailSrc } : {}),
     alt: item.alt ?? item.name,
     title: item.name,
   };

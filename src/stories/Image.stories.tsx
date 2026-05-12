@@ -50,8 +50,21 @@ export const Default: Story = {
   args: {
     image: {
       id: '1',
-      src: 'https://picsum.photos/1200/800?random=1',
+      thumbnailSrc: 'https://picsum.photos/seed/img-default/400/300',
+      src: 'https://picsum.photos/seed/img-default/1600/1200',
       alt: 'A sample image',
+    },
+    size: { ratio: ImageRatio.Square, width: 240 },
+  },
+};
+
+export const FullSrcOnly: Story = {
+  name: 'Full src only (no thumbnail)',
+  args: {
+    image: {
+      id: 'full-only',
+      src: 'https://picsum.photos/1200/800?random=1',
+      alt: 'Loaded from src only',
     },
     size: { ratio: ImageRatio.Square, width: 240 },
   },

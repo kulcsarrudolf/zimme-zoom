@@ -1,6 +1,10 @@
 import React, { useState, useRef, useCallback, useEffect, useMemo } from 'react';
 import { ZZImage } from '../../types/image.type';
 
+function zzImageDisplaySrc(image: ZZImage): string {
+  return image.thumbnailSrc ?? image.src;
+}
+
 export type ImageCarouselProps = {
   images: ZZImage[];
   initialIndex?: number;
@@ -222,7 +226,7 @@ export const ImageCarousel: React.FC<ImageCarouselProps> = ({
         }}
       >
         <img
-          src={image.src}
+          src={zzImageDisplaySrc(image)}
           alt={image.alt || ''}
           onClick={() => onImageClick?.(image, 0)}
           style={{
@@ -289,7 +293,7 @@ export const ImageCarousel: React.FC<ImageCarouselProps> = ({
           >
             {loadedIndices.has(index) ? (
               <img
-                src={image.src}
+                src={zzImageDisplaySrc(image)}
                 alt={image.alt || ''}
                 onClick={() => handleImageClick(image, index)}
                 draggable={false}
