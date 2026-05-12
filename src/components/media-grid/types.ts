@@ -2,7 +2,10 @@ import type { CSSProperties } from 'react';
 
 export type MediaGridItem = {
   id: string;
+  /** Full-size image URL (used in PhotoViewer and when `thumbnailSrc` is omitted in the grid). */
   src: string;
+  /** Optional smaller URL for grid thumbnails only; saves bandwidth while scrolling. */
+  thumbnailSrc?: string;
   name: string;
   /** Unix timestamp in milliseconds (UTC grouping uses `Date#getUTC*` on this instant). */
   createdAt: number;

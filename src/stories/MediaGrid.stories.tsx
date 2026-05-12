@@ -27,8 +27,8 @@ Rows are grouped by **\`YYYY-MM\` in UTC** (\`monthKeyUtc(createdAt)\`). Use \`c
 - **Default (\`loadMore\` unset)**: \`localFiltering\` defaults to **true** — search runs in the browser on \`items\` (optional \`dateFromMs\` / \`dateToMs\` in \`filters\` still work if you set them from code).
 - **With \`loadMore\`**: \`localFiltering\` defaults to **false** — the toolbar still updates filter state and calls \`onFiltersChange\`; **you should refetch/reset** \`items\` from the server so results are not "only loaded pages". Pass \`filters\` + \`onFiltersChange\` for full control.
 
-### Peer dependencies
-Only **React**. Virtual scrolling uses a small internal offset/height model and \`requestAnimationFrame\` scroll batching.
+### Optional previews
+Pass **\`thumbnailSrc\`** on items for a **small grid URL**; **\`src\`** stays the **full-resolution** URL for **PhotoViewer** (and for the grid when \`thumbnailSrc\` is omitted).
         `.trim(),
       },
     },
@@ -57,6 +57,14 @@ function randomSeeded(seed: number): () => number {
 
 function daysInMonthUtc(year: number, monthIndex0to11: number): number {
   return new Date(Date.UTC(year, monthIndex0to11 + 1, 0)).getUTCDate();
+}
+
+/** Story/demo URLs: small grid cell vs full-size viewer (same picsum seed → same image). */
+function picsumThumbAndFull(seedKey: string): Pick<MediaGridItem, 'thumbnailSrc' | 'src'> {
+  return {
+    thumbnailSrc: `https://picsum.photos/seed/${seedKey}/240/240`,
+    src: `https://picsum.photos/seed/${seedKey}/1600/1200`,
+  };
 }
 
 /**
@@ -91,10 +99,11 @@ function generateCatalogLastThreeYears(seed: number): MediaGridItem[] {
       const yLabel = y;
       const mLabel = String(mo + 1).padStart(2, '0');
       idCounter += 1;
+      const seedKey = `${seed}-3y-${idCounter}`;
       items.push({
         id: `3y-${seed}-${idCounter}`,
         name: `Memory ${yLabel}-${mLabel} #${j + 1}`,
-        src: `https://picsum.photos/seed/${seed}-3y-${idCounter}/300/300`,
+        ...picsumThumbAndFull(seedKey),
         alt: `Photo from ${yLabel}-${mLabel}`,
         createdAt,
       });
@@ -119,7 +128,7 @@ function generateItems(count: number, options?: { seed?: number; namePrefix?: st
     out.push({
       id: `mg-${seed}-${i}`,
       name: `${prefix} ${i} — ${daysAgo}d`,
-      src: `https://picsum.photos/seed/${seed}-${i}/300/300`,
+      ...picsumThumbAndFull(`${seed}-${i}`),
       alt: `${prefix} ${i}`,
       createdAt,
     });
@@ -196,7 +205,8 @@ function LargeListLoadMoreWrapper() {
     <div>
       <p style={{ maxWidth: 720, color: '#666', fontSize: 14, marginTop: 0 }}>
         Large catalog (~{approxTotal} images) over the <strong>last {totalMonths} UTC months</strong> (~3 years),
-        with a <strong>random (seeded) count per month</strong>. Scroll to the bottom to load the next chunk (
+        with a <strong>random (seeded) count per month</strong>. Each item uses a <strong>240px grid thumb</strong> and{' '}
+        <strong>1600×1200 full</strong> for the viewer. Scroll to the bottom to load the next chunk (
         <code>{LARGE_LIST_PAGE}</code> items). Parent filters the <em>loaded</em> slice only — in production you’d
         refetch when <code>onFiltersChange</code> fires.
       </p>
@@ -235,23 +245,23 @@ export const CrossYearSameMonth: Story = {
       {
         id: 'a',
         name: 'April 2026',
-        src: 'https://picsum.photos/seed/cysm-1/300/300',
+        ...picsumThumbAndFull('cysm-1'),
         createdAt: Date.UTC(2026, 3, 15, 10, 0, 0, 0),
       },
       {
         id: 'b',
         name: 'April 2025',
-        src: 'https://picsum.photos/seed/cysm-2/300/300',
+        ...picsumThumbAndFull('cysm-2'),
         createdAt: Date.UTC(2025, 3, 2, 10, 0, 0, 0),
       },
       {
         id: 'c',
         name: 'May 2026',
-        src: 'https://picsum.photos/seed/cysm-3/300/300',
+        ...picsumThumbAndFull('cysm-3'),
         createdAt: Date.UTC(2026, 4, 30, 23, 0, 0, 0),
       },
     ],
     height: 420,
-    enablePhotoViewer: false,
+    enablePhotoViewer: true,
   },
 };

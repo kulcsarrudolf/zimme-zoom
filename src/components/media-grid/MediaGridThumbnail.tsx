@@ -11,10 +11,11 @@ export type MediaGridThumbnailProps = {
 
 export const MediaGridThumbnail = memo(function MediaGridThumbnail({ item, onClick }: MediaGridThumbnailProps) {
   const [isLoading, setIsLoading] = useState(true);
+  const displaySrc = item.thumbnailSrc ?? item.src;
 
   useEffect(() => {
     setIsLoading(true);
-  }, [item.id, item.src]);
+  }, [item.id, item.src, item.thumbnailSrc]);
 
   return (
     <button
@@ -49,7 +50,7 @@ export const MediaGridThumbnail = memo(function MediaGridThumbnail({ item, onCli
         />
       )}
       <img
-        src={item.src}
+        src={displaySrc}
         alt={item.alt ?? item.name}
         loading="lazy"
         decoding="async"

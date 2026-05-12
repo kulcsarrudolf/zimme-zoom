@@ -174,7 +174,8 @@ const items: MediaGridItem[] = [
   {
     id: '1',
     name: 'Sunset',
-    src: 'https://example.com/thumb1.jpg',
+    src: 'https://example.com/full/sunset.jpg',
+    thumbnailSrc: 'https://example.com/thumbs/sunset.jpg',
     createdAt: Date.UTC(2026, 4, 10, 12, 0, 0, 0),
     alt: 'Sunset',
   },
@@ -187,15 +188,16 @@ function App() {
 
 ### MediaGridItem fields
 
-| Field       | Type     | Required | Description                                      |
-| ---------- | -------- | -------- | ------------------------------------------------ |
-| `id`       | `string` | Yes      | Stable unique id                                 |
-| `src`      | `string` | Yes      | Thumbnail or image URL                           |
-| `name`     | `string` | Yes      | Display name; used for search                    |
-| `createdAt`| `number` | Yes      | Unix time in ms; UTC month grouping uses this instant |
-| `alt`      | `string` | No       | Shown as `img` alt text                          |
+| Field           | Type     | Required | Description                                      |
+| -------------- | -------- | -------- | ------------------------------------------------ |
+| `id`           | `string` | Yes      | Stable unique id                                 |
+| `src`          | `string` | Yes      | Full-resolution URL (PhotoViewer and download)   |
+| `thumbnailSrc` | `string` | No       | Optional smaller URL for grid cells only         |
+| `name`         | `string` | Yes      | Display name; used for search                    |
+| `createdAt`    | `number` | Yes      | Unix time in ms; UTC month grouping uses this instant |
+| `alt`          | `string` | No       | Shown as `img` alt text                          |
 
-### Full list vs `loadMore`
+In Storybook, **MediaGrid** demos generate **`thumbnailSrc`** (240×240) and **`src`** (1600×1200) for each picsum item so the grid stays light and the viewer loads a larger asset.
 
 | Mode | Default `localFiltering` | Behavior |
 | ---- | ------------------------ | -------- |
