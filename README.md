@@ -5,7 +5,7 @@
 [![npm downloads](https://img.shields.io/npm/dt/zimme-zoom.svg)](https://www.npmjs.com/package/zimme-zoom)
 [![GitHub stars](https://img.shields.io/github/stars/kulcsarrudolf/zimme-zoom.svg)](https://github.com/kulcsarrudolf/zimme-zoom)
 
-A collection of image-related React components packaged as an npm package. The main component is **PhotoViewer**, a lightweight React photo viewer with zoom, navigation, blurred background, and SVG overlay support.
+A collection of image-related React components packaged as an npm package. The main component is **PhotoViewer**, a lightweight React photo viewer with zoom, navigation, blurred background, and SVG overlay support. **MediaGrid** adds a Messenger-style, windowed month grid with search, jump-to-month, and optional infinite loading—without extra list libraries (React only).
 
 ## Components
 
@@ -13,14 +13,15 @@ zimme-zoom provides the following React components:
 
 - **PhotoViewer** - The main component: A lightweight photo viewer with zoom, navigation, blurred background, and SVG overlay support
 - **Gallery** - A grid-based image gallery component that displays images and integrates with PhotoViewer
+- **MediaGrid** - Virtualized month-grouped image grid with search, jump-to-month, optional `loadMore`, and optional integration with PhotoViewer
 - **ImageCarousel** - A swipeable image carousel with lazy loading and touch/mouse gesture support
 - **Image** - A reusable image component for displaying images with click handlers, built-in loading states (pulsing placeholder), and smooth fade-in transitions
 
 All components are exported from the main package:
 
 ```tsx
-import { PhotoViewer, Gallery, Image } from 'zimme-zoom';
-import type { ZZImage, PhotoViewerProps } from 'zimme-zoom';
+import { PhotoViewer, Gallery, MediaGrid, Image } from 'zimme-zoom';
+import type { ZZImage, PhotoViewerProps, MediaGridItem, MediaGridProps } from 'zimme-zoom';
 ```
 
 ## Demo
@@ -156,6 +157,120 @@ All settings are configured through the `settings` prop:
   }}
 />
 ```
+
+## MediaGrid Usage
+
+**MediaGrid** renders a scrollable grid (default three columns) with **month headers**, **name search**, and **jump-to-month**. The scroll area uses a thin themed scrollbar; **row gaps** add vertical space between thumbnail rows (Messenger-like). Only rows near the viewport are mounted, so large lists stay responsive. There are **no extra peer dependencies** for virtualization—only React.
+
+Items are grouped by **UTC calendar month** (`YYYY-MM`) derived from each item’s `createdAt` timestamp. Pass **`jumpMonthKeys`** (newest-first `YYYY-MM` list) so the Jump menu shows your **full** range; implement **`onJumpToMonthNotLoaded`** when data is paged so the grid can load until the chosen month exists, then it scrolls automatically.
+
+### Basic example
+
+```tsx
+import { MediaGrid } from 'zimme-zoom';
+import type { MediaGridItem } from 'zimme-zoom';
+
+const items: MediaGridItem[] = [
+  {
+    id: '1',
+    name: 'Sunset',
+    src: 'https://example.com/thumb1.jpg',
+    createdAt: Date.UTC(2026, 4, 10, 12, 0, 0, 0),
+    alt: 'Sunset',
+  },
+];
+
+function App() {
+  return <MediaGrid items={items} height={520} enablePhotoViewer />;
+}
+```
+
+### MediaGridItem fields
+
+| Field       | Type     | Required | Description                                      |
+| ---------- | -------- | -------- | ------------------------------------------------ |
+| `id`       | `string` | Yes      | Stable unique id                                 |
+| `src`      | `string` | Yes      | Thumbnail or image URL                           |
+| `name`     | `string` | Yes      | Display name; used for search                    |
+| `createdAt`| `number` | Yes      | Unix time in ms; UTC month grouping uses this instant |
+| `alt`      | `string` | No       | Shown as `img` alt text                          |
+
+### Full list vs `loadMore`
+
+| Mode | Default `localFiltering` | Behavior |
+| ---- | ------------------------ | -------- |
+| Full in-memory list | `true` (when `loadMore` is not passed) | Search (and optional programmatic `dateFromMs` / `dateToMs`) run on `items` in the browser. |
+| Paged / infinite (`loadMore` passed) | `false` | Toolbar still updates filters; pass **`filters`** and **`onFiltersChange`**, and replace **`items`** from your API so results are not limited to “whatever pages are loaded.” |
+
+Example with controlled filters while appending pages (parent filters the combined list):
+
+```tsx
+import { useCallback, useMemo, useState } from 'react';
+import { MediaGrid, filterMediaGridItems } from 'zimme-zoom';
+import type { MediaGridFilters, MediaGridItem } from 'zimme-zoom';
+
+function PagedGrid({ allLoadedItems }: { allLoadedItems: MediaGridItem[] }) {
+  const [filters, setFilters] = useState<MediaGridFilters>({ searchQuery: '' });
+
+  const visibleItems = useMemo(
+    () => filterMediaGridItems(allLoadedItems, filters),
+    [allLoadedItems, filters],
+  );
+
+  const loadMore = useCallback(async () => {
+    // fetch next page, append to parent state driving allLoadedItems
+  }, []);
+
+  return (
+    <MediaGrid
+      items={visibleItems}
+      height={520}
+      loadMore={loadMore}
+      hasMore
+      loadingMore={false}
+      localFiltering={false}
+      filters={filters}
+      onFiltersChange={setFilters}
+    />
+  );
+}
+```
+
+### Helpers (optional)
+
+You can reuse the same grouping and filter logic outside the component:
+
+- `filterMediaGridItems`, `buildMediaGridRows`
+- `monthKeyUtc`, `formatMonthLabelUtc`, `utcMonthStartMs`, `utcMonthEndMs`, `parseMonthInputValue`, `utcMonthKeysDescending`
+- `mediaGridItemToZZImage`, `mediaGridItemsToZZImages` (for **PhotoViewer** / **ZZImage**)
+
+### MediaGrid props
+
+| Prop               | Type                         | Required | Description |
+| ------------------ | ---------------------------- | -------- | ----------- |
+| `items`            | `MediaGridItem[]`            | Yes      | Images to show (grouped by UTC month, newest first) |
+| `height`           | `number \| string`           | No       | Scroll area height (default `520`; numbers are pixels) |
+| `columns`          | `number`                     | No       | Columns per row (default `3`) |
+| `gap`              | `number`                     | No       | Gap between cells in px (default `4`) |
+| `rowGap`           | `number`                     | No       | Extra vertical space after each thumbnail row in px (default `6`) |
+| `maxWidth`         | `number \| string`           | No       | Max width of the panel (default `20rem`; Messenger-style). Numbers are pixels. |
+| `ariaLabel`        | `string`                     | No       | Accessible name for the grid region (default `Media grid`) |
+| `className`        | `string`                     | No       | Root `section` class |
+| `style`            | `CSSProperties`              | No       | Root inline styles |
+| `localFiltering`   | `boolean`                    | No       | When `true`, filter `items` in the browser; when `false`, parent owns filtered data. Default: `false` if `loadMore` is set, else `true`. |
+| `loadMore`         | `() => void \| Promise<void>` | No    | Called when the user scrolls near the bottom |
+| `hasMore`          | `boolean`                    | No       | When `false`, `loadMore` stops being requested |
+| `loadingMore`      | `boolean`                    | No       | While `true`, sentinel will not trigger another `loadMore` |
+| `filters`          | `MediaGridFilters`           | No       | Controlled filter state (`searchQuery`, optional `dateFromMs` / `dateToMs`) |
+| `defaultFilters`   | `MediaGridFilters`           | No       | Initial filters when uncontrolled |
+| `onFiltersChange`  | `(filters: MediaGridFilters) => void` | No | Fires when search changes (filters still support `dateFromMs` / `dateToMs` if you set them in code). |
+| `onItemClick`      | `(item: MediaGridItem) => void` | No  | Thumbnail click |
+| `enablePhotoViewer`| `boolean`                    | No       | Opens **PhotoViewer** on thumbnail click (default `false`) |
+| `labelLocale`      | `string`                     | No       | Locale for month labels (UTC); forwarded to `toLocaleDateString` |
+| `jumpMonthKeys`    | `string[]`                   | No       | Full list of `YYYY-MM` keys for Jump (newest first). Defaults to months present in `items`. |
+| `onJumpToMonthNotLoaded` | `(monthKey: string) => void` | No | User jumped to a month not in the current row model; load data until it appears (then grid scrolls). |
+
+See the **MediaGrid** stories on [Storybook](https://zimme-zoom.vercel.app) for **LargeListLoadMore** (last ~3 years of random monthly volume + `loadMore`) and other examples.
 
 ## Image Component Usage
 

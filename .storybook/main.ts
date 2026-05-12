@@ -1,13 +1,7 @@
 import type { StorybookConfig } from '@storybook/react-vite';
 
 const config: StorybookConfig = {
-  stories: [
-    '../src/stories/Introduction.stories.@(js|jsx|ts|tsx|mdx)',
-    '../src/stories/Gallery.stories.@(js|jsx|ts|tsx|mdx)',
-    '../src/stories/ImageCarousel.stories.@(js|jsx|ts|tsx|mdx)',
-    '../src/stories/PhotoViewer.stories.@(js|jsx|ts|tsx|mdx)',
-    '../src/stories/Image.stories.@(js|jsx|ts|tsx|mdx)',
-  ],
+  stories: ['../src/stories/**/*.stories.@(js|jsx|ts|tsx|mdx)'],
   addons: ['@storybook/addon-links', '@storybook/addon-docs'],
   framework: {
     name: '@storybook/react-vite',

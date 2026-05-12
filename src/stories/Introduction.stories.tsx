@@ -8,7 +8,9 @@ const IntroductionComponent = () => {
       <p>
         A collection of image-related React components packaged as an npm package. The main component is{' '}
         <strong>PhotoViewer</strong>, a lightweight React photo viewer with zoom, navigation, blurred background, and
-        SVG overlay support.
+        SVG overlay support. <strong>MediaGrid</strong> adds a Messenger-style month-grouped grid with search,
+        jump-to-month (full range via <code>jumpMonthKeys</code>), optional infinite loading, and built-in windowing
+        (React only—no extra list libraries).
       </p>
 
       <h2>Prerequisites</h2>
@@ -36,6 +38,13 @@ const IntroductionComponent = () => {
           PhotoViewer
         </li>
         <li>
+          <strong>MediaGrid</strong> - Virtualized month-grouped image grid with search, jump-to-month, optional{' '}
+          <code>loadMore</code>, and optional PhotoViewer integration
+        </li>
+        <li>
+          <strong>ImageCarousel</strong> - A swipeable image carousel with lazy loading and touch/mouse gesture support
+        </li>
+        <li>
           <strong>Image</strong> - A reusable image component for displaying images with click handlers, built-in
           loading states (pulsing placeholder), and smooth fade-in transitions
         </li>
@@ -43,9 +52,13 @@ const IntroductionComponent = () => {
 
       <p>All components are exported from the main package:</p>
       <pre style={{ background: '#f5f5f5', padding: '1rem', borderRadius: '4px', overflow: 'auto' }}>
-        {`import { PhotoViewer, Gallery, Image } from 'zimme-zoom';
-import type { ZZImage, PhotoViewerProps } from 'zimme-zoom';`}
+        {`import { PhotoViewer, Gallery, MediaGrid, ImageCarousel, Image } from 'zimme-zoom';
+import type { ZZImage, PhotoViewerProps, MediaGridItem, MediaGridProps } from 'zimme-zoom';`}
       </pre>
+
+      <p>
+        See the <strong>MediaGrid</strong> story group in the sidebar for <strong>LargeListLoadMore</strong> (multi-year catalog + pagination), defaults, and edge cases.
+      </p>
 
       <h2>PhotoViewer Usage</h2>
 

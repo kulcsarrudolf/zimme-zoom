@@ -7,3 +7,17 @@ export { Image } from './components/image/Image';
 export type { ZZImage } from './types/image.type';
 export type { OverlayPosition, OverlaySize, ImageSize } from './types/image.type';
 export { ImageRatio } from './types/image.type';
+export {
+  MediaGrid,
+  buildMediaGridRows,
+  filterMediaGridItems,
+  formatMonthLabelUtc,
+  mediaGridItemToZZImage,
+  mediaGridItemsToZZImages,
+  monthKeyUtc,
+  parseMonthInputValue,
+  utcMonthEndMs,
+  utcMonthKeysDescending,
+  utcMonthStartMs,
+} from './components/media-grid';
+export type { BuiltMediaGridModel, MediaGridFilters, MediaGridItem, MediaGridProps, MediaGridRow } from './components/media-grid';
