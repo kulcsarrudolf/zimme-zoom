@@ -20,7 +20,7 @@
     "lint:fix": "eslint . --fix",
     "format": "prettier --write \"src/**/*.{ts,tsx}\"",
     "format:check": "prettier --check \"src/**/*.{ts,tsx}\"",
-    "prepare": "yarn build",
+    "prepare": "husky",
     "prepublishOnly": "npm run build:npm && npm test",
     "storybook": "storybook dev -p 6006",
     "build-storybook": "storybook build",
@@ -28,11 +28,19 @@
     "deploy:minor": "bash scripts/release.sh minor",
     "deploy:major": "bash scripts/release.sh major"
   },
+  "lint-staged": {
+    "*.{ts,tsx}": [
+      "eslint --fix",
+      "prettier --write"
+    ]
+  },
   "peerDependencies": {
     "react": ">=16.8.0",
     "react-dom": ">=16.8.0"
   },
   "devDependencies": {
+    "@commitlint/cli": "^19",
+    "@commitlint/config-conventional": "^19",
     "@eslint/js": "^10.0.1",
     "@storybook/addon-docs": "^10.1.11",
     "@storybook/addon-links": "^10.1.11",
@@ -47,8 +55,10 @@
     "eslint-plugin-react-hooks": "^5",
     "eslint-plugin-storybook": "10.1.11",
     "globals": "^17.7.0",
+    "husky": "^9.1.7",
     "jest": "^30.2.0",
     "jest-environment-jsdom": "^30.2.0",
+    "lint-staged": "^17.0.8",
     "prettier": "^3.2.5",
     "react": "^19.2.0",
     "react-dom": "^19.2.0",
