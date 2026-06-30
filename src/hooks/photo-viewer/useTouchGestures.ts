@@ -61,7 +61,7 @@ export function useTouchGestures({
         lastTouchDistanceRef.current = getTouchDistance(touches[0], touches[1]);
       }
     },
-    [allowZoom, zoom, panX, panY, imagesCount]
+    [allowZoom, zoom, panX, panY, imagesCount],
   );
 
   const onTouchMove = useCallback(
@@ -101,7 +101,7 @@ export function useTouchGestures({
         onPan(t.clientX - touchPanStartRef.current.x, t.clientY - touchPanStartRef.current.y);
       }
     },
-    [allowZoom, zoom, panX, panY, minZoom, maxZoom, imageContainerRef, onZoomTo, onPan]
+    [allowZoom, zoom, panX, panY, minZoom, maxZoom, imageContainerRef, onZoomTo, onPan],
   );
 
   const onTouchEnd = useCallback(
@@ -129,7 +129,7 @@ export function useTouchGestures({
       touchStartRef.current = null;
       touchPanStartRef.current = null;
     },
-    [zoom, imagesCount, onNext, onPrevious]
+    [zoom, imagesCount, onNext, onPrevious],
   );
 
   const reset = useCallback(() => {

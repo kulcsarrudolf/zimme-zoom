@@ -53,7 +53,7 @@ export const ImageCarousel: React.FC<ImageCarouselProps> = ({
         onImageChange?.(images[clampedIndex], clampedIndex);
       }
     },
-    [currentIndex, images, onImageChange]
+    [currentIndex, images, onImageChange],
   );
 
   const goToNext = useCallback(() => {
@@ -101,7 +101,7 @@ export const ImageCarousel: React.FC<ImageCarouselProps> = ({
       }
       setDragOffset(deltaX);
     },
-    [isDragging]
+    [isDragging],
   );
 
   const handleMouseUp = useCallback(
@@ -128,7 +128,7 @@ export const ImageCarousel: React.FC<ImageCarouselProps> = ({
       setDragOffset(0);
       dragStartRef.current = null;
     },
-    [isDragging, goToNext, goToPrevious]
+    [isDragging, goToNext, goToPrevious],
   );
 
   // Touch drag handlers
@@ -157,7 +157,7 @@ export const ImageCarousel: React.FC<ImageCarouselProps> = ({
       }
       setDragOffset(deltaX);
     },
-    [isDragging]
+    [isDragging],
   );
 
   const handleTouchEnd = useCallback(
@@ -185,7 +185,7 @@ export const ImageCarousel: React.FC<ImageCarouselProps> = ({
       setDragOffset(0);
       dragStartRef.current = null;
     },
-    [isDragging, goToNext, goToPrevious]
+    [isDragging, goToNext, goToPrevious],
   );
 
   // Add global mouse event listeners for drag
@@ -206,7 +206,7 @@ export const ImageCarousel: React.FC<ImageCarouselProps> = ({
         onImageClick?.(image, index);
       }
     },
-    [onImageClick]
+    [onImageClick],
   );
 
   // Handle single image case
@@ -279,7 +279,6 @@ export const ImageCarousel: React.FC<ImageCarouselProps> = ({
           transition: isDragging ? 'none' : 'transform 0.3s ease-out',
           willChange: 'transform',
         }}
-
       >
         {images.map((image, index) => (
           <div

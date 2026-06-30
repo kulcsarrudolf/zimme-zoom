@@ -5,7 +5,9 @@ export type MediaGridMonthHeaderRowProps = {
   label: string;
 };
 
-export const MediaGridMonthHeaderRow = memo(function MediaGridMonthHeaderRow({ label }: MediaGridMonthHeaderRowProps) {
+export const MediaGridMonthHeaderRow = memo(function MediaGridMonthHeaderRow({
+  label,
+}: MediaGridMonthHeaderRowProps) {
   return (
     <div
       style={{

@@ -7,7 +7,7 @@
 export const downloadImage = async (
   imageSrc: string,
   filename: string,
-  imageElement?: HTMLImageElement | null
+  imageElement?: HTMLImageElement | null,
 ): Promise<void> => {
   // Method 1: Try using canvas (works for same-origin images, even without CORS headers)
   // This works because the image is already loaded in the browser
@@ -24,7 +24,7 @@ export const downloadImage = async (
       ctx.drawImage(imageElement, 0, 0);
 
       // Convert to blob using Promise
-      const blob = await new Promise<Blob | null>(resolve => {
+      const blob = await new Promise<Blob | null>((resolve) => {
         canvas.toBlob(resolve, 'image/png');
       });
 
@@ -77,4 +77,3 @@ export const downloadImage = async (
   link.click();
   document.body.removeChild(link);
 };
-

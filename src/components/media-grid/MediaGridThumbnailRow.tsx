@@ -28,13 +28,15 @@ export const MediaGridThumbnailRow = memo(function MediaGridThumbnailRow({
         boxSizing: 'border-box',
       }}
     >
-      {padded.slice(0, columns).map((cell, idx) =>
-        cell ? (
-          <MediaGridThumbnail key={cell.id} item={cell} onClick={onThumbnailClick} />
-        ) : (
-          <div key={`empty-${idx}`} style={{ minHeight: 0 }} aria-hidden />
-        ),
-      )}
+      {padded
+        .slice(0, columns)
+        .map((cell, idx) =>
+          cell ? (
+            <MediaGridThumbnail key={cell.id} item={cell} onClick={onThumbnailClick} />
+          ) : (
+            <div key={`empty-${idx}`} style={{ minHeight: 0 }} aria-hidden />
+          ),
+        )}
     </div>
   );
 });

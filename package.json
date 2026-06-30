@@ -18,6 +18,7 @@
     "test": "jest --passWithNoTests",
     "lint": "eslint src --ext .ts,.tsx",
     "format": "prettier --write \"src/**/*.{ts,tsx}\"",
+    "format:check": "prettier --check \"src/**/*.{ts,tsx}\"",
     "prepare": "yarn build",
     "prepublishOnly": "npm run build:npm && npm test",
     "storybook": "storybook dev -p 6006",

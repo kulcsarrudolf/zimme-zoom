@@ -7,7 +7,11 @@ interface ImageOverlayProps {
   size?: OverlaySize;
 }
 
-export const ImageOverlay: React.FC<ImageOverlayProps> = ({ overlay, position = 'center', size = {} }) => {
+export const ImageOverlay: React.FC<ImageOverlayProps> = ({
+  overlay,
+  position = 'center',
+  size = {},
+}) => {
   // Calculate position styles
   const getPositionStyles = (pos: OverlayPosition): React.CSSProperties => {
     const styles: React.CSSProperties = {};
@@ -67,11 +71,13 @@ export const ImageOverlay: React.FC<ImageOverlayProps> = ({ overlay, position = 
     const sizeStyles: React.CSSProperties = {};
 
     if (size.maxWidth !== undefined) {
-      sizeStyles.maxWidth = typeof size.maxWidth === 'number' ? `${size.maxWidth}px` : size.maxWidth;
+      sizeStyles.maxWidth =
+        typeof size.maxWidth === 'number' ? `${size.maxWidth}px` : size.maxWidth;
     }
 
     if (size.maxHeight !== undefined) {
-      sizeStyles.maxHeight = typeof size.maxHeight === 'number' ? `${size.maxHeight}px` : size.maxHeight;
+      sizeStyles.maxHeight =
+        typeof size.maxHeight === 'number' ? `${size.maxHeight}px` : size.maxHeight;
     }
 
     if (size.width !== undefined) {

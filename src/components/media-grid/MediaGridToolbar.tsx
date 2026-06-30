@@ -36,7 +36,7 @@ export const MediaGridToolbar = memo(function MediaGridToolbar({
           id="zz-media-grid-search"
           type="search"
           value={filters.searchQuery}
-          onChange={e =>
+          onChange={(e) =>
             onFiltersChange({
               ...filters,
               searchQuery: e.target.value,
@@ -64,7 +64,7 @@ export const MediaGridToolbar = memo(function MediaGridToolbar({
         <select
           id="zz-media-grid-jump"
           value={jumpValue}
-          onChange={e => {
+          onChange={(e) => {
             const v = e.target.value;
             setJumpValue('');
             if (!v) return;
@@ -82,7 +82,7 @@ export const MediaGridToolbar = memo(function MediaGridToolbar({
           }}
         >
           <option value="">Select…</option>
-          {jumpMonthKeysInOrder.map(key => (
+          {jumpMonthKeysInOrder.map((key) => (
             <option key={key} value={key}>
               {jumpMonthLabelsByKey.get(key) ?? key}
             </option>

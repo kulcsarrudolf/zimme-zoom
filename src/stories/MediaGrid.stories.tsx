@@ -87,8 +87,7 @@ function generateCatalogLastThreeYears(seed: number): MediaGridItem[] {
     const monthStart = new Date(Date.UTC(endYear, endMonth - offset, 1));
     const y = monthStart.getUTCFullYear();
     const mo = monthStart.getUTCMonth();
-    const countThisMonth =
-      minPerMonth + Math.floor(rnd() * (maxPerMonth - minPerMonth + 1));
+    const countThisMonth = minPerMonth + Math.floor(rnd() * (maxPerMonth - minPerMonth + 1));
     const dim = daysInMonthUtc(y, mo);
 
     for (let j = 0; j < countThisMonth; j++) {
@@ -114,7 +113,10 @@ function generateCatalogLastThreeYears(seed: number): MediaGridItem[] {
   return items;
 }
 
-function generateItems(count: number, options?: { seed?: number; namePrefix?: string }): MediaGridItem[] {
+function generateItems(
+  count: number,
+  options?: { seed?: number; namePrefix?: string },
+): MediaGridItem[] {
   const seed = options?.seed ?? 1;
   const rnd = randomSeeded(seed);
   const prefix = options?.namePrefix ?? 'Photo';
@@ -167,9 +169,7 @@ function LargeListLoadMoreWrapper() {
   }
   const catalog = catalogRef.current;
 
-  const [loadedCount, setLoadedCount] = useState(() =>
-    Math.min(LARGE_LIST_PAGE, catalog.length),
-  );
+  const [loadedCount, setLoadedCount] = useState(() => Math.min(LARGE_LIST_PAGE, catalog.length));
   const [loadingMore, setLoadingMore] = useState(false);
   const [filters, setFilters] = useState<MediaGridFilters>({ searchQuery: '' });
 
@@ -178,10 +178,10 @@ function LargeListLoadMoreWrapper() {
   const loadMore = useCallback(async () => {
     if (loadingMore) return;
     setLoadingMore(true);
-    await new Promise<void>(resolve => {
+    await new Promise<void>((resolve) => {
       setTimeout(resolve, 450);
     });
-    setLoadedCount(c => {
+    setLoadedCount((c) => {
       if (c >= catalog.length) return c;
       return Math.min(c + LARGE_LIST_PAGE, catalog.length);
     });
@@ -190,13 +190,19 @@ function LargeListLoadMoreWrapper() {
 
   const accumulated = useMemo(() => catalog.slice(0, loadedCount), [catalog, loadedCount]);
 
-  const visibleItems = useMemo(() => filterMediaGridItems(accumulated, filters), [accumulated, filters]);
+  const visibleItems = useMemo(
+    () => filterMediaGridItems(accumulated, filters),
+    [accumulated, filters],
+  );
 
-  const onJumpToMonthNotLoaded = useCallback((monthKey: string) => {
-    const idx = firstIndexForMonthKey(catalog, monthKey);
-    if (idx < 0) return;
-    setLoadedCount(c => Math.max(c, idx + 1));
-  }, [catalog]);
+  const onJumpToMonthNotLoaded = useCallback(
+    (monthKey: string) => {
+      const idx = firstIndexForMonthKey(catalog, monthKey);
+      if (idx < 0) return;
+      setLoadedCount((c) => Math.max(c, idx + 1));
+    },
+    [catalog],
+  );
 
   const totalMonths = TOTAL_JUMP_MONTHS;
   const approxTotal = catalog.length;
@@ -204,11 +210,13 @@ function LargeListLoadMoreWrapper() {
   return (
     <div>
       <p style={{ maxWidth: 720, color: '#666', fontSize: 14, marginTop: 0 }}>
-        Large catalog (~{approxTotal} images) over the <strong>last {totalMonths} UTC months</strong> (~3 years),
-        with a <strong>random (seeded) count per month</strong>. Each item uses a <strong>240px grid thumb</strong> and{' '}
-        <strong>1600×1200 full</strong> for the viewer. Scroll to the bottom to load the next chunk (
-        <code>{LARGE_LIST_PAGE}</code> items). Parent filters the <em>loaded</em> slice only — in production you’d
-        refetch when <code>onFiltersChange</code> fires.
+        Large catalog (~{approxTotal} images) over the{' '}
+        <strong>last {totalMonths} UTC months</strong> (~3 years), with a{' '}
+        <strong>random (seeded) count per month</strong>. Each item uses a{' '}
+        <strong>240px grid thumb</strong> and <strong>1600×1200 full</strong> for the viewer. Scroll
+        to the bottom to load the next chunk (<code>{LARGE_LIST_PAGE}</code> items). Parent filters
+        the <em>loaded</em> slice only — in production you’d refetch when{' '}
+        <code>onFiltersChange</code> fires.
       </p>
       <MediaGrid
         items={visibleItems}

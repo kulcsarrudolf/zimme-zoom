@@ -30,7 +30,7 @@ export function computeZoomToPoint({
 export function getContainerCenterOffset(
   rect: { left: number; top: number; width: number; height: number },
   clientX: number,
-  clientY: number
+  clientY: number,
 ): { x: number; y: number } {
   return {
     x: clientX - (rect.left + rect.width / 2),

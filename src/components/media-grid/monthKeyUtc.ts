@@ -40,7 +40,10 @@ export function parseMonthInputValue(value: string): { year: number; month: numb
 }
 
 /** Newest-first UTC `YYYY-MM` keys (e.g. jump menu for the last N months). */
-export function utcMonthKeysDescending(count: number, refUtc: Date | number = Date.now()): string[] {
+export function utcMonthKeysDescending(
+  count: number,
+  refUtc: Date | number = Date.now(),
+): string[] {
   const ref = typeof refUtc === 'number' ? new Date(refUtc) : refUtc;
   const keys: string[] = [];
   const y = ref.getUTCFullYear();

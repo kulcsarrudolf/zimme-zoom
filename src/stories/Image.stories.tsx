@@ -188,7 +188,11 @@ export const GoldenRatio: Story = {
 
 export const FixedContainerSize: Story = {
   args: {
-    image: { id: '17', src: 'https://picsum.photos/1200/800?random=17', alt: 'Fixed container size' },
+    image: {
+      id: '17',
+      src: 'https://picsum.photos/1200/800?random=17',
+      alt: 'Fixed container size',
+    },
     size: { width: 320, height: 180 },
   },
 };
@@ -210,7 +214,11 @@ export const MaxWidthAndHeight: Story = {
     </div>
   ),
   args: {
-    image: { id: '18', src: 'https://picsum.photos/1200/800?random=18', alt: 'Constrained by max size' },
+    image: {
+      id: '18',
+      src: 'https://picsum.photos/1200/800?random=18',
+      alt: 'Constrained by max size',
+    },
     size: { width: '100%', height: '100%', maxWidth: 340, maxHeight: 220 },
   },
 };
@@ -301,32 +309,47 @@ export const DifferentAspectRatios: Story = {
       {[
         {
           label: 'Landscape image in square container',
-          image: { id: '20', src: 'https://picsum.photos/1200/800?random=20', alt: 'Landscape image' },
+          image: {
+            id: '20',
+            src: 'https://picsum.photos/1200/800?random=20',
+            alt: 'Landscape image',
+          },
           size: { width: 220, height: 220 },
         },
         {
           label: 'Portrait image in landscape container',
-          image: { id: '21', src: 'https://picsum.photos/800/1200?random=21', alt: 'Portrait image' },
+          image: {
+            id: '21',
+            src: 'https://picsum.photos/800/1200?random=21',
+            alt: 'Portrait image',
+          },
           size: { width: 320, height: 180 },
         },
         {
           label: 'Square image in cinematic container',
-          image: { id: '22', src: 'https://picsum.photos/1000/1000?random=22', alt: 'Square image' },
+          image: {
+            id: '22',
+            src: 'https://picsum.photos/1000/1000?random=22',
+            alt: 'Square image',
+          },
           size: { ratio: ImageRatio.Cinematic, width: 320 },
         },
         {
           label: 'Landscape image in tall container',
-          image: { id: '23', src: 'https://picsum.photos/1200/800?random=23', alt: 'Landscape image in tall frame' },
+          image: {
+            id: '23',
+            src: 'https://picsum.photos/1200/800?random=23',
+            alt: 'Landscape image in tall frame',
+          },
           size: { ratio: ImageRatio.Tall, width: 180 },
         },
       ].map((example) => (
-        <div key={example.image.id} style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+        <div
+          key={example.image.id}
+          style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}
+        >
           <span style={{ fontSize: '12px', color: '#666' }}>{example.label}</span>
-          <Image
-            {...args}
-            image={example.image}
-            size={example.size}
-          />
+          <Image {...args} image={example.image} size={example.size} />
         </div>
       ))}
     </div>

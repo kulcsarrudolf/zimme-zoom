@@ -81,7 +81,17 @@ export const PhotoViewer: React.FC<PhotoViewerProps> = ({
   const imageRef = useRef<HTMLImageElement>(null);
 
   const transform = useTransform({ minZoom, maxZoom });
-  const { zoom, panX, panY, rotationCount, setZoom, setPan, zoomTo, rotate, reset: resetTransform } = transform;
+  const {
+    zoom,
+    panX,
+    panY,
+    rotationCount,
+    setZoom,
+    setPan,
+    zoomTo,
+    rotate,
+    reset: resetTransform,
+  } = transform;
 
   const { currentImage, next, previous } = useImageNavigation({
     initialImage: selectedImage,
@@ -91,7 +101,7 @@ export const PhotoViewer: React.FC<PhotoViewerProps> = ({
 
   const [isHovered, setIsHovered] = useState(false);
   const [showOverlay, setShowOverlay] = useState(
-    () => showOverlayByDefault && !!selectedImage?.svgOverlay
+    () => showOverlayByDefault && !!selectedImage?.svgOverlay,
   );
 
   useEffect(() => {
@@ -102,7 +112,7 @@ export const PhotoViewer: React.FC<PhotoViewerProps> = ({
   const currentHasOverlay = !!currentImage?.svgOverlay;
   useEffect(() => {
     resetTransform();
-    setShowOverlay(prev => (currentHasOverlay ? prev : false));
+    setShowOverlay((prev) => (currentHasOverlay ? prev : false));
   }, [currentImageId, currentHasOverlay, resetTransform]);
 
   useImagePreloader({ currentImage, images });
@@ -119,7 +129,7 @@ export const PhotoViewer: React.FC<PhotoViewerProps> = ({
     (direction: 'left' | 'right' = 'right') => {
       if (allowRotate) rotate(direction);
     },
-    [allowRotate, rotate]
+    [allowRotate, rotate],
   );
 
   const handleReset = useCallback(() => {
@@ -139,7 +149,12 @@ export const PhotoViewer: React.FC<PhotoViewerProps> = ({
     onPan: setPan,
   });
 
-  const { onTouchStart, onTouchMove, onTouchEnd, reset: resetTouchGestures } = useTouchGestures({
+  const {
+    onTouchStart,
+    onTouchMove,
+    onTouchEnd,
+    reset: resetTouchGestures,
+  } = useTouchGestures({
     allowZoom,
     zoom,
     panX,
@@ -219,7 +234,7 @@ export const PhotoViewer: React.FC<PhotoViewerProps> = ({
         onDownload={allowDownload ? handleDownload : undefined}
         onToggleOverlay={
           showOverlayButton && currentImage.svgOverlay
-            ? () => setShowOverlay(prev => !prev)
+            ? () => setShowOverlay((prev) => !prev)
             : undefined
         }
         showOverlay={showOverlay}

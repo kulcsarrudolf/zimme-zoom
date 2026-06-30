@@ -20,4 +20,10 @@ export {
   utcMonthKeysDescending,
   utcMonthStartMs,
 } from './components/media-grid';
-export type { BuiltMediaGridModel, MediaGridFilters, MediaGridItem, MediaGridProps, MediaGridRow } from './components/media-grid';
+export type {
+  BuiltMediaGridModel,
+  MediaGridFilters,
+  MediaGridItem,
+  MediaGridProps,
+  MediaGridRow,
+} from './components/media-grid';

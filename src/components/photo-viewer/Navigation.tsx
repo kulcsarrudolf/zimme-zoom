@@ -82,18 +82,32 @@ export const Navigation: React.FC<NavigationProps> = ({
           zIndex: 9999,
         }}
       >
-        <div className="photo-viewer-navigation-title" style={{ color: 'white', fontSize: '0.9rem' }}>
+        <div
+          className="photo-viewer-navigation-title"
+          style={{ color: 'white', fontSize: '0.9rem' }}
+        >
           {title}
         </div>
-        <div className="photo-viewer-navigation-controls" style={{ display: 'flex', gap: '0.5rem', alignItems: 'center' }}>
+        <div
+          className="photo-viewer-navigation-controls"
+          style={{ display: 'flex', gap: '0.5rem', alignItems: 'center' }}
+        >
           {onReset && <NavigationActionButton icon={ResetIcon} onClick={onReset} />}
           {onPrevious && <NavigationActionButton icon={ArrowIcon} onClick={onPrevious} />}
-          {onNext && <NavigationActionButton icon={ArrowIcon} onClick={onNext} transform="rotateY(180deg)" />}
+          {onNext && (
+            <NavigationActionButton icon={ArrowIcon} onClick={onNext} transform="rotateY(180deg)" />
+          )}
           {onZoomOut && <NavigationActionButton icon={ZoomOutIcon} onClick={onZoomOut} />}
           {onZoomIn && <NavigationActionButton icon={ZoomInIcon} onClick={onZoomIn} />}
-          {onRotate && <NavigationActionButton icon={RotateIcon} onClick={() => onRotate('left')} />}
           {onRotate && (
-            <NavigationActionButton icon={RotateIcon} onClick={() => onRotate('right')} transform="rotateY(180deg)" />
+            <NavigationActionButton icon={RotateIcon} onClick={() => onRotate('left')} />
+          )}
+          {onRotate && (
+            <NavigationActionButton
+              icon={RotateIcon}
+              onClick={() => onRotate('right')}
+              transform="rotateY(180deg)"
+            />
           )}
           {onToggleOverlay && (
             <NavigationActionButton
