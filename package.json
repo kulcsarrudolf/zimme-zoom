@@ -23,6 +23,7 @@
     "dev": "rollup -c -w",
     "clean": "rimraf dist",
     "test": "jest --passWithNoTests",
+    "coverage": "jest --coverage --passWithNoTests",
     "lint": "eslint .",
     "lint:fix": "eslint . --fix",
     "format": "prettier --write \"src/**/*.{ts,tsx}\"",
