@@ -1,4 +1,11 @@
-import React, { useCallback, useDeferredValue, useLayoutEffect, useMemo, useRef, useState } from 'react';
+import React, {
+  useCallback,
+  useDeferredValue,
+  useLayoutEffect,
+  useMemo,
+  useRef,
+  useState,
+} from 'react';
 import type { ZZImage } from '../../types/image.type';
 import { PhotoViewer } from '../photo-viewer/PhotoViewer';
 import { buildMediaGridRows } from './buildMediaGridRows';
@@ -48,7 +55,9 @@ export const MediaGrid: React.FC<MediaGridProps> = ({
   );
 
   const localFiltering = localFilteringProp ?? loadMore == null;
-  const filters: MediaGridFilters = isControlled ? (filtersProp as MediaGridFilters) : uncontrolledFilters;
+  const filters: MediaGridFilters = isControlled
+    ? (filtersProp as MediaGridFilters)
+    : uncontrolledFilters;
 
   const setFilters = useCallback(
     (next: MediaGridFilters) => {
@@ -182,7 +191,9 @@ export const MediaGrid: React.FC<MediaGridProps> = ({
       />
 
       {model.rows.length === 0 ? (
-        <p style={{ margin: '24px 0', color: '#888', fontSize: 14 }}>No items match the current filters.</p>
+        <p style={{ margin: '24px 0', color: '#888', fontSize: 14 }}>
+          No items match the current filters.
+        </p>
       ) : (
         <div style={{ height: heightStyle, minHeight: 0, position: 'relative' }}>
           {isGridUpdating && (
@@ -273,26 +284,30 @@ export const MediaGrid: React.FC<MediaGridProps> = ({
                   boxShadow: '0 -2px 12px rgba(0,0,0,0.4)',
                 }}
               >
-              <div
-                style={{
-                  height: 4,
-                  width: '100%',
-                  borderRadius: 2,
-                  backgroundColor: '#1a1a1a',
-                  opacity: 0.85,
-                  animation: 'zzMediaGridImagePulse 1.5s infinite',
-                }}
-                aria-hidden
-              />
-              Loading more photos…
-            </div>
+                <div
+                  style={{
+                    height: 4,
+                    width: '100%',
+                    borderRadius: 2,
+                    backgroundColor: '#1a1a1a',
+                    opacity: 0.85,
+                    animation: 'zzMediaGridImagePulse 1.5s infinite',
+                  }}
+                  aria-hidden
+                />
+                Loading more photos…
+              </div>
             </div>
           )}
         </div>
       )}
 
       {enablePhotoViewer && (
-        <PhotoViewer selectedImage={selectedZz} images={viewerImages} onClose={() => setSelectedZz(null)} />
+        <PhotoViewer
+          selectedImage={selectedZz}
+          images={viewerImages}
+          onClose={() => setSelectedZz(null)}
+        />
       )}
     </section>
   );

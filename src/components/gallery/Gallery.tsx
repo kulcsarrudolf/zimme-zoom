@@ -47,7 +47,7 @@ export const Gallery = ({ images }: GalleryProps) => {
         </h1>
       </div>
       <GalleryGrid>
-        {images.map(image => (
+        {images.map((image) => (
           <Image
             key={image.id}
             image={image}
@@ -58,7 +58,11 @@ export const Gallery = ({ images }: GalleryProps) => {
         ))}
       </GalleryGrid>
 
-      <PhotoViewer selectedImage={selectedImage} images={images} onClose={() => setSelectedImage(null)} />
+      <PhotoViewer
+        selectedImage={selectedImage}
+        images={images}
+        onClose={() => setSelectedImage(null)}
+      />
     </>
   );
 };

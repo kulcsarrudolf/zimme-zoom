@@ -9,7 +9,10 @@ export type MediaGridThumbnailProps = {
   onClick?: (item: MediaGridItem) => void;
 };
 
-export const MediaGridThumbnail = memo(function MediaGridThumbnail({ item, onClick }: MediaGridThumbnailProps) {
+export const MediaGridThumbnail = memo(function MediaGridThumbnail({
+  item,
+  onClick,
+}: MediaGridThumbnailProps) {
   const [isLoading, setIsLoading] = useState(true);
   const displaySrc = item.thumbnailSrc ?? item.src;
 

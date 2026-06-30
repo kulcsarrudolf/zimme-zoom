@@ -58,23 +58,23 @@ export function useTransform({
 
   const setZoom = useCallback(
     (zoom: number) => dispatch({ type: 'setZoom', zoom: clamp(zoom, minZoom, maxZoom) }),
-    [minZoom, maxZoom]
+    [minZoom, maxZoom],
   );
 
   const setPan = useCallback(
     (panX: number, panY: number) => dispatch({ type: 'setPan', panX, panY }),
-    []
+    [],
   );
 
   const zoomTo = useCallback(
     (zoom: number, panX: number, panY: number) =>
       dispatch({ type: 'zoomTo', zoom: clamp(zoom, minZoom, maxZoom), panX, panY }),
-    [minZoom, maxZoom]
+    [minZoom, maxZoom],
   );
 
   const rotate = useCallback(
     (direction: 'left' | 'right') => dispatch({ type: 'rotate', direction }),
-    []
+    [],
   );
 
   const reset = useCallback(() => dispatch({ type: 'reset' }), []);

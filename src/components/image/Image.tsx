@@ -37,11 +37,7 @@ export const Image = ({ image, size, onClick }: ImageProps) => {
   };
 
   return (
-    <div
-      key={image.id}
-      style={containerStyle}
-      onClick={onClick}
-    >
+    <div key={image.id} style={containerStyle} onClick={onClick}>
       {isLoading && (
         <div
           style={{

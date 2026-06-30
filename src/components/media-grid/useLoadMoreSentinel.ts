@@ -27,8 +27,8 @@ export function useLoadMoreSentinel({
 
     const el = ref.current;
     const observer = new IntersectionObserver(
-      entries => {
-        const hit = entries.some(e => e.isIntersecting);
+      (entries) => {
+        const hit = entries.some((e) => e.isIntersecting);
         if (!hit || loading || !hasMore) return;
         void onLoadMore();
       },

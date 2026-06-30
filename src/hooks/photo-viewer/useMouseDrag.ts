@@ -20,7 +20,7 @@ export function useMouseDrag({ enabled, panX, panY, onPan }: UseMouseDragInput) 
       dragStartRef.current = { x: e.clientX - panX, y: e.clientY - panY };
       setIsDragging(true);
     },
-    [enabled, panX, panY]
+    [enabled, panX, panY],
   );
 
   useEffect(() => {

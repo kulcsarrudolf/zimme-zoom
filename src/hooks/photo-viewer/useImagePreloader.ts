@@ -10,7 +10,7 @@ export function useImagePreloader({
 }): void {
   useEffect(() => {
     if (!currentImage || images.length <= 1) return;
-    const index = images.findIndex(img => img.id === currentImage.id);
+    const index = images.findIndex((img) => img.id === currentImage.id);
     if (index < 0) return;
 
     const adjacentSrcs = [
@@ -18,7 +18,7 @@ export function useImagePreloader({
       images[(index - 1 + images.length) % images.length].src,
     ];
 
-    const links = adjacentSrcs.map(src => {
+    const links = adjacentSrcs.map((src) => {
       const link = document.createElement('link');
       link.rel = 'prefetch';
       link.href = src;

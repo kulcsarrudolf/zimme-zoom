@@ -9,7 +9,10 @@ const generateRandomSeed = (): string => {
 };
 
 // Star SVG component - maintains aspect ratio
-const StarSvg: React.FC<{ className?: string; style?: React.CSSProperties }> = ({ className, style }) => (
+const StarSvg: React.FC<{ className?: string; style?: React.CSSProperties }> = ({
+  className,
+  style,
+}) => (
   <svg
     viewBox="0 0 1024 1024"
     className={className}
@@ -224,7 +227,14 @@ const overlayImagesWithLabels: ZZImage[] = [
         <line x1="100" y1="100" x2="300" y2="100" stroke="rgba(0, 255, 0, 0.8)" strokeWidth="2" />
         <line x1="100" y1="95" x2="100" y2="105" stroke="rgba(0, 255, 0, 0.8)" strokeWidth="2" />
         <line x1="300" y1="95" x2="300" y2="105" stroke="rgba(0, 255, 0, 0.8)" strokeWidth="2" />
-        <text x="200" y="90" fill="rgba(0, 255, 0, 1)" fontSize="16" textAnchor="middle" fontWeight="bold">
+        <text
+          x="200"
+          y="90"
+          fill="rgba(0, 255, 0, 1)"
+          fontSize="16"
+          textAnchor="middle"
+          fontWeight="bold"
+        >
           200px
         </text>
 
@@ -243,7 +253,14 @@ const overlayImagesWithLabels: ZZImage[] = [
           to toggle this overlay
         </text>
         <circle cx="625" cy="530" r="5" fill="rgba(255, 0, 0, 0.8)" />
-        <line x1="625" y1="530" x2="700" y2="500" stroke="rgba(255, 255, 255, 0.8)" strokeWidth="1" />
+        <line
+          x1="625"
+          y1="530"
+          x2="700"
+          y2="500"
+          stroke="rgba(255, 255, 255, 0.8)"
+          strokeWidth="1"
+        />
       </svg>
     ),
   },
@@ -262,11 +279,23 @@ const overlayImagesWithLabels: ZZImage[] = [
       >
         <defs>
           <pattern id="grid-pattern" width="5" height="5" patternUnits="userSpaceOnUse">
-            <path d="M 5 0 L 0 0 0 5" fill="none" stroke="rgba(255, 255, 255, 0.5)" strokeWidth="0.3" />
+            <path
+              d="M 5 0 L 0 0 0 5"
+              fill="none"
+              stroke="rgba(255, 255, 255, 0.5)"
+              strokeWidth="0.3"
+            />
           </pattern>
         </defs>
         <rect width="100" height="100" fill="url(#grid-pattern)" />
-        <text x="50" y="95" fill="rgba(255, 255, 255, 0.9)" fontSize="8" textAnchor="middle" fontWeight="bold">
+        <text
+          x="50"
+          y="95"
+          fill="rgba(255, 255, 255, 0.9)"
+          fontSize="8"
+          textAnchor="middle"
+          fontWeight="bold"
+        >
           Grid Overlay (Toggle ON/OFF)
         </text>
       </svg>

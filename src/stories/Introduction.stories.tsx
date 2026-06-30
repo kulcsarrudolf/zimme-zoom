@@ -6,11 +6,12 @@ const IntroductionComponent = () => {
     <div style={{ padding: '2rem', maxWidth: '800px', margin: '0 auto' }}>
       <h1>zimme-zoom</h1>
       <p>
-        A collection of image-related React components packaged as an npm package. The main component is{' '}
-        <strong>PhotoViewer</strong>, a lightweight React photo viewer with zoom, navigation, blurred background, and
-        SVG overlay support. <strong>MediaGrid</strong> adds a Messenger-style month-grouped grid with search,
-        jump-to-month (full range via <code>jumpMonthKeys</code>), optional infinite loading, and built-in windowing
-        (React only—no extra list libraries).
+        A collection of image-related React components packaged as an npm package. The main
+        component is <strong>PhotoViewer</strong>, a lightweight React photo viewer with zoom,
+        navigation, blurred background, and SVG overlay support. <strong>MediaGrid</strong> adds a
+        Messenger-style month-grouped grid with search, jump-to-month (full range via{' '}
+        <code>jumpMonthKeys</code>), optional infinite loading, and built-in windowing (React
+        only—no extra list libraries).
       </p>
 
       <h2>Prerequisites</h2>
@@ -22,7 +23,9 @@ const IntroductionComponent = () => {
       </ul>
 
       <h2>Installation</h2>
-      <pre style={{ background: '#f5f5f5', padding: '1rem', borderRadius: '4px', overflow: 'auto' }}>
+      <pre
+        style={{ background: '#f5f5f5', padding: '1rem', borderRadius: '4px', overflow: 'auto' }}
+      >
         {`yarn add zimme-zoom`}
       </pre>
 
@@ -30,40 +33,47 @@ const IntroductionComponent = () => {
       <p>zimme-zoom provides the following React components:</p>
       <ul>
         <li>
-          <strong>PhotoViewer</strong> - The main component: A lightweight photo viewer with zoom, navigation, blurred
-          background, and SVG overlay support
+          <strong>PhotoViewer</strong> - The main component: A lightweight photo viewer with zoom,
+          navigation, blurred background, and SVG overlay support
         </li>
         <li>
-          <strong>Gallery</strong> - A grid-based image gallery component that displays images and integrates with
-          PhotoViewer
+          <strong>Gallery</strong> - A grid-based image gallery component that displays images and
+          integrates with PhotoViewer
         </li>
         <li>
-          <strong>MediaGrid</strong> - Virtualized month-grouped image grid with search, jump-to-month, optional{' '}
-          <code>loadMore</code>, and optional PhotoViewer integration
+          <strong>MediaGrid</strong> - Virtualized month-grouped image grid with search,
+          jump-to-month, optional <code>loadMore</code>, and optional PhotoViewer integration
         </li>
         <li>
-          <strong>ImageCarousel</strong> - A swipeable image carousel with lazy loading and touch/mouse gesture support
+          <strong>ImageCarousel</strong> - A swipeable image carousel with lazy loading and
+          touch/mouse gesture support
         </li>
         <li>
-          <strong>Image</strong> - A reusable image component for displaying images with click handlers, built-in
-          loading states (pulsing placeholder), and smooth fade-in transitions
+          <strong>Image</strong> - A reusable image component for displaying images with click
+          handlers, built-in loading states (pulsing placeholder), and smooth fade-in transitions
         </li>
       </ul>
 
       <p>All components are exported from the main package:</p>
-      <pre style={{ background: '#f5f5f5', padding: '1rem', borderRadius: '4px', overflow: 'auto' }}>
+      <pre
+        style={{ background: '#f5f5f5', padding: '1rem', borderRadius: '4px', overflow: 'auto' }}
+      >
         {`import { PhotoViewer, Gallery, MediaGrid, ImageCarousel, Image } from 'zimme-zoom';
 import type { ZZImage, PhotoViewerProps, MediaGridItem, MediaGridProps } from 'zimme-zoom';`}
       </pre>
 
       <p>
-        See the <strong>MediaGrid</strong> story group in the sidebar for <strong>LargeListLoadMore</strong> (multi-year catalog + pagination), defaults, and edge cases.
+        See the <strong>MediaGrid</strong> story group in the sidebar for{' '}
+        <strong>LargeListLoadMore</strong> (multi-year catalog + pagination), defaults, and edge
+        cases.
       </p>
 
       <h2>PhotoViewer Usage</h2>
 
       <h3>Basic Example</h3>
-      <pre style={{ background: '#f5f5f5', padding: '1rem', borderRadius: '4px', overflow: 'auto' }}>
+      <pre
+        style={{ background: '#f5f5f5', padding: '1rem', borderRadius: '4px', overflow: 'auto' }}
+      >
         {`import { PhotoViewer } from 'zimme-zoom';
 import type { ZZImage } from 'zimme-zoom';
 
@@ -93,7 +103,9 @@ function App() {
       </pre>
 
       <h3>With SVG Overlay</h3>
-      <pre style={{ background: '#f5f5f5', padding: '1rem', borderRadius: '4px', overflow: 'auto' }}>
+      <pre
+        style={{ background: '#f5f5f5', padding: '1rem', borderRadius: '4px', overflow: 'auto' }}
+      >
         {`const imageWithOverlay: ZZImage = {
   id: '2',
   src: 'https://example.com/image2.jpg',
@@ -106,8 +118,8 @@ function App() {
 
       <h2>Custom Settings</h2>
       <p>
-        The <code>settings</code> prop allows you to customize the PhotoViewer behavior. All settings are optional and
-        will use default values if not provided.
+        The <code>settings</code> prop allows you to customize the PhotoViewer behavior. All
+        settings are optional and will use default values if not provided.
       </p>
 
       <h3>Available Settings</h3>
@@ -125,7 +137,9 @@ function App() {
             <td style={{ padding: '0.5rem' }}>allowZoom</td>
             <td style={{ padding: '0.5rem' }}>boolean</td>
             <td style={{ padding: '0.5rem' }}>true</td>
-            <td style={{ padding: '0.5rem' }}>Enable/disable zoom functionality (mouse wheel, zoom buttons)</td>
+            <td style={{ padding: '0.5rem' }}>
+              Enable/disable zoom functionality (mouse wheel, zoom buttons)
+            </td>
           </tr>
           <tr style={{ borderBottom: '1px solid #eee' }}>
             <td style={{ padding: '0.5rem' }}>allowRotate</td>
@@ -137,7 +151,9 @@ function App() {
             <td style={{ padding: '0.5rem' }}>allowReset</td>
             <td style={{ padding: '0.5rem' }}>boolean</td>
             <td style={{ padding: '0.5rem' }}>true</td>
-            <td style={{ padding: '0.5rem' }}>Enable/disable reset button (resets zoom and rotation)</td>
+            <td style={{ padding: '0.5rem' }}>
+              Enable/disable reset button (resets zoom and rotation)
+            </td>
           </tr>
           <tr style={{ borderBottom: '1px solid #eee' }}>
             <td style={{ padding: '0.5rem' }}>allowDownload</td>
@@ -161,7 +177,9 @@ function App() {
             <td style={{ padding: '0.5rem' }}>keyboardInteraction</td>
             <td style={{ padding: '0.5rem' }}>boolean</td>
             <td style={{ padding: '0.5rem' }}>true</td>
-            <td style={{ padding: '0.5rem' }}>Enable/disable keyboard shortcuts (Arrow keys, +/-, r, 0, Escape)</td>
+            <td style={{ padding: '0.5rem' }}>
+              Enable/disable keyboard shortcuts (Arrow keys, +/-, r, 0, Escape)
+            </td>
           </tr>
           <tr style={{ borderBottom: '1px solid #eee' }}>
             <td style={{ padding: '0.5rem' }}>maxZoom</td>
@@ -186,7 +204,8 @@ function App() {
             <td style={{ padding: '0.5rem' }}>boolean</td>
             <td style={{ padding: '0.5rem' }}>false</td>
             <td style={{ padding: '0.5rem' }}>
-              Show SVG overlay by default when PhotoViewer opens (only applies if image has svgOverlay)
+              Show SVG overlay by default when PhotoViewer opens (only applies if image has
+              svgOverlay)
             </td>
           </tr>
           <tr style={{ borderBottom: '1px solid #eee' }}>
@@ -201,7 +220,9 @@ function App() {
       </table>
 
       <h3>Settings Example</h3>
-      <pre style={{ background: '#f5f5f5', padding: '1rem', borderRadius: '4px', overflow: 'auto' }}>
+      <pre
+        style={{ background: '#f5f5f5', padding: '1rem', borderRadius: '4px', overflow: 'auto' }}
+      >
         {`<PhotoViewer
   images={images}
   selectedImage={selectedImage}
@@ -225,12 +246,14 @@ function App() {
 
       <h2>Image Component Usage</h2>
       <p>
-        The <code>Image</code> component is a reusable image component that provides built-in loading states and smooth
-        transitions.
+        The <code>Image</code> component is a reusable image component that provides built-in
+        loading states and smooth transitions.
       </p>
 
       <h3>Basic Example</h3>
-      <pre style={{ background: '#f5f5f5', padding: '1rem', borderRadius: '4px', overflow: 'auto' }}>
+      <pre
+        style={{ background: '#f5f5f5', padding: '1rem', borderRadius: '4px', overflow: 'auto' }}
+      >
         {`import { Image } from 'zimme-zoom';
 import type { ZZImage } from 'zimme-zoom';
 
@@ -246,7 +269,9 @@ function App() {
       </pre>
 
       <p>
-        <strong>Explore the component stories to see all the available options and use cases!</strong>
+        <strong>
+          Explore the component stories to see all the available options and use cases!
+        </strong>
       </p>
     </div>
   );

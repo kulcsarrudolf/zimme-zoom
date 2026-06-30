@@ -27,13 +27,13 @@ export function useImageNavigation({
   const step = useCallback(
     (direction: 1 | -1) => {
       if (images.length === 0) return;
-      const index = images.findIndex(img => img.id === currentImage?.id);
+      const index = images.findIndex((img) => img.id === currentImage?.id);
       const nextIndex = (index + direction + images.length) % images.length;
       const nextImage = images[nextIndex];
       setCurrentImage(nextImage);
       onImageChange?.(nextImage);
     },
-    [images, currentImage, onImageChange]
+    [images, currentImage, onImageChange],
   );
 
   const next = useCallback(() => step(1), [step]);
