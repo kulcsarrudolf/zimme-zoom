@@ -27,7 +27,7 @@
     js-tokens "^4.0.0"
     picocolors "^1.1.1"
 
-"@babel/code-frame@^7.10.4":
+"@babel/code-frame@^7.10.4", "@babel/code-frame@^7.29.0":
   version "7.29.7"
   resolved "https://registry.yarnpkg.com/@babel/code-frame/-/code-frame-7.29.7.tgz#f2fbbfea87c44a21590ec515b778b2c26d8866e7"
   integrity sha512-Aup7aUOfpbAUg2ROOJN6Iw5f9DMBlzu0mIkm/malLQFN/YQgO48wCj0Kxa3sEHJvPVFg7siR+qRInwXd2qhQKw==
@@ -5228,7 +5228,7 @@ lz-string@^1.5.0:
   resolved "https://registry.yarnpkg.com/lz-string/-/lz-string-1.5.0.tgz#c1ab50f77887b712621201ba9fd4e3a6ed099941"
   integrity sha512-h5bgJWpxJNswbU7qCrV0tIKQCaS3blPDrqKWx+QxzuzL1zGUzij9XCWLrSLsJPu5t+eWA/ycetzYAO5IOMcWAQ==
 
-magic-string@^0.30.0, magic-string@^0.30.17:
+magic-string@^0.30.0, magic-string@^0.30.17, magic-string@^0.30.21:
   version "0.30.21"
   resolved "https://registry.yarnpkg.com/magic-string/-/magic-string-0.30.21.tgz#56763ec09a0fa8091df27879fd94d19078c00d91"
   integrity sha512-vd2F4YUyEXKGcLHoq+TEyCjxueSeHnFxyyjNp80yg0XV4vUhnDer/lvvlqM/arB5bXQN5K2/3oinyCRyx8T2CQ==
@@ -5946,6 +5946,18 @@ rimraf@^5.0.5:
   integrity sha512-l0OE8wL34P4nJH/H2ffoaniAokM2qSmrtXHmlpvYr5AVVX8msAyW0l8NVJFDxlSK4u3Uh/f41cQheDVdnYijwQ==
   dependencies:
     glob "^10.3.7"
+
+rollup-plugin-dts@^6.4.1:
+  version "6.4.1"
+  resolved "https://registry.yarnpkg.com/rollup-plugin-dts/-/rollup-plugin-dts-6.4.1.tgz#9bec10f1b796ed022f76ff799429123c33aa88b7"
+  integrity sha512-l//F3Zf7ID5GoOfLfD8kroBjQKEKpy1qfhtAdnpibFZMffPaylrg1CoDC2vGkPeTeyxUe4bVFCln2EFuL7IGGg==
+  dependencies:
+    "@jridgewell/remapping" "^2.3.5"
+    "@jridgewell/sourcemap-codec" "^1.5.5"
+    convert-source-map "^2.0.0"
+    magic-string "^0.30.21"
+  optionalDependencies:
+    "@babel/code-frame" "^7.29.0"
 
 rollup-plugin-typescript2@^0.36.0:
   version "0.36.0"
