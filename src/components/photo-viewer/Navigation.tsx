@@ -44,6 +44,12 @@ export const Navigation: React.FC<NavigationProps> = ({
     <>
       <style>
         {`
+          .nav-action-button:hover {
+            background-color: rgba(0, 0, 0, 0.05);
+          }
+          .nav-action-button:hover .nav-action-icon {
+            transform: scale(1.2);
+          }
           @media (max-width: 600px) {
             .photo-viewer-navigation {
               flex-direction: column !important;

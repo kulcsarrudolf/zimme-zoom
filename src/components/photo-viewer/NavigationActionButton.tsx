@@ -2,6 +2,8 @@ import React from 'react';
 
 const ICON_SIZE = 18;
 
+/** `.nav-action-button` hover styles live in the `<style>` block rendered by `Navigation`. */
+
 interface NavigationActionButtonProps {
   icon: React.ComponentType<{
     width?: number | string;
@@ -54,16 +56,5 @@ export const NavigationActionButton: React.FC<NavigationActionButtonProps> = ({
     </div>
   );
 };
-
-const style = document.createElement('style');
-style.textContent = `
-  .nav-action-button:hover {
-    background-color: rgba(0, 0, 0, 0.05);
-  }
-  .nav-action-button:hover .nav-action-icon {
-    transform: scale(1.2);
-  }
-`;
-document.head.appendChild(style);
 
 export default NavigationActionButton;
