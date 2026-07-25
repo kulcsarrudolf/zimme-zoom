@@ -285,27 +285,66 @@ describe('PhotoViewer accessibility', () => {
   });
 
   describe('focus restore', () => {
+    function Harness() {
+      const [open, setOpen] = useState(false);
+      return (
+        <>
+          <button onClick={() => setOpen(true)}>Open</button>
+          <PhotoViewer
+            selectedImage={open ? images[0] : null}
+            images={images}
+            onClose={() => setOpen(false)}
+            // Isolates this from useClickOutsideToClose, whose window-level
+            // mousedown handler would otherwise fire on the trigger click.
+            settings={{ clickOutsideToExit: false }}
+          />
+        </>
+      );
+    }
+
     it('returns focus to the element that opened the viewer', async () => {
       const user = userEvent.setup();
 
-      function Harness() {
+      render(<Harness />);
+      const trigger = screen.getByRole('button', { name: 'Open' });
+
+      await user.click(trigger);
+      expect(screen.getByRole('dialog')).toHaveFocus();
+
+      await user.keyboard('{Escape}');
+
+      expect(trigger).toHaveFocus();
+    });
+
+    it('restores focus under StrictMode, whose setup/cleanup/setup remount must not discard the opener', async () => {
+      const user = userEvent.setup();
+
+      // Mounts the viewer on open (rather than keeping it mounted and toggling
+      // `selectedImage`), so its focus-trap effect mounts already enabled. That
+      // is the only path where StrictMode double-invokes setup/cleanup/setup,
+      // and where an eagerly-cleared restore target is lost.
+      function MountHarness() {
         const [open, setOpen] = useState(false);
         return (
           <>
             <button onClick={() => setOpen(true)}>Open</button>
-            <PhotoViewer
-              selectedImage={open ? images[0] : null}
-              images={images}
-              onClose={() => setOpen(false)}
-              // Isolates this from useClickOutsideToClose, whose window-level
-              // mousedown handler would otherwise fire on the trigger click.
-              settings={{ clickOutsideToExit: false }}
-            />
+            {open && (
+              <PhotoViewer
+                selectedImage={images[0]}
+                images={images}
+                onClose={() => setOpen(false)}
+                settings={{ clickOutsideToExit: false }}
+              />
+            )}
           </>
         );
       }
 
-      render(<Harness />);
+      render(
+        <React.StrictMode>
+          <MountHarness />
+        </React.StrictMode>,
+      );
       const trigger = screen.getByRole('button', { name: 'Open' });
 
       await user.click(trigger);
