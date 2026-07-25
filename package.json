@@ -3,21 +3,28 @@
   "version": "0.2.3",
   "description": "A collection of image-related React components packaged as an npm package. The main component is PhotoViewer, a lightweight React photo viewer with zoom, navigation, blurred background, and SVG overlay support",
   "main": "dist/index.js",
-  "module": "dist/index.esm.js",
+  "module": "dist/index.mjs",
   "types": "dist/index.d.ts",
   "exports": {
     ".": {
-      "types": "./dist/index.d.ts",
-      "import": "./dist/index.esm.js",
-      "require": "./dist/index.js"
-    }
+      "import": {
+        "types": "./dist/index.d.mts",
+        "default": "./dist/index.mjs"
+      },
+      "require": {
+        "types": "./dist/index.d.ts",
+        "default": "./dist/index.js"
+      }
+    },
+    "./package.json": "./package.json"
   },
+  "sideEffects": false,
   "files": [
     "dist"
   ],
   "scripts": {
-    "build": "yarn clean && rollup -c",
-    "build:npm": "npm run clean && rollup -c",
+    "build": "yarn clean && rollup -c && rimraf dist/types",
+    "build:npm": "npm run clean && rollup -c && rimraf dist/types",
     "build:storybook": "storybook build",
     "build:vercel": "storybook build",
     "dev": "rollup -c -w",
@@ -76,6 +83,7 @@
     "react-dom": "^19.2.0",
     "rimraf": "^5.0.5",
     "rollup": "^4.9.6",
+    "rollup-plugin-dts": "^6.4.1",
     "rollup-plugin-typescript2": "^0.36.0",
     "storybook": "^10.1.11",
     "ts-jest": "^29.4.6",
