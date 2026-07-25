@@ -6,6 +6,7 @@
     "jsx": "react",
     "declaration": true,
     "declarationDir": "dist/types",
+    "sourceMap": true,
     "strict": true,
     "moduleResolution": "node",
     "allowSyntheticDefaultImports": true,
