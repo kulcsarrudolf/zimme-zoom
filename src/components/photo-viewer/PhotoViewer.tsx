@@ -1,21 +1,27 @@
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 import Navigation from './Navigation';
 import PhotoViewerImage from './PhotoViewerImage';
-import type { PhotoViewerSettings } from './types';
+import type { PhotoViewerLabels, PhotoViewerSettings } from './types';
 import { ZZImage } from '../../types/image.type';
 import { downloadImage } from '../../utils/downloadImage';
-import { EMPTY_PHOTO_VIEWER_SETTINGS } from '../../utils/photo-viewer/constants';
+import {
+  EMPTY_PHOTO_VIEWER_LABELS,
+  EMPTY_PHOTO_VIEWER_SETTINGS,
+} from '../../utils/photo-viewer/constants';
+import { useBodyScrollLock } from '../../hooks/photo-viewer/useBodyScrollLock';
 import { useClickOutsideToClose } from '../../hooks/photo-viewer/useClickOutsideToClose';
+import { useFocusTrap } from '../../hooks/photo-viewer/useFocusTrap';
 import { useImageNavigation } from '../../hooks/photo-viewer/useImageNavigation';
 import { useImagePreloader } from '../../hooks/photo-viewer/useImagePreloader';
 import { useKeyboardShortcuts } from '../../hooks/photo-viewer/useKeyboardShortcuts';
 import { useMouseDrag } from '../../hooks/photo-viewer/useMouseDrag';
+import { usePhotoViewerLabels } from '../../hooks/photo-viewer/usePhotoViewerLabels';
 import { usePhotoViewerSettings } from '../../hooks/photo-viewer/usePhotoViewerSettings';
 import { useTouchGestures } from '../../hooks/photo-viewer/useTouchGestures';
 import { useTransform } from '../../hooks/photo-viewer/useTransform';
 import { useWheelZoom } from '../../hooks/photo-viewer/useWheelZoom';
 
-export type { PhotoViewerSettings } from './types';
+export type { PhotoViewerLabels, PhotoViewerSettings } from './types';
 
 export type PhotoViewerProps = {
   selectedImage: ZZImage | null;
@@ -23,6 +29,8 @@ export type PhotoViewerProps = {
   onClose: () => void;
   onImageChange?: (image: ZZImage) => void;
   settings?: Partial<PhotoViewerSettings>;
+  /** Accessible names, for translation. Unspecified keys keep their defaults. */
+  labels?: Partial<PhotoViewerLabels>;
 };
 
 const backdropStyle: React.CSSProperties = {
@@ -37,6 +45,8 @@ const backdropStyle: React.CSSProperties = {
   alignItems: 'center',
   justifyContent: 'center',
   zIndex: 1000,
+  // The dialog takes focus itself; it should not paint a ring for that.
+  outline: 'none',
 };
 
 const imageContainerBaseStyle: React.CSSProperties = {
@@ -60,7 +70,9 @@ export const PhotoViewer: React.FC<PhotoViewerProps> = ({
   onClose,
   onImageChange,
   settings = EMPTY_PHOTO_VIEWER_SETTINGS,
+  labels: labelOverrides = EMPTY_PHOTO_VIEWER_LABELS,
 }) => {
+  const labels = usePhotoViewerLabels(labelOverrides);
   const {
     allowZoom,
     allowRotate,
@@ -201,6 +213,13 @@ export const PhotoViewer: React.FC<PhotoViewerProps> = ({
 
   useClickOutsideToClose({ enabled: clickOutsideToExit, onClose });
 
+  // Hooks run above the early return below, so a mounted-but-closed viewer
+  // would otherwise trap focus and lock body scroll while rendering nothing.
+  const isOpen = !!selectedImage && !!currentImage;
+
+  useFocusTrap({ enabled: isOpen, containerRef });
+  useBodyScrollLock({ enabled: isOpen });
+
   if (!selectedImage || !currentImage) return null;
 
   const imageContainerStyle: React.CSSProperties = {
@@ -217,13 +236,15 @@ export const PhotoViewer: React.FC<PhotoViewerProps> = ({
       className="photo-viewer"
       role="dialog"
       aria-modal="true"
-      aria-label={currentImage.title || 'Photo viewer'}
+      aria-label={currentImage.title || labels.dialog}
+      tabIndex={-1}
       style={backdropStyle}
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
     >
       <Navigation
         title={currentImage.title || 'Photo Viewer'}
+        labels={labels}
         onClose={onClose}
         onNext={hasMultipleImages ? next : undefined}
         onPrevious={hasMultipleImages ? previous : undefined}

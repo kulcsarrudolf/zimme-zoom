@@ -1,4 +1,5 @@
-import React from 'react';
+import React, { useState } from 'react';
+import type { PhotoViewerLabels } from './types';
 import {
   ResetIcon,
   ArrowIcon,
@@ -13,6 +14,8 @@ import NavigationActionButton from './NavigationActionButton';
 
 interface NavigationProps {
   title: string;
+  /** Already merged with the defaults by `PhotoViewer`. */
+  labels: PhotoViewerLabels;
   onClose?: (e?: React.MouseEvent) => void;
   onZoomIn?: () => void;
   onZoomOut?: () => void;
@@ -28,6 +31,7 @@ interface NavigationProps {
 
 export const Navigation: React.FC<NavigationProps> = ({
   title,
+  labels,
   onClose,
   onZoomIn,
   onZoomOut,
@@ -40,15 +44,41 @@ export const Navigation: React.FC<NavigationProps> = ({
   showOverlay = false,
   showControls = true,
 }) => {
+  // Tracked in state rather than with `:focus-within`, because the bar's
+  // background is an inline style that a stylesheet rule could only beat with
+  // `!important`. Without this a keyboard user sees a permanently dimmed bar.
+  const [isFocusWithin, setIsFocusWithin] = useState(false);
+
   return (
     <>
       <style>
         {`
+          .nav-action-button {
+            appearance: none;
+            -webkit-appearance: none;
+            border: none;
+            background-color: transparent;
+            background-image: none;
+            margin: 0;
+            color: inherit;
+            font: inherit;
+            line-height: 1;
+            text-align: center;
+            -webkit-tap-highlight-color: transparent;
+          }
           .nav-action-button:hover {
             background-color: rgba(0, 0, 0, 0.05);
           }
           .nav-action-button:hover .nav-action-icon {
             transform: scale(1.2);
+          }
+          .nav-action-button:focus-visible {
+            outline: 2px solid #ffffff;
+            outline-offset: 2px;
+            background-color: rgba(255, 255, 255, 0.15);
+          }
+          .nav-action-button:focus:not(:focus-visible) {
+            outline: none;
           }
           @media (max-width: 600px) {
             .photo-viewer-navigation {
@@ -78,7 +108,8 @@ export const Navigation: React.FC<NavigationProps> = ({
           transform: 'translateX(-50%)',
           width: '60%',
           height: '3rem',
-          backgroundColor: showControls ? 'rgba(0, 0, 0, 0.8)' : 'rgba(0, 0, 0, 0.5)',
+          backgroundColor:
+            showControls || isFocusWithin ? 'rgba(0, 0, 0, 0.8)' : 'rgba(0, 0, 0, 0.5)',
           display: 'flex',
           justifyContent: 'space-between',
           alignItems: 'center',
@@ -86,6 +117,12 @@ export const Navigation: React.FC<NavigationProps> = ({
           transition: 'background-color 0.2s ease',
           padding: '0 1.5rem',
           zIndex: 9999,
+        }}
+        onFocus={() => setIsFocusWithin(true)}
+        onBlur={(e) => {
+          if (!e.currentTarget.contains(e.relatedTarget as Node | null)) {
+            setIsFocusWithin(false);
+          }
         }}
       >
         <div
@@ -98,19 +135,37 @@ export const Navigation: React.FC<NavigationProps> = ({
           className="photo-viewer-navigation-controls"
           style={{ display: 'flex', gap: '0.5rem', alignItems: 'center' }}
         >
-          {onReset && <NavigationActionButton icon={ResetIcon} onClick={onReset} />}
-          {onPrevious && <NavigationActionButton icon={ArrowIcon} onClick={onPrevious} />}
-          {onNext && (
-            <NavigationActionButton icon={ArrowIcon} onClick={onNext} transform="rotateY(180deg)" />
+          {onReset && (
+            <NavigationActionButton icon={ResetIcon} label={labels.reset} onClick={onReset} />
           )}
-          {onZoomOut && <NavigationActionButton icon={ZoomOutIcon} onClick={onZoomOut} />}
-          {onZoomIn && <NavigationActionButton icon={ZoomInIcon} onClick={onZoomIn} />}
-          {onRotate && (
-            <NavigationActionButton icon={RotateIcon} onClick={() => onRotate('left')} />
+          {onPrevious && (
+            <NavigationActionButton icon={ArrowIcon} label={labels.previous} onClick={onPrevious} />
+          )}
+          {onNext && (
+            <NavigationActionButton
+              icon={ArrowIcon}
+              label={labels.next}
+              onClick={onNext}
+              transform="rotateY(180deg)"
+            />
+          )}
+          {onZoomOut && (
+            <NavigationActionButton icon={ZoomOutIcon} label={labels.zoomOut} onClick={onZoomOut} />
+          )}
+          {onZoomIn && (
+            <NavigationActionButton icon={ZoomInIcon} label={labels.zoomIn} onClick={onZoomIn} />
           )}
           {onRotate && (
             <NavigationActionButton
               icon={RotateIcon}
+              label={labels.rotateLeft}
+              onClick={() => onRotate('left')}
+            />
+          )}
+          {onRotate && (
+            <NavigationActionButton
+              icon={RotateIcon}
+              label={labels.rotateRight}
               onClick={() => onRotate('right')}
               transform="rotateY(180deg)"
             />
@@ -118,18 +173,22 @@ export const Navigation: React.FC<NavigationProps> = ({
           {onToggleOverlay && (
             <NavigationActionButton
               icon={OverlayIcon}
+              label={labels.toggleOverlay}
               onClick={onToggleOverlay}
+              pressed={showOverlay}
               style={showOverlay ? { backgroundColor: 'rgba(255, 255, 255, 0.2)' } : undefined}
             />
           )}
           {onDownload && (
             <NavigationActionButton
               icon={DownloadIcon}
+              label={labels.download}
               onClick={onDownload}
-              style={{ width: '12px', height: '12px' }}
             />
           )}
-          {onClose && <NavigationActionButton icon={CloseIcon} onClick={onClose} />}
+          {onClose && (
+            <NavigationActionButton icon={CloseIcon} label={labels.close} onClick={onClose} />
+          )}
         </div>
       </div>
     </>
