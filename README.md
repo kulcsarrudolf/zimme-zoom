@@ -68,7 +68,11 @@ function App() {
   return (
     <>
       <button onClick={() => setSelectedImage(images[0])}>View Photo</button>
-      <PhotoViewer images={images} selectedImage={selectedImage} onClose={() => setSelectedImage(null)} />
+      <PhotoViewer
+        images={images}
+        selectedImage={selectedImage}
+        onClose={() => setSelectedImage(null)}
+      />
     </>
   );
 }
@@ -107,13 +111,54 @@ The `settings` prop allows you to customize the PhotoViewer behavior. All settin
 
 #### PhotoViewer Props
 
-| Prop            | Type                           | Required | Description                                                                         |
-| --------------- | ------------------------------ | -------- | ----------------------------------------------------------------------------------- |
-| `images`        | `ZZImage[]`                    | Yes      | Array of images to display                                                          |
-| `selectedImage` | `ZZImage \| null`              | Yes      | Currently selected image to display                                                 |
-| `onClose`       | `() => void`                   | Yes      | Callback function called when PhotoViewer is closed                                 |
-| `onImageChange` | `(image: ZZImage) => void`     | No       | Callback function called when the displayed image changes                           |
-| `settings`      | `Partial<PhotoViewerSettings>` | No       | Configuration object for PhotoViewer behavior (see [Settings](#available-settings)) |
+| Prop            | Type                           | Required | Description                                                                            |
+| --------------- | ------------------------------ | -------- | -------------------------------------------------------------------------------------- |
+| `images`        | `ZZImage[]`                    | Yes      | Array of images to display                                                             |
+| `selectedImage` | `ZZImage \| null`              | Yes      | Currently selected image to display                                                    |
+| `onClose`       | `() => void`                   | Yes      | Callback function called when PhotoViewer is closed                                    |
+| `onImageChange` | `(image: ZZImage) => void`     | No       | Callback function called when the displayed image changes                              |
+| `settings`      | `Partial<PhotoViewerSettings>` | No       | Configuration object for PhotoViewer behavior (see [Settings](#available-settings))    |
+| `labels`        | `Partial<PhotoViewerLabels>`   | No       | Accessible names for the dialog and its controls (see [Accessibility](#accessibility)) |
+
+#### Accessibility
+
+The viewer is a modal dialog: focus moves into it on open, stays inside while it is
+open, and returns to the element that opened it on close. Page scrolling behind the
+backdrop is locked. Every control is a real `<button>` with an accessible name, so it
+is reachable by keyboard and announced by screen readers.
+
+Control names default to English. Override any of them with the `labels` prop;
+unspecified keys keep their defaults.
+
+```tsx
+<PhotoViewer
+  images={images}
+  selectedImage={selectedImage}
+  onClose={() => setSelectedImage(null)}
+  labels={{
+    dialog: 'Képnéző',
+    close: 'Bezárás',
+    previous: 'Előző kép',
+    next: 'Következő kép',
+  }}
+/>
+```
+
+| Key             | Default                   |
+| --------------- | ------------------------- |
+| `dialog`        | `Photo viewer`            |
+| `close`         | `Close`                   |
+| `previous`      | `Previous image`          |
+| `next`          | `Next image`              |
+| `zoomIn`        | `Zoom in`                 |
+| `zoomOut`       | `Zoom out`                |
+| `rotateLeft`    | `Rotate left`             |
+| `rotateRight`   | `Rotate right`            |
+| `reset`         | `Reset zoom and rotation` |
+| `download`      | `Download image`          |
+| `toggleOverlay` | `Toggle overlay`          |
+
+`dialog` is only used when the current image has no `title`; a title takes precedence.
 
 #### Available Settings
 
@@ -188,21 +233,21 @@ function App() {
 
 ### MediaGridItem fields
 
-| Field           | Type     | Required | Description                                      |
-| -------------- | -------- | -------- | ------------------------------------------------ |
-| `id`           | `string` | Yes      | Stable unique id                                 |
-| `src`          | `string` | Yes      | Full-resolution URL (PhotoViewer and download)   |
-| `thumbnailSrc` | `string` | No       | Optional smaller URL for grid cells only         |
-| `name`         | `string` | Yes      | Display name; used for search                    |
+| Field          | Type     | Required | Description                                           |
+| -------------- | -------- | -------- | ----------------------------------------------------- |
+| `id`           | `string` | Yes      | Stable unique id                                      |
+| `src`          | `string` | Yes      | Full-resolution URL (PhotoViewer and download)        |
+| `thumbnailSrc` | `string` | No       | Optional smaller URL for grid cells only              |
+| `name`         | `string` | Yes      | Display name; used for search                         |
 | `createdAt`    | `number` | Yes      | Unix time in ms; UTC month grouping uses this instant |
-| `alt`          | `string` | No       | Shown as `img` alt text                          |
+| `alt`          | `string` | No       | Shown as `img` alt text                               |
 
 In Storybook, **MediaGrid** demos generate **`thumbnailSrc`** (240×240) and **`src`** (1600×1200) for each picsum item so the grid stays light and the viewer loads a larger asset.
 
-| Mode | Default `localFiltering` | Behavior |
-| ---- | ------------------------ | -------- |
-| Full in-memory list | `true` (when `loadMore` is not passed) | Search (and optional programmatic `dateFromMs` / `dateToMs`) run on `items` in the browser. |
-| Paged / infinite (`loadMore` passed) | `false` | Toolbar still updates filters; pass **`filters`** and **`onFiltersChange`**, and replace **`items`** from your API so results are not limited to “whatever pages are loaded.” |
+| Mode                                 | Default `localFiltering`               | Behavior                                                                                                                                                                      |
+| ------------------------------------ | -------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Full in-memory list                  | `true` (when `loadMore` is not passed) | Search (and optional programmatic `dateFromMs` / `dateToMs`) run on `items` in the browser.                                                                                   |
+| Paged / infinite (`loadMore` passed) | `false`                                | Toolbar still updates filters; pass **`filters`** and **`onFiltersChange`**, and replace **`items`** from your API so results are not limited to “whatever pages are loaded.” |
 
 Example with controlled filters while appending pages (parent filters the combined list):
 
@@ -248,29 +293,29 @@ You can reuse the same grouping and filter logic outside the component:
 
 ### MediaGrid props
 
-| Prop               | Type                         | Required | Description |
-| ------------------ | ---------------------------- | -------- | ----------- |
-| `items`            | `MediaGridItem[]`            | Yes      | Images to show (grouped by UTC month, newest first) |
-| `height`           | `number \| string`           | No       | Scroll area height (default `520`; numbers are pixels) |
-| `columns`          | `number`                     | No       | Columns per row (default `3`) |
-| `gap`              | `number`                     | No       | Gap between cells in px (default `4`) |
-| `rowGap`           | `number`                     | No       | Extra vertical space after each thumbnail row in px (default `6`) |
-| `maxWidth`         | `number \| string`           | No       | Max width of the panel (default `20rem`; Messenger-style). Numbers are pixels. |
-| `ariaLabel`        | `string`                     | No       | Accessible name for the grid region (default `Media grid`) |
-| `className`        | `string`                     | No       | Root `section` class |
-| `style`            | `CSSProperties`              | No       | Root inline styles |
-| `localFiltering`   | `boolean`                    | No       | When `true`, filter `items` in the browser; when `false`, parent owns filtered data. Default: `false` if `loadMore` is set, else `true`. |
-| `loadMore`         | `() => void \| Promise<void>` | No    | Called when the user scrolls near the bottom |
-| `hasMore`          | `boolean`                    | No       | When `false`, `loadMore` stops being requested |
-| `loadingMore`      | `boolean`                    | No       | While `true`, sentinel will not trigger another `loadMore` |
-| `filters`          | `MediaGridFilters`           | No       | Controlled filter state (`searchQuery`, optional `dateFromMs` / `dateToMs`) |
-| `defaultFilters`   | `MediaGridFilters`           | No       | Initial filters when uncontrolled |
-| `onFiltersChange`  | `(filters: MediaGridFilters) => void` | No | Fires when search changes (filters still support `dateFromMs` / `dateToMs` if you set them in code). |
-| `onItemClick`      | `(item: MediaGridItem) => void` | No  | Thumbnail click |
-| `enablePhotoViewer`| `boolean`                    | No       | Opens **PhotoViewer** on thumbnail click (default `false`) |
-| `labelLocale`      | `string`                     | No       | Locale for month labels (UTC); forwarded to `toLocaleDateString` |
-| `jumpMonthKeys`    | `string[]`                   | No       | Full list of `YYYY-MM` keys for Jump (newest first). Defaults to months present in `items`. |
-| `onJumpToMonthNotLoaded` | `(monthKey: string) => void` | No | User jumped to a month not in the current row model; load data until it appears (then grid scrolls). |
+| Prop                     | Type                                  | Required | Description                                                                                                                              |
+| ------------------------ | ------------------------------------- | -------- | ---------------------------------------------------------------------------------------------------------------------------------------- |
+| `items`                  | `MediaGridItem[]`                     | Yes      | Images to show (grouped by UTC month, newest first)                                                                                      |
+| `height`                 | `number \| string`                    | No       | Scroll area height (default `520`; numbers are pixels)                                                                                   |
+| `columns`                | `number`                              | No       | Columns per row (default `3`)                                                                                                            |
+| `gap`                    | `number`                              | No       | Gap between cells in px (default `4`)                                                                                                    |
+| `rowGap`                 | `number`                              | No       | Extra vertical space after each thumbnail row in px (default `6`)                                                                        |
+| `maxWidth`               | `number \| string`                    | No       | Max width of the panel (default `20rem`; Messenger-style). Numbers are pixels.                                                           |
+| `ariaLabel`              | `string`                              | No       | Accessible name for the grid region (default `Media grid`)                                                                               |
+| `className`              | `string`                              | No       | Root `section` class                                                                                                                     |
+| `style`                  | `CSSProperties`                       | No       | Root inline styles                                                                                                                       |
+| `localFiltering`         | `boolean`                             | No       | When `true`, filter `items` in the browser; when `false`, parent owns filtered data. Default: `false` if `loadMore` is set, else `true`. |
+| `loadMore`               | `() => void \| Promise<void>`         | No       | Called when the user scrolls near the bottom                                                                                             |
+| `hasMore`                | `boolean`                             | No       | When `false`, `loadMore` stops being requested                                                                                           |
+| `loadingMore`            | `boolean`                             | No       | While `true`, sentinel will not trigger another `loadMore`                                                                               |
+| `filters`                | `MediaGridFilters`                    | No       | Controlled filter state (`searchQuery`, optional `dateFromMs` / `dateToMs`)                                                              |
+| `defaultFilters`         | `MediaGridFilters`                    | No       | Initial filters when uncontrolled                                                                                                        |
+| `onFiltersChange`        | `(filters: MediaGridFilters) => void` | No       | Fires when search changes (filters still support `dateFromMs` / `dateToMs` if you set them in code).                                     |
+| `onItemClick`            | `(item: MediaGridItem) => void`       | No       | Thumbnail click                                                                                                                          |
+| `enablePhotoViewer`      | `boolean`                             | No       | Opens **PhotoViewer** on thumbnail click (default `false`)                                                                               |
+| `labelLocale`            | `string`                              | No       | Locale for month labels (UTC); forwarded to `toLocaleDateString`                                                                         |
+| `jumpMonthKeys`          | `string[]`                            | No       | Full list of `YYYY-MM` keys for Jump (newest first). Defaults to months present in `items`.                                              |
+| `onJumpToMonthNotLoaded` | `(monthKey: string) => void`          | No       | User jumped to a month not in the current row model; load data until it appears (then grid scrolls).                                     |
 
 See the **MediaGrid** stories on [Storybook](https://zimme-zoom.vercel.app) for **LargeListLoadMore** (last ~3 years of random monthly volume + `loadMore`) and other examples.
 
@@ -300,10 +345,10 @@ function App() {
 
 #### Image Props
 
-| Prop      | Type         | Required | Description                                    |
-| --------- | ------------ | -------- | ---------------------------------------------- |
+| Prop      | Type         | Required | Description                                                                           |
+| --------- | ------------ | -------- | ------------------------------------------------------------------------------------- |
 | `image`   | `ZZImage`    | Yes      | Image object: `id`, **`src`** (full), optional **`thumbnailSrc`** (preview), `alt`, … |
-| `onClick` | `() => void` | No       | Callback function called when image is clicked |
+| `onClick` | `() => void` | No       | Callback function called when image is clicked                                        |
 
 The component is designed to work seamlessly within the `Gallery` component, but can also be used standalone in your own layouts.
 
