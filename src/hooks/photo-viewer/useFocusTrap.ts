@@ -138,13 +138,21 @@ export function useFocusTrap({
       if (index !== -1) trapStack.splice(index, 1);
 
       const previous = previousFocusRef.current;
-      previousFocusRef.current = null;
-      if (!previous || !previous.isConnected) return;
+      if (!previous || !previous.isConnected) {
+        previousFocusRef.current = null;
+        return;
+      }
 
-      // Something else legitimately took focus while closing; leave it alone.
+      // Something else legitimately holds focus, so leave it alone. This also
+      // covers StrictMode's mount cleanup, where the dialog is still mounted
+      // and focused: clearing the target here would discard the opener before
+      // the second mount pass (which no longer re-records it, seeing the dialog
+      // already focused), so the real close later restores nothing. Keep the
+      // target and only clear it once we actually restore.
       const current = document.activeElement;
       if (current && current !== document.body && document.contains(current)) return;
 
+      previousFocusRef.current = null;
       previous.focus({ preventScroll: true });
     };
   }, [enabled, containerRef]);
