@@ -3,7 +3,7 @@ name: Release
 on:
   push:
     branches:
-      - main
+      - release
 
 concurrency: ${{ github.workflow }}-${{ github.ref }}
 
@@ -33,6 +33,10 @@ jobs:
           version: yarn version-packages
           publish: yarn release
         env:
+          # Skip Husky git hooks: the changesets action creates a bot
+          # "Version Packages" commit that intentionally isn't a
+          # conventional commit, so commitlint (commit-msg) would reject it.
+          HUSKY: "0"
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
           NPM_CONFIG_PROVENANCE: "true"
