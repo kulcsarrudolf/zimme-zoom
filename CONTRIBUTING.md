@@ -27,6 +27,20 @@ Build the library:
 yarn build
 ```
 
+### Bundle Size
+
+Check the library bundle budgets after building:
+
+```bash
+yarn build
+yarn size
+```
+
+`yarn size` measures the generated files in `dist/`, so running it before
+`yarn build` will fail because the artifacts do not exist yet. The size-limit
+packages are intentionally pinned to exact versions so dependency patch releases
+do not change byte measurements during unrelated PRs.
+
 ### Code Style
 
 - Follow the existing code style

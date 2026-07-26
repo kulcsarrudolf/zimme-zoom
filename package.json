@@ -30,6 +30,7 @@
     "build:vercel": "storybook build",
     "dev": "rollup -c -w",
     "clean": "rimraf dist",
+    "size": "size-limit",
     "test": "jest",
     "coverage": "jest --coverage",
     "lint": "eslint .",
@@ -50,6 +51,19 @@
       "prettier --write"
     ]
   },
+  "size-limit": [
+    {
+      "name": "barrel",
+      "path": "dist/index.mjs",
+      "limit": "22 KB"
+    },
+    {
+      "name": "Image only",
+      "path": "dist/index.mjs",
+      "import": "{ Image }",
+      "limit": "3.5 KB"
+    }
+  ],
   "peerDependencies": {
     "react": ">=16.8.0",
     "react-dom": ">=16.8.0"
@@ -59,6 +73,7 @@
     "@commitlint/cli": "^19",
     "@commitlint/config-conventional": "^19",
     "@eslint/js": "^10.0.1",
+    "@size-limit/preset-small-lib": "12.1.0",
     "@storybook/addon-docs": "^10.1.11",
     "@storybook/addon-links": "^10.1.11",
     "@storybook/react": "^10.1.11",
@@ -87,6 +102,7 @@
     "rollup": "^4.9.6",
     "rollup-plugin-dts": "^6.4.1",
     "rollup-plugin-typescript2": "^0.36.0",
+    "size-limit": "12.1.0",
     "storybook": "^10.1.11",
     "ts-jest": "^29.4.6",
     "typescript": "^5.8.3",
