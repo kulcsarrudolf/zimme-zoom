@@ -1,9 +1,17 @@
 import '@testing-library/jest-dom';
 import React from 'react';
-import { render, screen } from '@testing-library/react';
+import { render, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { PhotoViewer } from '../PhotoViewer';
 import type { ZZImage } from '../../../types/image.type';
+import { downloadImage } from '../../../utils/downloadImage';
+import type { DownloadImageResult } from '../../../utils/downloadImage';
+
+jest.mock('../../../utils/downloadImage', () => ({
+  downloadImage: jest.fn(),
+}));
+
+const mockedDownloadImage = downloadImage as jest.MockedFunction<typeof downloadImage>;
 
 const images: ZZImage[] = [
   { id: '1', src: 'https://example.com/1.jpg', alt: 'First image' },
@@ -22,6 +30,14 @@ function expectTransform(
 }
 
 describe('PhotoViewer', () => {
+  beforeEach(() => {
+    mockedDownloadImage.mockResolvedValue({ method: 'canvas', errors: [] });
+  });
+
+  afterEach(() => {
+    jest.clearAllMocks();
+  });
+
   it('renders nothing when no image is selected', () => {
     const { container } = render(
       <PhotoViewer selectedImage={null} images={images} onClose={jest.fn()} />,
@@ -46,6 +62,56 @@ describe('PhotoViewer', () => {
     await user.keyboard('{Escape}');
 
     expect(onClose).toHaveBeenCalledTimes(1);
+  });
+
+  it('calls onDownloadFallback when downloadImage reports a fallback', async () => {
+    const user = userEvent.setup();
+    const onDownloadFallback = jest.fn();
+    const result: DownloadImageResult = {
+      method: 'fetch',
+      errors: [
+        {
+          method: 'canvas',
+          fallbackMethod: 'fetch',
+          error: new Error('Canvas conversion failed'),
+        },
+      ],
+    };
+    mockedDownloadImage.mockResolvedValue(result);
+
+    render(
+      <PhotoViewer
+        selectedImage={images[0]}
+        images={images}
+        onClose={jest.fn()}
+        onDownloadFallback={onDownloadFallback}
+        settings={{ allowDownload: true }}
+      />,
+    );
+
+    await user.click(screen.getByRole('button', { name: 'Download image' }));
+
+    await waitFor(() => expect(onDownloadFallback).toHaveBeenCalledWith(result));
+  });
+
+  it('does not call onDownloadFallback when the download succeeds without fallback', async () => {
+    const user = userEvent.setup();
+    const onDownloadFallback = jest.fn();
+
+    render(
+      <PhotoViewer
+        selectedImage={images[0]}
+        images={images}
+        onClose={jest.fn()}
+        onDownloadFallback={onDownloadFallback}
+        settings={{ allowDownload: true }}
+      />,
+    );
+
+    await user.click(screen.getByRole('button', { name: 'Download image' }));
+
+    await waitFor(() => expect(mockedDownloadImage).toHaveBeenCalledTimes(1));
+    expect(onDownloadFallback).not.toHaveBeenCalled();
   });
 
   it('calls onClose when the close control is clicked', async () => {

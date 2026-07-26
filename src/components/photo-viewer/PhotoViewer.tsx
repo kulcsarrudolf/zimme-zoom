@@ -4,6 +4,7 @@ import PhotoViewerImage from './PhotoViewerImage';
 import type { PhotoViewerLabels, PhotoViewerSettings } from './types';
 import { ZZImage } from '../../types/image.type';
 import { downloadImage } from '../../utils/downloadImage';
+import type { DownloadImageResult } from '../../utils/downloadImage';
 import {
   EMPTY_PHOTO_VIEWER_LABELS,
   EMPTY_PHOTO_VIEWER_SETTINGS,
@@ -22,12 +23,18 @@ import { useTransform } from '../../hooks/photo-viewer/useTransform';
 import { useWheelZoom } from '../../hooks/photo-viewer/useWheelZoom';
 
 export type { PhotoViewerLabels, PhotoViewerSettings } from './types';
+export type {
+  DownloadImageError,
+  DownloadImageMethod,
+  DownloadImageResult,
+} from '../../utils/downloadImage';
 
 export type PhotoViewerProps = {
   selectedImage: ZZImage | null;
   images: ZZImage[];
   onClose: () => void;
   onImageChange?: (image: ZZImage) => void;
+  onDownloadFallback?: (result: DownloadImageResult) => void;
   settings?: Partial<PhotoViewerSettings>;
   /** Accessible names, for translation. Unspecified keys keep their defaults. */
   labels?: Partial<PhotoViewerLabels>;
@@ -69,6 +76,7 @@ export const PhotoViewer: React.FC<PhotoViewerProps> = ({
   images,
   onClose,
   onImageChange,
+  onDownloadFallback,
   settings = EMPTY_PHOTO_VIEWER_SETTINGS,
   labels: labelOverrides = EMPTY_PHOTO_VIEWER_LABELS,
 }) => {
@@ -151,8 +159,11 @@ export const PhotoViewer: React.FC<PhotoViewerProps> = ({
   const handleDownload = useCallback(async () => {
     if (!allowDownload || !currentImage) return;
     const filename = currentImage.title || currentImage.alt || 'image';
-    await downloadImage(currentImage.src, filename, imageRef.current);
-  }, [allowDownload, currentImage]);
+    const result = await downloadImage(currentImage.src, filename, imageRef.current);
+    if (result.errors.length > 0) {
+      onDownloadFallback?.(result);
+    }
+  }, [allowDownload, currentImage, onDownloadFallback]);
 
   const { isDragging, onMouseDown } = useMouseDrag({
     enabled: zoom > 1,

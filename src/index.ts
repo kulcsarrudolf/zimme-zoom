@@ -1,5 +1,8 @@
 export { PhotoViewer } from './components/photo-viewer/PhotoViewer';
 export type {
+  DownloadImageError,
+  DownloadImageMethod,
+  DownloadImageResult,
   PhotoViewerProps,
   PhotoViewerLabels,
   PhotoViewerSettings,

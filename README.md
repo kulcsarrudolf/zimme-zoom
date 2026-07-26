@@ -21,7 +21,13 @@ All components are exported from the main package:
 
 ```tsx
 import { PhotoViewer, Gallery, MediaGrid, Image } from 'zimme-zoom';
-import type { ZZImage, PhotoViewerProps, MediaGridItem, MediaGridProps } from 'zimme-zoom';
+import type {
+  DownloadImageResult,
+  MediaGridItem,
+  MediaGridProps,
+  PhotoViewerProps,
+  ZZImage,
+} from 'zimme-zoom';
 ```
 
 ## Demo
@@ -111,14 +117,21 @@ The `settings` prop allows you to customize the PhotoViewer behavior. All settin
 
 #### PhotoViewer Props
 
-| Prop            | Type                           | Required | Description                                                                            |
-| --------------- | ------------------------------ | -------- | -------------------------------------------------------------------------------------- |
-| `images`        | `ZZImage[]`                    | Yes      | Array of images to display                                                             |
-| `selectedImage` | `ZZImage \| null`              | Yes      | Currently selected image to display                                                    |
-| `onClose`       | `() => void`                   | Yes      | Callback function called when PhotoViewer is closed                                    |
-| `onImageChange` | `(image: ZZImage) => void`     | No       | Callback function called when the displayed image changes                              |
-| `settings`      | `Partial<PhotoViewerSettings>` | No       | Configuration object for PhotoViewer behavior (see [Settings](#available-settings))    |
-| `labels`        | `Partial<PhotoViewerLabels>`   | No       | Accessible names for the dialog and its controls (see [Accessibility](#accessibility)) |
+| Prop                 | Type                                    | Required | Description                                                                            |
+| -------------------- | --------------------------------------- | -------- | -------------------------------------------------------------------------------------- |
+| `images`             | `ZZImage[]`                             | Yes      | Array of images to display                                                             |
+| `selectedImage`      | `ZZImage \| null`                       | Yes      | Currently selected image to display                                                    |
+| `onClose`            | `() => void`                            | Yes      | Callback function called when PhotoViewer is closed                                    |
+| `onImageChange`      | `(image: ZZImage) => void`              | No       | Callback function called when the displayed image changes                              |
+| `onDownloadFallback` | `(result: DownloadImageResult) => void` | No       | Called when image download falls back after canvas or fetch fails                      |
+| `settings`           | `Partial<PhotoViewerSettings>`          | No       | Configuration object for PhotoViewer behavior (see [Settings](#available-settings))    |
+| `labels`             | `Partial<PhotoViewerLabels>`            | No       | Accessible names for the dialog and its controls (see [Accessibility](#accessibility)) |
+
+When `allowDownload` is enabled, PhotoViewer first tries a canvas download, then
+`fetch`, then opens the image in a new tab as a last resort for cross-origin
+images. Use `onDownloadFallback` to inspect the final method and failed attempts
+when one method fails and PhotoViewer has to fall back. A fallback can still
+finish with a successful download, such as canvas failing and `fetch` succeeding.
 
 #### Accessibility
 
