@@ -1,6 +1,13 @@
 {
+  "$schema": "https://openapi.vercel.sh/vercel.json",
   "version": 2,
   "installCommand": "yarn install",
   "buildCommand": "yarn build:vercel",
-  "outputDirectory": "storybook-static"
+  "outputDirectory": "storybook-static",
+  "git": {
+    "deploymentEnabled": {
+      "**": false,
+      "main": true
+    }
+  }
 }
