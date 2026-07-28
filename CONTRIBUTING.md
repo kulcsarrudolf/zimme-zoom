@@ -33,6 +33,17 @@ yarn build
 - Run the linter: `yarn lint`
 - Format code: `yarn format`
 
+### Testing
+
+Run the Jest suite:
+
+```bash
+yarn test
+```
+
+Component tests use React Testing Library and `@testing-library/user-event`.
+Prefer user-visible roles, labels, and interactions over implementation details.
+
 ## Making Changes
 
 1. Make your changes in the `src/` directory
