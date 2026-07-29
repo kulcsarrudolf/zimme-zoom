@@ -1,5 +1,6 @@
 import '@testing-library/jest-dom';
 import React, { useState } from 'react';
+import { renderToString } from 'react-dom/server';
 import { act, render, screen, waitFor, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { PhotoViewer } from '../PhotoViewer';
@@ -85,10 +86,8 @@ describe('PhotoViewer accessibility', () => {
     });
 
     it('brightens the control bar while focus is inside it', () => {
-      const { container } = render(
-        <PhotoViewer selectedImage={images[0]} images={images} onClose={jest.fn()} />,
-      );
-      const nav = container.querySelector('.photo-viewer-navigation') as HTMLElement;
+      render(<PhotoViewer selectedImage={images[0]} images={images} onClose={jest.fn()} />);
+      const nav = document.body.querySelector('.photo-viewer-navigation') as HTMLElement;
 
       expect(nav).toHaveStyle({ backgroundColor: 'rgba(0, 0, 0, 0.5)' });
 
@@ -218,12 +217,14 @@ describe('PhotoViewer accessibility', () => {
       const user = userEvent.setup();
       render(
         <>
-          <button>outside</button>
+          <button data-testid="outside">outside</button>
           <PhotoViewer selectedImage={images[0]} images={images} onClose={jest.fn()} />
         </>,
       );
 
-      const outside = screen.getByRole('button', { name: 'outside' });
+      // The background accessibility tests assert that role queries cannot see
+      // this button while its owner tree is aria-hidden.
+      const outside = screen.getByTestId('outside');
       const dialog = screen.getByRole('dialog');
 
       for (let i = 0; i < DEFAULT_CONTROL_NAMES.length + 2; i += 1) {
@@ -236,12 +237,14 @@ describe('PhotoViewer accessibility', () => {
     it('pulls focus back when something outside steals it', () => {
       render(
         <>
-          <button>outside</button>
+          <button data-testid="outside">outside</button>
           <PhotoViewer selectedImage={images[0]} images={images} onClose={jest.fn()} />
         </>,
       );
 
-      screen.getByRole('button', { name: 'outside' }).focus();
+      // The background accessibility tests assert that role queries cannot see
+      // this button while its owner tree is aria-hidden.
+      screen.getByTestId('outside').focus();
 
       expect(screen.getByRole('dialog')).toHaveFocus();
     });
@@ -314,6 +317,32 @@ describe('PhotoViewer accessibility', () => {
       await user.keyboard('{Escape}');
 
       expect(trigger).toHaveFocus();
+    });
+
+    it('restores focus after background inert is removed', async () => {
+      const user = userEvent.setup();
+      const nativeFocus = HTMLElement.prototype.focus;
+      const focusSpy = jest.spyOn(HTMLElement.prototype, 'focus').mockImplementation(function focus(
+        this: HTMLElement,
+        options?: FocusOptions,
+      ) {
+        if (this.closest('[inert]')) return;
+        nativeFocus.call(this, options);
+      });
+
+      try {
+        render(<Harness />);
+        const trigger = screen.getByRole('button', { name: 'Open' });
+
+        await user.click(trigger);
+        expect(screen.getByRole('dialog')).toHaveFocus();
+
+        await user.keyboard('{Escape}');
+
+        await waitFor(() => expect(trigger).toHaveFocus());
+      } finally {
+        focusSpy.mockRestore();
+      }
     });
 
     it('restores focus under StrictMode, whose setup/cleanup/setup remount must not discard the opener', async () => {
@@ -405,6 +434,163 @@ describe('PhotoViewer accessibility', () => {
 
       second.unmount();
       expect(document.body.style.overflow).toBe('scroll');
+    });
+  });
+
+  describe('portal and background accessibility', () => {
+    it('renders the dialog into document.body instead of inside the owner tree', () => {
+      const { container } = render(
+        <div style={{ transform: 'translateZ(0)' }}>
+          <PhotoViewer selectedImage={images[0]} images={images} onClose={jest.fn()} />
+        </div>,
+      );
+
+      const dialog = screen.getByRole('dialog');
+
+      expect(dialog.parentElement).toBe(document.body);
+      expect(container).not.toContainElement(dialog);
+    });
+
+    it('hides background content while open and restores it when closed', () => {
+      const { container, rerender } = render(
+        <>
+          <button>outside</button>
+          <PhotoViewer selectedImage={images[0]} images={images} onClose={jest.fn()} />
+        </>,
+      );
+
+      expect(container).toHaveAttribute('inert');
+      expect(container).toHaveAttribute('aria-hidden', 'true');
+      expect(screen.queryByRole('button', { name: 'outside' })).not.toBeInTheDocument();
+
+      rerender(
+        <>
+          <button>outside</button>
+          <PhotoViewer selectedImage={null} images={images} onClose={jest.fn()} />
+        </>,
+      );
+
+      expect(container).not.toHaveAttribute('inert');
+      expect(container).not.toHaveAttribute('aria-hidden');
+      expect(screen.getByRole('button', { name: 'outside' })).toBeInTheDocument();
+    });
+
+    it('restores pre-existing background aria-hidden and inert attributes', () => {
+      const root = document.createElement('div');
+      root.setAttribute('aria-hidden', 'false');
+      root.setAttribute('inert', 'existing');
+      document.body.appendChild(root);
+
+      const { rerender, unmount } = render(
+        <PhotoViewer selectedImage={images[0]} images={images} onClose={jest.fn()} />,
+        { container: root },
+      );
+
+      expect(root).toHaveAttribute('inert', '');
+      expect(root).toHaveAttribute('aria-hidden', 'true');
+
+      rerender(<PhotoViewer selectedImage={null} images={images} onClose={jest.fn()} />);
+
+      expect(root).toHaveAttribute('inert');
+      expect(root).toHaveAttribute('aria-hidden', 'false');
+
+      unmount();
+      root.remove();
+    });
+
+    it('hides background children added while open and restores them on close', async () => {
+      const { rerender } = render(
+        <PhotoViewer selectedImage={images[0]} images={images} onClose={jest.fn()} />,
+      );
+      const lateRoot = document.createElement('div');
+      const lateButton = document.createElement('button');
+      lateButton.textContent = 'late';
+      lateRoot.appendChild(lateButton);
+
+      document.body.appendChild(lateRoot);
+
+      await waitFor(() => expect(lateRoot).toHaveAttribute('inert'));
+      expect(lateRoot).toHaveAttribute('aria-hidden', 'true');
+      expect(screen.queryByRole('button', { name: 'late' })).not.toBeInTheDocument();
+
+      rerender(<PhotoViewer selectedImage={null} images={images} onClose={jest.fn()} />);
+
+      expect(lateRoot).not.toHaveAttribute('inert');
+      expect(lateRoot).not.toHaveAttribute('aria-hidden');
+      expect(screen.getByRole('button', { name: 'late' })).toBeInTheDocument();
+
+      lateRoot.remove();
+    });
+
+    it('hides non-HTML background children', () => {
+      const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+      document.body.appendChild(svg);
+
+      const { unmount } = render(
+        <PhotoViewer selectedImage={images[0]} images={images} onClose={jest.fn()} />,
+      );
+
+      expect(svg).toHaveAttribute('inert');
+      expect(svg).toHaveAttribute('aria-hidden', 'true');
+
+      unmount();
+
+      expect(svg).not.toHaveAttribute('inert');
+      expect(svg).not.toHaveAttribute('aria-hidden');
+      svg.remove();
+    });
+
+    it('keeps background content hidden until every open viewer closes', async () => {
+      const first = render(
+        <PhotoViewer selectedImage={images[0]} images={images} onClose={jest.fn()} />,
+      );
+      const second = render(
+        <PhotoViewer selectedImage={images[1]} images={images} onClose={jest.fn()} />,
+      );
+      await waitFor(() => expect(second.container).toHaveAttribute('inert'));
+
+      const dialogs = screen.getAllByRole('dialog');
+      expect(dialogs).toHaveLength(2);
+      for (const dialog of dialogs) {
+        expect(dialog).not.toHaveAttribute('inert');
+        expect(dialog).not.toHaveAttribute('aria-hidden');
+      }
+
+      expect(first.container).toHaveAttribute('inert');
+      expect(first.container).toHaveAttribute('aria-hidden', 'true');
+
+      second.unmount();
+
+      expect(first.container).toHaveAttribute('inert');
+      expect(first.container).toHaveAttribute('aria-hidden', 'true');
+
+      first.unmount();
+
+      expect(first.container).not.toHaveAttribute('inert');
+      expect(first.container).not.toHaveAttribute('aria-hidden');
+    });
+
+    it('keeps click outside close working after the dialog moves to a portal', async () => {
+      const user = userEvent.setup();
+      const onClose = jest.fn();
+
+      render(<PhotoViewer selectedImage={images[0]} images={images} onClose={onClose} />);
+
+      await user.click(screen.getByAltText('First image'));
+      expect(onClose).not.toHaveBeenCalled();
+
+      await user.click(screen.getByRole('dialog'));
+      expect(onClose).toHaveBeenCalledTimes(1);
+    });
+
+    it('does not access document during server rendering', () => {
+      // renderToString never runs effects; this is only a cheap guard against
+      // accidental render-time or module-level DOM access.
+      expect(() =>
+        renderToString(
+          <PhotoViewer selectedImage={images[0]} images={images} onClose={jest.fn()} />,
+        ),
+      ).not.toThrow();
     });
   });
 });
