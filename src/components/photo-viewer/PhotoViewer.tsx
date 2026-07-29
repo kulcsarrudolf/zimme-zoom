@@ -1,4 +1,5 @@
 import React, { useCallback, useEffect, useRef, useState } from 'react';
+import { createPortal } from 'react-dom';
 import Navigation from './Navigation';
 import PhotoViewerImage from './PhotoViewerImage';
 import type { PhotoViewerLabels, PhotoViewerSettings } from './types';
@@ -9,6 +10,7 @@ import {
   EMPTY_PHOTO_VIEWER_SETTINGS,
 } from '../../utils/photo-viewer/constants';
 import { useBodyScrollLock } from '../../hooks/photo-viewer/useBodyScrollLock';
+import { useBackgroundInert } from '../../hooks/photo-viewer/useBackgroundInert';
 import { useClickOutsideToClose } from '../../hooks/photo-viewer/useClickOutsideToClose';
 import { useFocusTrap } from '../../hooks/photo-viewer/useFocusTrap';
 import { useImageNavigation } from '../../hooks/photo-viewer/useImageNavigation';
@@ -115,6 +117,7 @@ export const PhotoViewer: React.FC<PhotoViewerProps> = ({
   const [showOverlay, setShowOverlay] = useState(
     () => showOverlayByDefault && !!selectedImage?.svgOverlay,
   );
+  const [portalRoot, setPortalRoot] = useState<HTMLElement | null>(null);
 
   useEffect(() => {
     setShowOverlay(showOverlayByDefault && !!selectedImage?.svgOverlay);
@@ -198,8 +201,13 @@ export const PhotoViewer: React.FC<PhotoViewerProps> = ({
     onZoomTo: zoomTo,
   });
 
+  // Hooks run above the early return below, so a mounted-but-closed viewer
+  // would otherwise keep global modal behavior active while rendering nothing.
+  const isOpen = !!selectedImage && !!currentImage;
+  const dialogReady = isOpen && !!portalRoot;
+
   useKeyboardShortcuts({
-    enabled: keyboardInteraction,
+    enabled: dialogReady && keyboardInteraction,
     handlers: {
       onClose,
       onZoomIn: handleZoomIn,
@@ -211,16 +219,22 @@ export const PhotoViewer: React.FC<PhotoViewerProps> = ({
     },
   });
 
-  useClickOutsideToClose({ enabled: clickOutsideToExit, onClose });
+  useClickOutsideToClose({ enabled: dialogReady && clickOutsideToExit, onClose });
 
-  // Hooks run above the early return below, so a mounted-but-closed viewer
-  // would otherwise trap focus and lock body scroll while rendering nothing.
-  const isOpen = !!selectedImage && !!currentImage;
+  useEffect(() => {
+    if (!isOpen) {
+      setPortalRoot(null);
+      return;
+    }
 
-  useFocusTrap({ enabled: isOpen, containerRef });
-  useBodyScrollLock({ enabled: isOpen });
+    setPortalRoot(document.body);
+  }, [isOpen]);
 
-  if (!selectedImage || !currentImage) return null;
+  useFocusTrap({ enabled: dialogReady, containerRef });
+  useBodyScrollLock({ enabled: dialogReady });
+  useBackgroundInert({ enabled: dialogReady, dialogRef: containerRef });
+
+  if (!selectedImage || !currentImage || !portalRoot) return null;
 
   const imageContainerStyle: React.CSSProperties = {
     ...imageContainerBaseStyle,
@@ -230,7 +244,7 @@ export const PhotoViewer: React.FC<PhotoViewerProps> = ({
   const hasMultipleImages = images.length > 1;
   const canReset = zoom !== 1 || rotationCount % 4 !== 0;
 
-  return (
+  return createPortal(
     <div
       ref={containerRef}
       className="photo-viewer"
@@ -284,6 +298,7 @@ export const PhotoViewer: React.FC<PhotoViewerProps> = ({
       </div>
 
       {keyframesStyle}
-    </div>
+    </div>,
+    portalRoot,
   );
 };
