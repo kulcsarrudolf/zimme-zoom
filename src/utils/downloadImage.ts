@@ -1,3 +1,31 @@
+export type DownloadImageMethod = 'canvas' | 'fetch' | 'open-tab';
+
+export type DownloadImageError =
+  | {
+      method: 'canvas';
+      fallbackMethod: 'fetch';
+      error: unknown;
+    }
+  | {
+      method: 'fetch';
+      fallbackMethod: 'open-tab';
+      error: unknown;
+    };
+
+export type DownloadImageResult = {
+  method: DownloadImageMethod;
+  errors: DownloadImageError[];
+};
+
+const reportDownloadError = (
+  errors: DownloadImageError[],
+  error: DownloadImageError,
+  message: string,
+) => {
+  errors.push(error);
+  console.warn(message, error.error);
+};
+
 /**
  * Downloads an image using multiple fallback methods to handle CORS restrictions
  * @param imageSrc - The source URL of the image to download
@@ -8,7 +36,9 @@ export const downloadImage = async (
   imageSrc: string,
   filename: string,
   imageElement?: HTMLImageElement | null,
-): Promise<void> => {
+): Promise<DownloadImageResult> => {
+  const errors: DownloadImageError[] = [];
+
   // Method 1: Try using canvas (works for same-origin images, even without CORS headers)
   // This works because the image is already loaded in the browser
   if (imageElement && imageElement.complete) {
@@ -28,20 +58,24 @@ export const downloadImage = async (
         canvas.toBlob(resolve, 'image/png');
       });
 
-      if (blob) {
-        const url = window.URL.createObjectURL(blob);
-        const link = document.createElement('a');
-        link.href = url;
-        link.download = filename;
-        document.body.appendChild(link);
-        link.click();
-        document.body.removeChild(link);
-        window.URL.revokeObjectURL(url);
-        return;
-      }
+      if (!blob) throw new Error('Canvas conversion failed');
+
+      const url = window.URL.createObjectURL(blob);
+      const link = document.createElement('a');
+      link.href = url;
+      link.download = filename;
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      window.URL.revokeObjectURL(url);
+      return { method: 'canvas', errors };
     } catch (error) {
       // Canvas method failed (likely CORS issue with cross-origin image), try fetch
-      console.warn('Canvas download failed, trying fetch:', error);
+      reportDownloadError(
+        errors,
+        { method: 'canvas', fallbackMethod: 'fetch', error },
+        'Canvas download failed, trying fetch:',
+      );
     }
   }
 
@@ -59,10 +93,14 @@ export const downloadImage = async (
     link.click();
     document.body.removeChild(link);
     window.URL.revokeObjectURL(url);
-    return;
+    return { method: 'fetch', errors };
   } catch (error) {
     // Fetch failed (likely CORS issue), try fallback
-    console.warn('Fetch download failed, using fallback:', error);
+    reportDownloadError(
+      errors,
+      { method: 'fetch', fallbackMethod: 'open-tab', error },
+      'Fetch download failed, using fallback:',
+    );
   }
 
   // Method 3: Fallback - open in new tab (download attribute won't work for cross-origin)
@@ -76,4 +114,5 @@ export const downloadImage = async (
   document.body.appendChild(link);
   link.click();
   document.body.removeChild(link);
+  return { method: 'open-tab', errors };
 };
