@@ -17,11 +17,16 @@ yarn test        # run the test suite
 yarn lint        # lint
 yarn format      # format
 yarn build       # build the library
-yarn size        # check bundle size budgets (needs a build first)
+yarn size        # check bundle budgets after building
 ```
 
 Husky runs `lint-staged` and the tests on commit, and lints the message with commitlint.
 Commit messages must follow [Conventional Commits](https://www.conventionalcommits.org/), for example `fix(PhotoViewer): restore focus to the opener`.
+
+`yarn size` measures the generated files in `dist/`, so running it before
+`yarn build` will fail because the artifacts do not exist yet. The size-limit
+packages are intentionally pinned to exact versions so dependency patch releases
+do not change byte measurements during unrelated PRs.
 
 ### Testing
 
@@ -33,20 +38,6 @@ yarn test
 
 Component tests use React Testing Library and `@testing-library/user-event`.
 Prefer user-visible roles, labels, and interactions over implementation details.
-
-### Bundle Size
-
-Check the library bundle budgets:
-
-```bash
-yarn build
-yarn size
-```
-
-`yarn size` measures the generated files in `dist/`, so running it before
-`yarn build` fails because the artifacts do not exist yet. The size-limit
-packages are intentionally pinned to exact versions so dependency patch releases
-do not change byte measurements during unrelated PRs.
 
 ## Making Changes
 
