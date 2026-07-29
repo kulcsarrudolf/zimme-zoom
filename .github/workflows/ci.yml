@@ -39,6 +39,9 @@ jobs:
       - name: Build
         run: yarn build
 
+      - name: Check bundle size
+        run: yarn size
+
       # Packs the library and consumes it the way a real dependent would.
       # Guards the `exports` map, and guards against module-level DOM access
       # regressing (see #22): both entries are loaded by plain Node, no jsdom.
