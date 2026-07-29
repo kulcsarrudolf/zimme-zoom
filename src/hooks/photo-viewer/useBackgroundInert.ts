@@ -1,22 +1,62 @@
 import { useEffect } from 'react';
 
-type InertElement = HTMLElement & { inert?: boolean };
+type InertElement = Element & { inert?: boolean };
 
 type HiddenSibling = {
-  element: HTMLElement;
-  inert: string | null;
+  inert: boolean;
   ariaHidden: string | null;
-  inertProperty?: boolean;
   count: number;
 };
 
-const hiddenSiblings = new Map<HTMLElement, HiddenSibling>();
+const hiddenSiblings = new WeakMap<Element, HiddenSibling>();
 
-function getBackgroundSiblings(dialog: HTMLElement): HTMLElement[] {
-  return Array.from(document.body.children).filter(
-    (child): child is HTMLElement =>
-      child instanceof HTMLElement && child !== dialog && !child.contains(dialog),
+function isBackgroundSibling(element: Element, dialog: HTMLElement): boolean {
+  return (
+    element !== dialog &&
+    !element.contains(dialog) &&
+    !(element.getAttribute('role') === 'dialog' && element.getAttribute('aria-modal') === 'true')
   );
+}
+
+function hideSibling(element: Element): void {
+  const existing = hiddenSiblings.get(element);
+  if (existing) {
+    existing.count += 1;
+  } else {
+    hiddenSiblings.set(element, {
+      inert: element.hasAttribute('inert'),
+      ariaHidden: element.getAttribute('aria-hidden'),
+      count: 1,
+    });
+  }
+
+  element.setAttribute('inert', '');
+  element.setAttribute('aria-hidden', 'true');
+  if ('inert' in element) {
+    (element as InertElement).inert = true;
+  }
+}
+
+function restoreSibling(element: Element): void {
+  const hidden = hiddenSiblings.get(element);
+  if (!hidden) return;
+
+  hidden.count -= 1;
+  if (hidden.count > 0) return;
+
+  if (hidden.inert) {
+    element.setAttribute('inert', '');
+  } else {
+    element.removeAttribute('inert');
+  }
+
+  if (hidden.ariaHidden === null) {
+    element.removeAttribute('aria-hidden');
+  } else {
+    element.setAttribute('aria-hidden', hidden.ariaHidden);
+  }
+
+  hiddenSiblings.delete(element);
 }
 
 export function useBackgroundInert({
@@ -31,55 +71,30 @@ export function useBackgroundInert({
     const dialog = dialogRef.current;
     if (!dialog) return;
 
-    const siblings = getBackgroundSiblings(dialog);
+    const siblings = new Set<Element>();
+    const hideBackgroundSibling = (element: Element) => {
+      if (!isBackgroundSibling(element, dialog) || siblings.has(element)) return;
+      siblings.add(element);
+      hideSibling(element);
+    };
 
-    for (const element of siblings) {
-      const existing = hiddenSiblings.get(element);
-      if (existing) {
-        existing.count += 1;
-      } else {
-        hiddenSiblings.set(element, {
-          element,
-          inert: element.getAttribute('inert'),
-          ariaHidden: element.getAttribute('aria-hidden'),
-          inertProperty: 'inert' in element ? Boolean((element as InertElement).inert) : undefined,
-          count: 1,
-        });
-      }
+    Array.from(document.body.children).forEach(hideBackgroundSibling);
 
-      element.setAttribute('inert', '');
-      element.setAttribute('aria-hidden', 'true');
-      if ('inert' in element) {
-        (element as InertElement).inert = true;
+    const observer = new MutationObserver((records) => {
+      for (const record of records) {
+        for (const node of record.addedNodes) {
+          if (node.nodeType === Node.ELEMENT_NODE) {
+            hideBackgroundSibling(node as Element);
+          }
+        }
       }
-    }
+    });
+    observer.observe(document.body, { childList: true });
 
     return () => {
+      observer.disconnect();
       for (const element of siblings) {
-        const hidden = hiddenSiblings.get(element);
-        if (!hidden) continue;
-
-        hidden.count -= 1;
-        if (hidden.count > 0) continue;
-
-        const { inert, ariaHidden, inertProperty } = hidden;
-        if (inert === null) {
-          element.removeAttribute('inert');
-        } else {
-          element.setAttribute('inert', inert);
-        }
-
-        if (ariaHidden === null) {
-          element.removeAttribute('aria-hidden');
-        } else {
-          element.setAttribute('aria-hidden', ariaHidden);
-        }
-
-        if (inertProperty !== undefined) {
-          (element as InertElement).inert = inertProperty;
-        }
-
-        hiddenSiblings.delete(element);
+        restoreSibling(element);
       }
     };
   }, [dialogRef, enabled]);

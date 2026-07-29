@@ -230,9 +230,9 @@ export const PhotoViewer: React.FC<PhotoViewerProps> = ({
     setPortalRoot(document.body);
   }, [isOpen]);
 
+  useBackgroundInert({ enabled: dialogReady, dialogRef: containerRef });
   useFocusTrap({ enabled: dialogReady, containerRef });
   useBodyScrollLock({ enabled: dialogReady });
-  useBackgroundInert({ enabled: dialogReady, dialogRef: containerRef });
 
   if (!selectedImage || !currentImage || !portalRoot) return null;
 
