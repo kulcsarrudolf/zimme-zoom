@@ -1,4 +1,5 @@
-import React, { useEffect, useState } from 'react';
+import React, { useRef } from 'react';
+import { useImageLoading } from '../../hooks/useImageLoading';
 import { ImageSize, ZZImage } from '../../types/image.type';
 
 type ImageProps = {
@@ -8,12 +9,9 @@ type ImageProps = {
 };
 
 export const Image = ({ image, size, onClick }: ImageProps) => {
-  const [isLoading, setIsLoading] = useState(true);
+  const imageRef = useRef<HTMLImageElement>(null);
   const displaySrc = image.thumbnailSrc ?? image.src;
-
-  useEffect(() => {
-    setIsLoading(true);
-  }, [image.id, image.src, image.thumbnailSrc]);
+  const { isLoading, onSettled } = useImageLoading(`${image.id}:${displaySrc}`, imageRef);
 
   const containerStyle: React.CSSProperties = {
     overflow: 'hidden',
@@ -52,6 +50,7 @@ export const Image = ({ image, size, onClick }: ImageProps) => {
         />
       )}
       <img
+        ref={imageRef}
         src={displaySrc}
         alt={image.alt}
         loading="lazy"
@@ -64,8 +63,8 @@ export const Image = ({ image, size, onClick }: ImageProps) => {
           opacity: isLoading ? 0 : 1,
           transition: 'opacity 0.3s ease',
         }}
-        onLoad={() => setIsLoading(false)}
-        onError={() => setIsLoading(false)}
+        onLoad={onSettled}
+        onError={onSettled}
       />
       <style>
         {`

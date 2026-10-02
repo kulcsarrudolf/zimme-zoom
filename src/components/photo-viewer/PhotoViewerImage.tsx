@@ -1,5 +1,6 @@
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import ImageOverlay from './ImageOverlay';
+import { useImageLoading } from '../../hooks/useImageLoading';
 import type { ZZImage } from '../../types/image.type';
 
 type Props = {
@@ -10,7 +11,7 @@ type Props = {
   rotationCount: number;
   isDragging: boolean;
   showOverlay: boolean;
-  imageRef: React.Ref<HTMLImageElement>;
+  imageRef: React.RefObject<HTMLImageElement>;
   onDoubleClick: () => void;
 };
 
@@ -47,11 +48,7 @@ export const PhotoViewerImage: React.FC<Props> = ({
   imageRef,
   onDoubleClick,
 }) => {
-  const [isLoading, setIsLoading] = useState(true);
-
-  useEffect(() => {
-    setIsLoading(true);
-  }, [image.id]);
+  const { isLoading, onSettled } = useImageLoading(`${image.id}:${image.src}`, imageRef);
 
   const wrapperStyle: React.CSSProperties = {
     position: 'relative',
@@ -69,7 +66,8 @@ export const PhotoViewerImage: React.FC<Props> = ({
         src={image.src}
         alt={image.alt || ''}
         onDoubleClick={onDoubleClick}
-        onLoad={() => setIsLoading(false)}
+        onLoad={onSettled}
+        onError={onSettled}
         draggable={false}
         style={{ ...baseImageStyle, opacity: isLoading ? 0 : 1 }}
       />

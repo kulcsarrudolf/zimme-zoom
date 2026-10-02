@@ -1,4 +1,5 @@
-import React, { memo, useEffect, useState } from 'react';
+import React, { memo, useRef } from 'react';
+import { useImageLoading } from '../../hooks/useImageLoading';
 import type { MediaGridItem } from './types';
 
 /** Matches `Image`: light gray tile + opacity pulsing (see `MediaGrid` root for `@keyframes`). */
@@ -13,12 +14,9 @@ export const MediaGridThumbnail = memo(function MediaGridThumbnail({
   item,
   onClick,
 }: MediaGridThumbnailProps) {
-  const [isLoading, setIsLoading] = useState(true);
+  const imageRef = useRef<HTMLImageElement>(null);
   const displaySrc = item.thumbnailSrc ?? item.src;
-
-  useEffect(() => {
-    setIsLoading(true);
-  }, [item.id, item.src, item.thumbnailSrc]);
+  const { isLoading, onSettled } = useImageLoading(`${item.id}:${displaySrc}`, imageRef);
 
   return (
     <button
@@ -53,12 +51,13 @@ export const MediaGridThumbnail = memo(function MediaGridThumbnail({
         />
       )}
       <img
+        ref={imageRef}
         src={displaySrc}
         alt={item.alt ?? item.name}
         loading="lazy"
         decoding="async"
-        onLoad={() => setIsLoading(false)}
-        onError={() => setIsLoading(false)}
+        onLoad={onSettled}
+        onError={onSettled}
         style={{
           width: '100%',
           height: '100%',
